@@ -1,0 +1,2867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>NeuroCalc Pro — Ultimate Math Brain Trainer</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #080810;
+  --surface: #0f0f1a;
+  --surface2: #161625;
+  --surface3: #1e1e30;
+  --border: #252538;
+  --border2: #32324a;
+  --accent: #4fffb0;
+  --accent-dim: rgba(79,255,176,0.12);
+  --accent2: #ff6b6b;
+  --accent3: #ffd166;
+  --accent4: #74b9ff;
+  --accent5: #a29bfe;
+  --text: #e8e8f5;
+  --text-dim: #6b6b90;
+  --text-mid: #a0a0c0;
+  --success: #4fffb0;
+  --danger: #ff6b6b;
+  --warning: #ffd166;
+  --mono: 'Space Mono', monospace;
+  --sans: 'Outfit', sans-serif;
+  --radius: 14px;
+  --radius-sm: 8px;
+  --switch-bg: #1e1e30;
+  --switch-active: #4fffb0;
+  --nav-height: 64px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ── Background ── */
+.bg-grid {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background-image:
+    linear-gradient(rgba(79,255,176,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(79,255,176,0.025) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+.bg-glow1 {
+  position:fixed; top:-300px; left:-200px; width:800px; height:800px;
+  background: radial-gradient(circle, rgba(79,255,176,0.05) 0%, transparent 60%);
+  pointer-events:none; z-index:0;
+}
+.bg-glow2 {
+  position:fixed; bottom:-200px; right:-200px; width:600px; height:600px;
+  background: radial-gradient(circle, rgba(162,155,254,0.06) 0%, transparent 60%);
+  pointer-events:none; z-index:0;
+}
+
+/* ── Layout ── */
+.app {
+  position: relative; z-index: 1;
+  display: flex; min-height: 100vh;
+}
+
+/* ── Sidebar ── */
+.sidebar {
+  width: 260px; min-height: 100vh;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  position: fixed; left: 0; top: 0; bottom: 0;
+  z-index: 50;
+  transition: transform 0.3s ease;
+}
+
+.sidebar-header {
+  padding: 28px 24px 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.logo {
+  display: flex; align-items: center; gap: 10px;
+}
+.logo-icon {
+  width: 36px; height: 36px;
+  background: linear-gradient(135deg, var(--accent5), var(--accent));
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+}
+.logo-text {
+  font-size: 1.2rem; font-weight: 800;
+  background: linear-gradient(90deg, var(--accent), var(--accent5));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.logo-sub {
+  font-family: var(--mono); font-size: 0.6rem;
+  color: var(--text-dim); letter-spacing: 2px; margin-top: 2px;
+}
+
+.sidebar-section {
+  padding: 16px 12px 8px;
+}
+.sidebar-section-label {
+  font-family: var(--mono); font-size: 0.6rem; letter-spacing: 3px;
+  color: var(--text-dim); text-transform: uppercase;
+  padding: 0 12px 8px;
+}
+
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.18s;
+  font-size: 0.88rem; font-weight: 500;
+  color: var(--text-mid);
+  user-select: none;
+  position: relative;
+}
+.nav-item:hover { background: var(--surface2); color: var(--text); }
+.nav-item.active {
+  background: var(--accent-dim);
+  color: var(--accent);
+}
+.nav-item.active::before {
+  content: '';
+  position: absolute; left: 0; top: 20%; bottom: 20%;
+  width: 3px; border-radius: 2px;
+  background: var(--accent);
+}
+.nav-icon { font-size: 1rem; width: 20px; text-align: center; }
+.nav-badge {
+  margin-left: auto;
+  font-family: var(--mono); font-size: 0.6rem;
+  background: var(--surface3); color: var(--text-dim);
+  padding: 2px 6px; border-radius: 4px;
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  padding: 16px 12px;
+  border-top: 1px solid var(--border);
+}
+
+/* ── Main content ── */
+.main {
+  margin-left: 260px;
+  flex: 1;
+  display: flex; flex-direction: column;
+  min-height: 100vh;
+}
+
+.topbar {
+  padding: 20px 36px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 16px;
+  background: var(--surface);
+  position: sticky; top: 0; z-index: 40;
+}
+
+.topbar-title { font-size: 1.1rem; font-weight: 700; }
+.topbar-sub { font-family: var(--mono); font-size: 0.7rem; color: var(--text-dim); }
+
+.stats-row {
+  display: flex; gap: 8px; margin-left: auto; flex-wrap: wrap;
+}
+.mini-stat {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 6px 14px;
+  font-family: var(--mono); font-size: 0.75rem;
+  display: flex; align-items: center; gap: 8px;
+}
+.mini-stat-val { color: var(--accent); font-weight: 700; }
+
+.content {
+  flex: 1;
+  padding: 36px;
+  max-width: 900px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* ── Panels ── */
+.panel { display: none; animation: fadeIn 0.3s ease; }
+.panel.active { display: block; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Dashboard ── */
+.dash-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;
+  margin-bottom: 28px;
+}
+.dash-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 24px;
+  cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden;
+}
+.dash-card:hover { border-color: var(--border2); transform: translateY(-2px); }
+.dash-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+}
+.dash-card.green::before  { background: linear-gradient(90deg, var(--accent), transparent); }
+.dash-card.red::before    { background: linear-gradient(90deg, var(--accent2), transparent); }
+.dash-card.yellow::before { background: linear-gradient(90deg, var(--accent3), transparent); }
+.dash-card.blue::before   { background: linear-gradient(90deg, var(--accent4), transparent); }
+.dash-card.purple::before { background: linear-gradient(90deg, var(--accent5), transparent); }
+
+.dash-card-icon { font-size: 2rem; margin-bottom: 12px; }
+.dash-card-title { font-size: 1rem; font-weight: 700; margin-bottom: 4px; }
+.dash-card-sub { font-size: 0.8rem; color: var(--text-dim); }
+.dash-card-arrow {
+  position: absolute; right: 20px; top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-dim); font-size: 1.2rem;
+  transition: all 0.2s;
+}
+.dash-card:hover .dash-card-arrow { color: var(--accent); transform: translateY(-50%) translateX(3px); }
+
+.section-label {
+  font-family: var(--mono); font-size: 0.65rem; letter-spacing: 3px;
+  color: var(--text-dim); text-transform: uppercase;
+  margin-bottom: 14px;
+  display: flex; align-items: center; gap: 10px;
+}
+.section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* ── Config Panel ── */
+.config-panel {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 32px;
+  margin-bottom: 20px;
+}
+.config-panel-title {
+  font-size: 1.2rem; font-weight: 700; margin-bottom: 6px;
+}
+.config-panel-sub { color: var(--text-dim); font-size: 0.85rem; margin-bottom: 28px; }
+
+.config-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 24px; }
+.cfg-item label {
+  display: block; font-family: var(--mono); font-size: 0.65rem;
+  color: var(--text-dim); letter-spacing: 2px; text-transform: uppercase;
+  margin-bottom: 8px;
+}
+.stepper {
+  display: flex; background: var(--surface2);
+  border: 1px solid var(--border); border-radius: var(--radius-sm); overflow: hidden;
+}
+.stepper button {
+  background: none; border: none; color: var(--text-dim);
+  width: 40px; height: 42px; cursor: pointer; font-size: 1.1rem;
+  transition: all 0.15s; font-family: var(--mono);
+}
+.stepper button:hover { background: var(--border); color: var(--accent); }
+.stepper input {
+  flex: 1; text-align: center; height: 42px;
+  background: none; border: none; color: var(--text); outline: none;
+  font-family: var(--mono); font-weight: 700; font-size: 1rem;
+  width: 100%; -moz-appearance: textfield;
+}
+.stepper input::-webkit-outer-spin-button,
+.stepper input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+.op-pills { display: flex; gap: 8px; flex-wrap: wrap; }
+.op-pill {
+  padding: 8px 16px; border-radius: 6px;
+  border: 1px solid var(--border); background: var(--surface2);
+  color: var(--text-dim); font-family: var(--mono); font-size: 0.82rem;
+  cursor: pointer; transition: all 0.18s; user-select: none;
+}
+.op-pill.selected { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+
+.diff-row { display: flex; gap: 8px; }
+.diff-btn {
+  flex: 1; padding: 10px 6px; border-radius: var(--radius-sm);
+  border: 1px solid var(--border); background: var(--surface2);
+  color: var(--text-dim); font-family: var(--mono); font-size: 0.75rem;
+  cursor: pointer; text-align: center; transition: all 0.18s;
+}
+.diff-btn.sel-easy   { background: rgba(79,255,176,0.1);  border-color: var(--accent);  color: var(--accent); }
+.diff-btn.sel-medium { background: rgba(255,209,102,0.1); border-color: var(--accent3); color: var(--accent3); }
+.diff-btn.sel-hard   { background: rgba(255,107,107,0.1); border-color: var(--accent2); color: var(--accent2); }
+
+/* ── Practice Area ── */
+.practice-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 40px 36px;
+  text-align: center; position: relative; overflow: hidden;
+}
+.practice-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, var(--accent5), var(--accent), transparent);
+}
+.practice-mode-badge {
+  display: inline-block;
+  font-family: var(--mono); font-size: 0.65rem; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--text-dim);
+  background: var(--surface2); border: 1px solid var(--border);
+  padding: 4px 12px; border-radius: 4px; margin-bottom: 32px;
+}
+.question-text {
+  font-family: var(--mono); font-size: 2.8rem; font-weight: 700;
+  color: var(--text); margin-bottom: 32px; line-height: 1.2;
+  min-height: 80px; display: flex; align-items: center; justify-content: center;
+}
+.question-text .num { color: var(--accent4); }
+.question-text .op  { color: var(--accent3); margin: 0 12px; }
+.question-text .unk { color: var(--text-dim); }
+
+.answer-field-wrap { position: relative; display: inline-block; }
+.answer-field {
+  background: var(--surface2); border: 2px solid var(--border2);
+  border-radius: var(--radius-sm); color: var(--text);
+  font-family: var(--mono); font-size: 1.6rem; font-weight: 700;
+  padding: 14px 24px; outline: none; text-align: center;
+  width: 220px; transition: border-color 0.2s;
+}
+.answer-field:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(79,255,176,0.1); }
+.answer-field.correct { border-color: var(--success); background: rgba(79,255,176,0.08); }
+.answer-field.wrong   { border-color: var(--danger);  background: rgba(255,107,107,0.08); }
+
+.hint-text {
+  font-family: var(--mono); font-size: 0.85rem; color: var(--text-dim);
+  margin-top: 14px; min-height: 24px; transition: all 0.2s;
+}
+.hint-text.shown { color: var(--accent3); }
+
+.practice-meta {
+  display: flex; align-items: center; justify-content: center; gap: 24px;
+  margin-top: 28px; flex-wrap: wrap;
+}
+.practice-stat-chip {
+  font-family: var(--mono); font-size: 0.75rem; color: var(--text-dim);
+  display: flex; align-items: center; gap: 6px;
+}
+.practice-stat-chip span { color: var(--accent); font-weight: 700; font-size: 0.9rem; }
+
+.practice-actions { display: flex; gap: 10px; justify-content: center; margin-top: 24px; flex-wrap: wrap; }
+
+/* Streak display */
+.streak-bar {
+  display: flex; gap: 6px; justify-content: center; margin-top: 20px; flex-wrap: wrap;
+}
+.streak-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--border); transition: all 0.3s;
+}
+.streak-dot.lit { background: var(--accent); box-shadow: 0 0 8px rgba(79,255,176,0.6); }
+
+/* Flash */
+.flash-overlay {
+  position: fixed; inset: 0; z-index: 200;
+  display: flex; align-items: center; justify-content: center;
+  pointer-events: none; opacity: 0; transition: opacity 0.2s;
+}
+.flash-overlay.show { opacity: 1; }
+.flash-emoji { font-size: 5rem; animation: flashPop 0.5s ease; }
+@keyframes flashPop {
+  0%   { transform: scale(0.5); opacity: 0; }
+  60%  { transform: scale(1.2); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* ── Memory Mode ── */
+.mem-sets-wrap { display: flex; flex-direction: column; gap: 14px; margin-bottom: 28px; }
+.mem-set-card {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 20px 24px;
+  display: flex; align-items: center; justify-content: space-between;
+  position: relative; overflow: hidden;
+  animation: slideIn 0.35s ease both;
+}
+.mem-set-card::after {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+  width: 3px; background: linear-gradient(180deg, var(--accent5), var(--accent));
+}
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(-14px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+.mem-set-idx {
+  position: absolute; top: 6px; right: 12px;
+  font-family: var(--mono); font-size: 0.62rem; color: var(--text-dim); letter-spacing: 1px;
+}
+.mem-eq { font-family: var(--mono); font-size: 1.3rem; font-weight: 700; }
+.mem-eq .n { color: var(--accent4); }
+.mem-eq .o { color: var(--accent3); margin: 0 6px; }
+
+.timer-row { display: flex; align-items: center; gap: 18px; margin-bottom: 20px; }
+.timer-ring-wrap { position: relative; width: 68px; height: 68px; }
+.timer-ring-wrap svg { transform: rotate(-90deg); }
+.tr-track { fill: none; stroke: var(--border2); stroke-width: 4; }
+.tr-fill  { fill: none; stroke: var(--accent); stroke-width: 4; stroke-linecap: round; transition: stroke-dashoffset 1s linear, stroke 0.4s; }
+.timer-num {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: 1rem; font-weight: 700;
+}
+.timer-info { flex: 1; }
+.timer-lbl { font-family: var(--mono); font-size: 0.62rem; color: var(--text-dim); letter-spacing: 2px; text-transform: uppercase; }
+.timer-desc { font-weight: 600; margin-top: 4px; }
+.prog-wrap { height: 3px; background: var(--border); border-radius: 2px; margin-bottom: 20px; overflow: hidden; }
+.prog-fill { height: 100%; background: linear-gradient(90deg, var(--accent5), var(--accent)); border-radius: 2px; transition: width 1s linear; }
+
+/* Ans input rows */
+.ans-rows { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+.ans-row {
+  display: flex; align-items: center; gap: 12px;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 12px 16px;
+  transition: border-color 0.2s;
+}
+.ans-row:focus-within { border-color: var(--accent); }
+.ans-row.correct { border-color: var(--success); background: rgba(79,255,176,0.05); }
+.ans-row.wrong   { border-color: var(--danger);  background: rgba(255,107,107,0.05); }
+.ans-row-lbl { font-family: var(--mono); font-size: 0.72rem; color: var(--text-dim); min-width: 52px; }
+.ans-row-hidden { font-family: var(--mono); font-size: 0.78rem; color: var(--text-dim); font-style: italic; flex: 1; }
+.ans-inp {
+  background: none; border: none; outline: none;
+  font-family: var(--mono); font-size: 1.05rem; font-weight: 700;
+  color: var(--text); width: 90px; text-align: right;
+}
+.ans-inp::placeholder { color: var(--border2); }
+.ans-badge {
+  font-family: var(--mono); font-size: 0.75rem;
+  padding: 2px 10px; border-radius: 4px; min-width: 48px; text-align: center;
+}
+.ans-badge.correct { background: rgba(79,255,176,0.15); color: var(--success); }
+.ans-badge.wrong   { background: rgba(255,107,107,0.15); color: var(--danger); }
+
+/* Result */
+.result-hero { text-align: center; padding: 32px 0; }
+.result-pct {
+  font-family: var(--mono); font-size: 5rem; font-weight: 700; line-height: 1;
+  background: linear-gradient(135deg, var(--accent5), var(--accent));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.result-lbl { font-family: var(--mono); font-size: 0.65rem; letter-spacing: 3px; color: var(--text-dim); text-transform: uppercase; margin-top: 6px; }
+.result-msg { font-size: 1.2rem; font-weight: 600; margin-top: 14px; }
+.res-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 24px 0; }
+.res-stat { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 16px; text-align: center; }
+.res-stat-val { font-family: var(--mono); font-size: 1.5rem; font-weight: 700; color: var(--accent); }
+.res-stat-lbl { font-size: 0.68rem; font-family: var(--mono); color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+.divider { height: 1px; background: var(--border); margin: 20px 0; }
+
+/* Tables */
+.table-wrap {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius); overflow: hidden;
+}
+.table-header {
+  background: var(--surface2); padding: 14px 20px;
+  display: flex; gap: 10px; align-items: center;
+  border-bottom: 1px solid var(--border);
+  position: sticky; top: 0;
+}
+.table-search {
+  background: var(--surface3); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); color: var(--text);
+  font-family: var(--mono); font-size: 0.82rem; padding: 8px 14px;
+  outline: none; flex: 1; max-width: 280px;
+}
+.table-search:focus { border-color: var(--accent); }
+.table-scroll { max-height: 500px; overflow-y: auto; }
+.table-scroll::-webkit-scrollbar { width: 4px; }
+.table-scroll::-webkit-scrollbar-track { background: var(--surface2); }
+.table-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+table { width: 100%; border-collapse: collapse; }
+th {
+  background: var(--surface3); padding: 10px 20px;
+  font-family: var(--mono); font-size: 0.65rem; letter-spacing: 2px;
+  color: var(--text-dim); text-transform: uppercase; text-align: left;
+  border-bottom: 1px solid var(--border);
+  position: sticky; top: 0;
+}
+td {
+  padding: 10px 20px; font-family: var(--mono); font-size: 0.9rem;
+  border-bottom: 1px solid var(--border); color: var(--text);
+}
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: var(--surface2); }
+td:first-child { color: var(--accent4); }
+td:last-child  { color: var(--accent); font-weight: 700; }
+
+/* Buttons */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 12px 24px; border-radius: var(--radius-sm); border: none;
+  font-family: var(--sans); font-weight: 600; font-size: 0.9rem;
+  cursor: pointer; transition: all 0.18s; letter-spacing: 0.3px;
+}
+.btn-primary {
+  background: linear-gradient(135deg, var(--accent5), var(--accent));
+  color: #0a0a10; box-shadow: 0 4px 20px rgba(79,255,176,0.2);
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 28px rgba(79,255,176,0.35); }
+.btn-secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+.btn-secondary:hover { border-color: var(--accent4); color: var(--accent4); }
+.btn-ghost { background: none; color: var(--text-dim); border: 1px solid var(--border); }
+.btn-ghost:hover { color: var(--text); border-color: var(--border2); }
+.btn-success { background: linear-gradient(135deg, #00c896, var(--accent)); color: #0a0a10; }
+.btn-warn { background: rgba(255,209,102,0.12); color: var(--accent3); border: 1px solid rgba(255,209,102,0.3); }
+.btn-warn:hover { background: rgba(255,209,102,0.2); }
+.btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
+.btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
+
+/* History */
+.hist-list { display: flex; flex-direction: column; gap: 8px; }
+.hist-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 14px; background: var(--surface2);
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+  font-family: var(--mono); font-size: 0.78rem;
+}
+.hist-score { color: var(--accent); font-weight: 700; min-width: 44px; }
+.hist-mode  { color: var(--text-mid); flex: 1; }
+.hist-time  { color: var(--text-dim); font-size: 0.7rem; }
+.badge {
+  display: inline-block; padding: 2px 8px; border-radius: 4px;
+  font-size: 0.65rem; font-family: var(--mono);
+}
+.badge-easy   { background: rgba(79,255,176,0.12);  color: var(--accent); }
+.badge-medium { background: rgba(255,209,102,0.12); color: var(--accent3); }
+.badge-hard   { background: rgba(255,107,107,0.12); color: var(--accent2); }
+.badge-mem    { background: rgba(162,155,254,0.12); color: var(--accent5); }
+.badge-math   { background: rgba(116,185,255,0.12); color: var(--accent4); }
+
+.empty-state { text-align: center; padding: 40px; color: var(--text-dim); font-family: var(--mono); font-size: 0.82rem; }
+
+/* Mode Selector Cards */
+.mode-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+.mode-card {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 20px 16px;
+  cursor: pointer; transition: all 0.18s; text-align: center;
+}
+.mode-card:hover { border-color: var(--border2); transform: translateY(-2px); }
+.mode-card.selected { border-color: var(--accent); background: var(--accent-dim); }
+.mode-card-icon { font-size: 1.8rem; margin-bottom: 8px; }
+.mode-card-name { font-size: 0.85rem; font-weight: 600; }
+.mode-card-desc { font-size: 0.72rem; color: var(--text-dim); margin-top: 3px; }
+
+/* Correct flash animation */
+@keyframes correctFlash {
+  0%   { background: rgba(79,255,176,0.25); }
+  100% { background: var(--surface); }
+}
+.practice-card.flash-correct { animation: correctFlash 0.4s ease; }
+
+/* Sidebar overlay */
+.sidebar-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 150;
+  display: none;
+}
+.sidebar-overlay.show { display: block; }
+
+/* Mobile hamburger */
+.hamburger {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--text);
+  cursor: pointer;
+  padding: 8px;
+  width: 44px;
+  height: 44px;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  flex-shrink: 0;
+  z-index: 210;
+}
+.hamburger span {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: var(--text);
+  border-radius: 2px;
+  transition: 0.3s;
+}
+
+/* Bottom Navigation */
+.bottom-nav {
+  display: none;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  height: var(--nav-height);
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  z-index: 100;
+  padding-bottom: env(safe-area-inset-bottom);
+  box-sizing: content-box;
+}
+.bottom-nav-inner {
+  display: flex;
+  height: 100%;
+  align-items: center;
+  justify-content: space-around;
+}
+.b-nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: all 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+.b-nav-item.active { color: var(--accent); }
+.b-nav-icon { font-size: 1.2rem; }
+.b-nav-label { font-size: 0.65rem; font-weight: 600; font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.5px; }
+
+/* Hamburger Animation */
+.hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+.sidebar-close {
+  display: none;
+  position: absolute;
+  top: 20px; right: 12px;
+  background: none; border: none;
+  color: var(--text-dim); font-size: 1.5rem;
+  cursor: pointer; padding: 10px;
+}
+
+@media (max-width: 768px) {
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); }
+  .main { margin-left: 0; padding-bottom: calc(var(--nav-height) + env(safe-area-inset-bottom)); }
+  .hamburger { display: flex; }
+  .bottom-nav { display: block; }
+  .content { padding: 20px 16px; }
+  .topbar { padding: 14px 20px; }
+  .dash-grid { grid-template-columns: 1fr; }
+  .res-grid { grid-template-columns: repeat(2, 1fr); }
+  .topbar-title { font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 120px; }
+  .topbar-sub { font-size: 0.6rem; }
+  .stats-row { gap: 4px; }
+  .mini-stat { padding: 4px 8px; font-size: 0.65rem; }
+
+  .sidebar-overlay.show { display: block; }
+  
+  /* Increase touch targets */
+  .btn, .nav-item, .mode-card, .diff-btn, .tbl-cell { min-height: 44px; }
+  .answer-field { font-size: 1.8rem; padding: 16px 20px; width: 100%; max-width: 280px; }
+  
+  .sidebar { z-index: 200; }
+  .sidebar-close { display: block; }
+}
+
+@supports (height: 100dvh) {
+  body, .app, .sidebar, .main { min-height: 100dvh; }
+}
+
+
+/* ── Tables Mastery ── */
+.tables-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin: 20px 0; }
+.tbl-cell { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px 8px; text-align: center; cursor: pointer; transition: all 0.2s; }
+.tbl-cell:hover { border-color: var(--border2); transform: translateY(-2px); }
+.tbl-cell.mastered { border-color: var(--accent); background: var(--accent-dim); }
+.tbl-cell.next { border-color: var(--accent3); background: rgba(255,209,102,0.08); animation: tblPulse 2s infinite; }
+@keyframes tblPulse { 0%,100%{box-shadow:none;} 50%{box-shadow:0 0 12px rgba(255,209,102,0.3);} }
+.tbl-cell-num { font-family: var(--mono); font-weight: 700; font-size: 1rem; }
+.tbl-cell.mastered .tbl-cell-num { color: var(--accent); }
+.tbl-cell.next .tbl-cell-num { color: var(--accent3); }
+.tbl-cell-status { font-size: 0.7rem; margin-top: 4px; color: var(--text-dim); }
+.tbl-cell.mastered .tbl-cell-status { color: var(--accent); }
+.tbl-fact-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin: 20px 0; }
+.tbl-fact-card { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px 16px; font-family: var(--mono); display: flex; justify-content: space-between; align-items: center; }
+.tbl-fact-eq { color: var(--text-mid); }
+.tbl-fact-ans { color: var(--accent); font-weight: 700; }
+.tbl-feedback { font-family: var(--mono); font-size: 0.85rem; margin-top: 14px; min-height: 24px; transition: all 0.2s; color: var(--text-dim); }
+.tbl-feedback.correct { color: var(--success); }
+.tbl-feedback.wrong { color: var(--danger); }
+.tbl-feedback.mastered-fb { color: var(--accent3); font-weight: 700; }
+.leitner-boxes { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 10px; }
+.leitner-box { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px; min-height: 60px; }
+.leitner-box.done { border-color: var(--accent); background: var(--accent-dim); }
+.leitner-box-label { font-family: var(--mono); font-size: 0.58rem; letter-spacing: 1px; color: var(--text-dim); text-transform: uppercase; margin-bottom: 6px; }
+.leitner-box-facts { display: flex; flex-wrap: wrap; gap: 4px; }
+.leitner-fact { font-family: var(--mono); font-size: 0.68rem; background: var(--surface3); border: 1px solid var(--border); border-radius: 4px; padding: 2px 6px; color: var(--text-mid); }
+.leitner-fact.active { border-color: var(--accent4); color: var(--accent4); }
+.tbl-tip-box { background: rgba(255,209,102,0.08); border: 1px solid rgba(255,209,102,0.2); border-radius: var(--radius-sm); padding: 14px 18px; margin: 16px 0; font-family: var(--mono); font-size: 0.82rem; color: var(--accent3); }
+.tbl-progress { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px 18px; margin-bottom: 16px; }
+.tbl-progress-bar { height: 6px; background: var(--border); border-radius: 3px; margin-top: 8px; overflow: hidden; }
+.tbl-progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent5), var(--accent)); border-radius: 3px; transition: width 0.5s ease; }
+@media (max-width: 768px) {
+  .leitner-boxes { grid-template-columns: repeat(2, 1fr); }
+  .tbl-fact-grid { grid-template-columns: 1fr; }
+}
+
+/* ── Timed Mode Toggle ── */
+.timed-toggle-wrap {
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 12px 16px; margin-bottom: 20px;
+}
+.timed-label { font-family: var(--mono); font-size: 0.8rem; font-weight: 600; color: var(--text); }
+.timed-controls { display: flex; align-items: center; gap: 12px; }
+
+/* Simple Switch */
+.switch {
+  position: relative; display: inline-block; width: 44px; height: 22px;
+}
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider {
+  position: absolute; cursor: pointer; inset: 0;
+  background-color: var(--switch-bg); transition: .3s; border-radius: 22px;
+  border: 1px solid var(--border);
+}
+.slider:before {
+  position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px;
+  background-color: var(--text-dim); transition: .3s; border-radius: 50%;
+}
+input:checked + .slider { background-color: var(--accent-dim); border-color: var(--accent); }
+input:checked + .slider:before { transform: translateX(22px); background-color: var(--accent); }
+
+/* Compact Timer Ring for Drills */
+.drill-timer-wrap {
+  position: absolute; top: 20px; right: 20px;
+  display: flex; align-items: center; gap: 10px;
+  background: var(--surface2); padding: 4px 12px; border-radius: 20px;
+  border: 1px solid var(--border); animation: slideInRight 0.4s ease;
+}
+@keyframes slideInRight { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+.drill-timer-ring { width: 32px; height: 32px; position: relative; }
+.drill-timer-ring svg { transform: rotate(-90deg); width: 32px; height: 32px; }
+.drill-timer-num {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: 0.7rem; font-weight: 700;
+}
+
+</style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="bg-glow1"></div>
+<div class="bg-glow2"></div>
+<div class="app">
+
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+<!-- ── SIDEBAR ── -->
+<nav class="sidebar" id="sidebar">
+  <button class="sidebar-close" onclick="closeSidebar()">✕</button>
+  <div class="sidebar-header">
+    <div class="logo">
+      <div class="logo-icon">🧠</div>
+      <div>
+        <div class="logo-text">NeuroCalc</div>
+        <div class="logo-sub">MATH BRAIN TRAINER</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Overview</div>
+    <div class="nav-item active" onclick="showPage('dashboard')" id="nav-dashboard">
+      <span class="nav-icon">⊞</span> Dashboard
+    </div>
+    <div class="nav-item" onclick="showPage('history')" id="nav-history">
+      <span class="nav-icon">📋</span> History
+    </div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Practice Modes</div>
+    <div class="nav-item" onclick="showPage('memory')" id="nav-memory">
+      <span class="nav-icon">🧩</span> Memory Calc <span class="nav-badge">NEW</span>
+    </div>
+    <div class="nav-item" onclick="showPage('arithmetic')" id="nav-arithmetic">
+      <span class="nav-icon">🔢</span> Arithmetic
+    </div>
+    <div class="nav-item" onclick="showPage('roots')" id="nav-roots">
+      <span class="nav-icon">√</span> Roots
+    </div>
+    <div class="nav-item" onclick="showPage('fractions')" id="nav-fractions">
+      <span class="nav-icon">%</span> Fractions/Percent
+    </div>
+    <div class="nav-item" onclick="showPage('mixed')" id="nav-mixed">
+      <span class="nav-icon">🎲</span> Mixed Practice
+    </div>
+    <div class="nav-item" onclick="showPage('tables')" id="nav-tables">
+      <span class="nav-icon">📊</span> Tables Mastery <span class="nav-badge">1-25</span>
+    </div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Reference Tables</div>
+    <div class="nav-item" onclick="showPage('tbl-fractions')" id="nav-tbl-fractions">
+      <span class="nav-icon">📘</span> Fraction → %
+    </div>
+    <div class="nav-item" onclick="showPage('tbl-squares')" id="nav-tbl-squares">
+      <span class="nav-icon">📗</span> Perfect Squares
+    </div>
+    <div class="nav-item" onclick="showPage('tbl-cubes')" id="nav-tbl-cubes">
+      <span class="nav-icon">📙</span> Perfect Cubes
+    </div>
+  </div>
+
+  <div class="sidebar-footer">
+    <div style="font-family:var(--mono);font-size:0.65rem;color:var(--text-dim);">
+      Sessions: <span id="sb-sessions" style="color:var(--accent)">0</span> &nbsp;|&nbsp;
+      Streak: <span id="sb-streak" style="color:var(--accent3)">0🔥</span>
+    </div>
+  </div>
+</nav>
+
+<!-- ── MAIN ── -->
+<div class="main">
+
+  <!-- Topbar -->
+  <div class="topbar">
+    <button class="hamburger" onclick="toggleSidebar()" aria-label="Menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    <div>
+      <div class="topbar-title" id="topbar-title">Dashboard</div>
+      <div class="topbar-sub" id="topbar-sub">Select a mode to start training</div>
+    </div>
+    <div class="stats-row">
+      <div class="mini-stat">Sessions <span class="mini-stat-val" id="top-sessions">0</span></div>
+      <div class="mini-stat">Best <span class="mini-stat-val" id="top-best">—</span></div>
+      <div class="mini-stat">Streak <span class="mini-stat-val" id="top-streak">0🔥</span></div>
+      <div class="mini-stat">Total XP <span class="mini-stat-val" id="top-xp">0</span></div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ══ DASHBOARD ══ -->
+    <div class="panel active" id="page-dashboard">
+      <div class="section-label" style="margin-bottom:20px;">Quick Start</div>
+      <div class="dash-grid">
+        <div class="dash-card green" onclick="showPage('memory')">
+          <div class="dash-card-icon">🧩</div>
+          <div class="dash-card-title">Memory Calculation</div>
+          <div class="dash-card-sub">See sets, memorize, recall answers</div>
+          <div class="dash-card-arrow">›</div>
+        </div>
+        <div class="dash-card blue" onclick="showPage('arithmetic')">
+          <div class="dash-card-icon">🔢</div>
+          <div class="dash-card-title">Arithmetic Drill</div>
+          <div class="dash-card-sub">+, −, ×, ÷ speed practice</div>
+          <div class="dash-card-arrow">›</div>
+        </div>
+        <div class="dash-card yellow" onclick="showPage('roots')">
+          <div class="dash-card-icon">√</div>
+          <div class="dash-card-title">Square & Cube Roots</div>
+          <div class="dash-card-sub">Progressive root memorization</div>
+          <div class="dash-card-arrow">›</div>
+        </div>
+        <div class="dash-card purple" onclick="showPage('fractions')">
+          <div class="dash-card-icon">%</div>
+          <div class="dash-card-title">Fractions ↔ Percentages</div>
+          <div class="dash-card-sub">Conversion mastery</div>
+          <div class="dash-card-arrow">›</div>
+        </div>
+        <div class="dash-card red" onclick="showPage('mixed')">
+          <div class="dash-card-icon">🎲</div>
+          <div class="dash-card-title">Mixed Practice</div>
+          <div class="dash-card-sub">Random mode challenge</div>
+          <div class="dash-card-arrow">›</div>
+        </div>
+        <div class="dash-card purple" onclick="showPage('tables')" style="grid-column:span 2;">
+          <div class="dash-card-icon">📊</div>
+          <div class="dash-card-title">Tables Mastery (1–25)</div>
+          <div class="dash-card-sub">Proven Leitner spaced-repetition: Master all tables in one day</div>
+          <div class="dash-card-arrow">›</div>
+        </div>
+      </div>
+
+      <div class="section-label">Recent History</div>
+      <div id="dash-history-preview"></div>
+    </div>
+
+    <!-- ══ MEMORY MODE ══ -->
+    <div class="panel" id="page-memory">
+
+      <!-- Config -->
+      <div id="mem-config-wrap">
+        <div class="config-panel">
+          <div class="config-panel-title">🧩 Memory Calculation</div>
+          <div class="config-panel-sub">Memorize multiple calculation sets, then recall all answers from memory.</div>
+
+          <div class="config-grid">
+            <div class="cfg-item">
+              <label>Number of Sets</label>
+              <div class="stepper">
+                <button onclick="adj('memSets',-1)">−</button>
+                <input type="number" id="memSets-disp" value="3" oninput="manualAdj('memSets')">
+                <button onclick="adj('memSets',1)">+</button>
+              </div>
+            </div>
+            <div class="cfg-item">
+              <label>Numbers per Set</label>
+              <div class="stepper">
+                <button onclick="adj('memNums',-1)">−</button>
+                <input type="number" id="memNums-disp" value="2" oninput="manualAdj('memNums')">
+                <button onclick="adj('memNums',1)">+</button>
+              </div>
+            </div>
+            <div class="cfg-item">
+              <label>Memorize Time (sec)</label>
+              <div class="stepper">
+                <button onclick="adj('memTime',-1)">−</button>
+                <input type="number" id="memTime-disp" value="30" oninput="manualAdj('memTime')">
+                <button onclick="adj('memTime',1)">+</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="cfg-item" style="margin-bottom:18px;">
+            <label>Operations</label>
+            <div class="op-pills">
+              <div class="op-pill selected" data-op="+" onclick="toggleMemOp(this)">＋ Add</div>
+              <div class="op-pill" data-op="-" onclick="toggleMemOp(this)">－ Sub</div>
+              <div class="op-pill" data-op="×" onclick="toggleMemOp(this)">× Mul</div>
+            </div>
+          </div>
+
+          <div class="cfg-item" style="margin-bottom:24px;">
+            <label>Difficulty</label>
+            <div class="diff-row">
+              <div class="diff-btn sel-easy" onclick="setMemDiff('easy',this)">Easy<br><small>1–9</small></div>
+              <div class="diff-btn" onclick="setMemDiff('medium',this)">Medium<br><small>1–50</small></div>
+              <div class="diff-btn" onclick="setMemDiff('hard',this)">Hard<br><small>1–99</small></div>
+            </div>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn btn-primary" onclick="startMemSession()">▶ Start Memory Training</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Practice view -->
+      <div id="mem-practice-wrap" style="display:none;">
+        <div class="config-panel" style="padding:28px;">
+          <div class="timer-row">
+            <div class="timer-ring-wrap">
+              <svg viewBox="0 0 68 68" width="68" height="68">
+                <circle class="tr-track" cx="34" cy="34" r="28"/>
+                <circle class="tr-fill" id="tr-fill" cx="34" cy="34" r="28"
+                        stroke-dasharray="176" stroke-dashoffset="0"/>
+              </svg>
+              <div class="timer-num" id="tr-num">—</div>
+            </div>
+            <div class="timer-info">
+              <div class="timer-lbl">Time Remaining</div>
+              <div class="timer-desc" id="tr-desc">Memorize all sets carefully</div>
+            </div>
+          </div>
+          <div class="prog-wrap"><div class="prog-fill" id="mem-prog" style="width:100%"></div></div>
+          <div class="mem-sets-wrap" id="mem-sets-container"></div>
+          <div class="btn-row">
+            <button class="btn btn-primary" onclick="memGoAnswer()">✓ I'm Ready — Test Me</button>
+            <button class="btn btn-ghost" onclick="memCancel()">✕ Cancel</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Answer view -->
+      <div id="mem-answer-wrap" style="display:none;">
+        <div class="config-panel" style="padding:28px;">
+          <div style="margin-bottom:18px;">
+            <div style="font-size:1rem;font-weight:700;margin-bottom:4px;">Enter Your Answers</div>
+            <div style="color:var(--text-dim);font-size:0.83rem;">All sets are hidden. Recall each result from memory.</div>
+          </div>
+          <div class="ans-rows" id="mem-ans-rows"></div>
+          <div class="divider"></div>
+          <div class="btn-row">
+            <button class="btn btn-success" onclick="memSubmit()">✓ Submit Answers</button>
+            <button class="btn btn-warn" id="peek-btn" onclick="memPeek()">👁 Peek (−10pts)</button>
+            <button class="btn btn-ghost" onclick="memCancel()">✕ Quit</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Result view -->
+      <div id="mem-result-wrap" style="display:none;">
+        <div class="config-panel" style="padding:28px;">
+          <div class="result-hero">
+            <div class="result-pct" id="mem-res-pct">0%</div>
+            <div class="result-lbl">Accuracy</div>
+            <div class="result-msg" id="mem-res-msg"></div>
+          </div>
+          <div class="res-grid">
+            <div class="res-stat"><div class="res-stat-val" id="mem-res-correct">0</div><div class="res-stat-lbl">Correct</div></div>
+            <div class="res-stat"><div class="res-stat-val" id="mem-res-total">0</div><div class="res-stat-lbl">Total</div></div>
+            <div class="res-stat"><div class="res-stat-val" id="mem-res-time">0s</div><div class="res-stat-lbl">Time Used</div></div>
+          </div>
+          <div id="mem-review"></div>
+          <div class="btn-row" style="margin-top:20px;">
+            <button class="btn btn-primary" onclick="startMemSession()">↺ Play Again</button>
+            <button class="btn btn-secondary" onclick="memReset()">⚙ New Config</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ ARITHMETIC ══ -->
+    <div class="panel" id="page-arithmetic">
+      <div id="arith-config-wrap">
+        <div class="config-panel">
+          <div class="config-panel-title">🔢 Arithmetic Drill</div>
+          <div class="config-panel-sub">Speed practice for all arithmetic operations.</div>
+
+          <div class="cfg-item" style="margin-bottom:18px;">
+            <label>Select Mode</label>
+            <div class="mode-grid" id="arith-mode-cards">
+              <div class="mode-card selected" data-mode="Addition" onclick="selArithMode(this)">
+                <div class="mode-card-icon">➕</div>
+                <div class="mode-card-name">Addition</div>
+                <div class="mode-card-desc">Sum up numbers</div>
+              </div>
+              <div class="mode-card" data-mode="Subtraction" onclick="selArithMode(this)">
+                <div class="mode-card-icon">➖</div>
+                <div class="mode-card-name">Subtraction</div>
+                <div class="mode-card-desc">Find the difference</div>
+              </div>
+              <div class="mode-card" data-mode="Carry Subtraction" onclick="selArithMode(this)">
+                <div class="mode-card-icon">↩</div>
+                <div class="mode-card-name">Carry Subtraction</div>
+                <div class="mode-card-desc">Borrow method drill</div>
+              </div>
+              <div class="mode-card" data-mode="Multiplication" onclick="selArithMode(this)">
+                <div class="mode-card-icon">✖</div>
+                <div class="mode-card-name">Multiplication</div>
+                <div class="mode-card-desc">Times tables & beyond</div>
+              </div>
+              <div class="mode-card" data-mode="Division" onclick="selArithMode(this)">
+                <div class="mode-card-icon">➗</div>
+                <div class="mode-card-name">Division</div>
+                <div class="mode-card-desc">Quotient finder</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dynamic sub-config -->
+          <div id="arith-sub-config"></div>
+
+          <!-- Timed Challenge -->
+          <div class="timed-toggle-wrap">
+            <div class="timed-label">⏱ Timed Challenge</div>
+            <div class="timed-controls">
+              <select id="arith-time-select" class="table-search" style="max-width:80px;padding:4px 8px;font-size:0.75rem;">
+                <option value="30">30s</option>
+                <option value="60" selected>60s</option>
+                <option value="120">120s</option>
+              </select>
+              <label class="switch">
+                <input type="checkbox" id="arith-timed-toggle">
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+
+
+          <div class="btn-row" style="margin-top:20px;">
+            <button class="btn btn-primary" onclick="startArith()">▶ Start Drill</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Practice -->
+      <div id="arith-practice-wrap" style="display:none;">
+        <div class="practice-card" id="arith-card">
+          <div class="drill-timer-wrap" id="arith-timer-display" style="display:none;">
+            <div class="drill-timer-ring">
+              <svg viewBox="0 0 32 32">
+                <circle class="tr-track" cx="16" cy="16" r="14" stroke-width="2.5"/>
+                <circle class="tr-fill" id="arith-timer-fill" cx="16" cy="16" r="14" 
+                        stroke-width="2.5" stroke-dasharray="88" stroke-dashoffset="0"/>
+              </svg>
+              <div class="drill-timer-num" id="arith-timer-num">60</div>
+            </div>
+          </div>
+          <div class="practice-mode-badge" id="arith-mode-badge">ARITHMETIC</div>
+          <div class="question-text" id="arith-question">—</div>
+          <input class="answer-field" id="arith-ans" type="text" placeholder="?" autocomplete="off"
+                 inputmode="numeric" pattern="[0-9]*"
+                 oninput="checkArith()" onkeydown="arithHintKey(event)"/>
+          <div class="hint-text" id="arith-hint">Press Space for hint</div>
+          <div class="practice-meta">
+            <div class="practice-stat-chip">Score <span id="arith-score">0</span></div>
+            <div class="practice-stat-chip">Correct <span id="arith-correct">0</span></div>
+            <div class="practice-stat-chip">Questions <span id="arith-total">0</span></div>
+          </div>
+          <div class="streak-bar" id="arith-streak-bar"></div>
+        </div>
+        <div class="practice-actions">
+          <button class="btn btn-ghost" onclick="arithBack()">← Back to Config</button>
+          <button class="btn btn-secondary" onclick="newArithQ()">Skip →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ ROOTS ══ -->
+    <div class="panel" id="page-roots">
+      <div id="roots-config-wrap">
+        <div class="config-panel">
+          <div class="config-panel-title">√ Roots Practice</div>
+          <div class="config-panel-sub">Progressive memorization — master a root 5 times to unlock a harder one.</div>
+          <div class="cfg-item" style="margin-bottom:20px;">
+            <label>Select Mode</label>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+              <div class="mode-card selected" data-root="square" onclick="selRootMode(this)" style="flex:1;min-width:150px;">
+                <div class="mode-card-icon">√</div>
+                <div class="mode-card-name">Square Roots</div>
+                <div class="mode-card-desc">Perfect squares 13²–50²</div>
+              </div>
+              <div class="mode-card" data-root="cube" onclick="selRootMode(this)" style="flex:1;min-width:150px;">
+                <div class="mode-card-icon">∛</div>
+                <div class="mode-card-name">Cube Roots</div>
+                <div class="mode-card-desc">Perfect cubes 3³–20³</div>
+              </div>
+            </div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-primary" onclick="startRoots()">▶ Start Practice</button>
+            <button class="btn btn-ghost" onclick="showPage('tbl-squares')">📗 View Square Table</button>
+            <button class="btn btn-ghost" onclick="showPage('tbl-cubes')">📙 View Cube Table</button>
+          </div>
+
+          <!-- Timed Challenge -->
+          <div class="timed-toggle-wrap">
+            <div class="timed-label">⏱ Timed Challenge</div>
+            <div class="timed-controls">
+              <select id="roots-time-select" class="table-search" style="max-width:80px;padding:4px 8px;font-size:0.75rem;">
+                <option value="30">30s</option>
+                <option value="60" selected>60s</option>
+                <option value="120">120s</option>
+              </select>
+              <label class="switch">
+                <input type="checkbox" id="roots-timed-toggle">
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="roots-practice-wrap" style="display:none;">
+        <div class="practice-card" id="roots-card">
+          <div class="drill-timer-wrap" id="roots-timer-display" style="display:none;">
+            <div class="drill-timer-ring">
+              <svg viewBox="0 0 32 32">
+                <circle class="tr-track" cx="16" cy="16" r="14" stroke-width="2.5"/>
+                <circle class="tr-fill" id="roots-timer-fill" cx="16" cy="16" r="14" 
+                        stroke-width="2.5" stroke-dasharray="88" stroke-dashoffset="0"/>
+              </svg>
+              <div class="drill-timer-num" id="roots-timer-num">60</div>
+            </div>
+          </div>
+          <div class="practice-mode-badge" id="roots-mode-badge">SQUARE ROOTS</div>
+          <div class="question-text" id="roots-question">—</div>
+          <input class="answer-field" id="roots-ans" type="text" placeholder="?" autocomplete="off"
+                 inputmode="numeric" pattern="[0-9]*"
+                 oninput="checkRoot()" onkeydown="rootHintKey(event)"/>
+          <div class="hint-text" id="roots-hint">Press Space for hint</div>
+          <div class="practice-meta">
+            <div class="practice-stat-chip">Score <span id="roots-score">0</span></div>
+            <div class="practice-stat-chip">Mastered <span id="roots-mastered">0</span></div>
+            <div class="practice-stat-chip">Pool Size <span id="roots-pool">8</span></div>
+          </div>
+          <div class="streak-bar" id="roots-streak-bar"></div>
+        </div>
+        <div style="margin-top:14px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 16px;">
+          <div style="font-family:var(--mono);font-size:0.65rem;color:var(--text-dim);margin-bottom:8px;letter-spacing:2px;">CURRENT POOL</div>
+          <div id="roots-pool-display" style="display:flex;gap:8px;flex-wrap:wrap;"></div>
+        </div>
+        <div class="practice-actions">
+          <button class="btn btn-ghost" onclick="rootsBack()">← Back to Config</button>
+          <button class="btn btn-secondary" onclick="newRootQ()">Skip →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ FRACTIONS ══ -->
+    <div class="panel" id="page-fractions">
+      <div id="frac-config-wrap">
+        <div class="config-panel">
+          <div class="config-panel-title">% Fractions ↔ Percentages</div>
+          <div class="config-panel-sub">Master fraction-percentage conversions in both directions.</div>
+          <div class="cfg-item" style="margin-bottom:20px;">
+            <label>Direction</label>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+              <div class="mode-card selected" data-frac="f2p" onclick="selFracMode(this)" style="flex:1;min-width:150px;">
+                <div class="mode-card-icon">→</div>
+                <div class="mode-card-name">Fraction → %</div>
+                <div class="mode-card-desc">e.g. 3/8 = ?%</div>
+              </div>
+              <div class="mode-card" data-frac="p2f" onclick="selFracMode(this)" style="flex:1;min-width:150px;">
+                <div class="mode-card-icon">←</div>
+                <div class="mode-card-name">% → Fraction</div>
+                <div class="mode-card-desc">e.g. 37.5% = ?</div>
+              </div>
+              <div class="mode-card" data-frac="mixed" onclick="selFracMode(this)" style="flex:1;min-width:150px;">
+                <div class="mode-card-icon">⇄</div>
+                <div class="mode-card-name">Both Directions</div>
+                <div class="mode-card-desc">Random mix</div>
+              </div>
+            </div>
+          </div>
+          <div class="btn-row">
+            <button class="btn btn-primary" onclick="startFrac()">▶ Start Practice</button>
+            <button class="btn btn-ghost" onclick="showPage('tbl-fractions')">📘 View Table</button>
+          </div>
+
+          <!-- Timed Challenge -->
+          <div class="timed-toggle-wrap">
+            <div class="timed-label">⏱ Timed Challenge</div>
+            <div class="timed-controls">
+              <select id="frac-time-select" class="table-search" style="max-width:80px;padding:4px 8px;font-size:0.75rem;">
+                <option value="30">30s</option>
+                <option value="60" selected>60s</option>
+                <option value="120">120s</option>
+              </select>
+              <label class="switch">
+                <input type="checkbox" id="frac-timed-toggle">
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="frac-practice-wrap" style="display:none;">
+        <div class="practice-card" id="frac-card">
+          <div class="drill-timer-wrap" id="frac-timer-display" style="display:none;">
+            <div class="drill-timer-ring">
+              <svg viewBox="0 0 32 32">
+                <circle class="tr-track" cx="16" cy="16" r="14" stroke-width="2.5"/>
+                <circle class="tr-fill" id="frac-timer-fill" cx="16" cy="16" r="14" 
+                        stroke-width="2.5" stroke-dasharray="88" stroke-dashoffset="0"/>
+              </svg>
+              <div class="drill-timer-num" id="frac-timer-num">60</div>
+            </div>
+          </div>
+          <div class="practice-mode-badge" id="frac-mode-badge">FRACTION → %</div>
+          <div class="question-text" id="frac-question">—</div>
+          <input class="answer-field" id="frac-ans" type="text" placeholder="?" autocomplete="off"
+                 inputmode="numeric" pattern="[0-9\.]*"
+                 oninput="checkFrac()" onkeydown="fracHintKey(event)"/>
+          <div class="hint-text" id="frac-hint">Press Space for hint</div>
+          <div class="practice-meta">
+            <div class="practice-stat-chip">Score <span id="frac-score">0</span></div>
+            <div class="practice-stat-chip">Correct <span id="frac-correct">0</span></div>
+            <div class="practice-stat-chip">Questions <span id="frac-total">0</span></div>
+          </div>
+          <div class="streak-bar" id="frac-streak-bar"></div>
+        </div>
+        <div class="practice-actions">
+          <button class="btn btn-ghost" onclick="fracBack()">← Back to Config</button>
+          <button class="btn btn-secondary" onclick="newFracQ()">Skip →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ MIXED ══ -->
+    <div class="panel" id="page-mixed">
+      <div id="mixed-config-wrap">
+        <div class="config-panel">
+          <div class="config-panel-title">🎲 Mixed Practice</div>
+          <div class="config-panel-sub">Random questions from all modes. The ultimate brain workout.</div>
+          
+          <!-- Timed Challenge -->
+          <div class="timed-toggle-wrap">
+            <div class="timed-label">⏱ Timed Challenge</div>
+            <div class="timed-controls">
+              <select id="mixed-time-select" class="table-search" style="max-width:80px;padding:4px 8px;font-size:0.75rem;">
+                <option value="30">30s</option>
+                <option value="60" selected>60s</option>
+                <option value="120">120s</option>
+              </select>
+              <label class="switch">
+                <input type="checkbox" id="mixed-timed-toggle">
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn btn-primary" onclick="startMixed()">▶ Start Mixed Practice</button>
+          </div>
+        </div>
+      </div>
+      <div id="mixed-practice-wrap" style="display:none;">
+        <div class="practice-card" id="mixed-card">
+          <div class="drill-timer-wrap" id="mixed-timer-display" style="display:none;">
+            <div class="drill-timer-ring">
+              <svg viewBox="0 0 32 32">
+                <circle class="tr-track" cx="16" cy="16" r="14" stroke-width="2.5"/>
+                <circle class="tr-fill" id="mixed-timer-fill" cx="16" cy="16" r="14" 
+                        stroke-width="2.5" stroke-dasharray="88" stroke-dashoffset="0"/>
+              </svg>
+              <div class="drill-timer-num" id="mixed-timer-num">60</div>
+            </div>
+          </div>
+          <div class="practice-mode-badge" id="mixed-mode-badge">MIXED</div>
+          <div class="question-text" id="mixed-question">—</div>
+          <input class="answer-field" id="mixed-ans" type="text" placeholder="?" autocomplete="off"
+                 inputmode="numeric" pattern="[0-9]*"
+                 oninput="checkMixed()" onkeydown="mixedHintKey(event)"/>
+          <div class="hint-text" id="mixed-hint">Press Space for hint</div>
+          <div class="practice-meta">
+            <div class="practice-stat-chip">Score <span id="mixed-score">0</span></div>
+            <div class="practice-stat-chip">Correct <span id="mixed-correct">0</span></div>
+            <div class="practice-stat-chip">Questions <span id="mixed-total">0</span></div>
+          </div>
+          <div class="streak-bar" id="mixed-streak-bar"></div>
+        </div>
+        <div class="practice-actions">
+          <button class="btn btn-ghost" onclick="mixedBack()">← Stop</button>
+          <button class="btn btn-secondary" onclick="newMixedQ()">Skip →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ TABLES MASTERY ══ -->
+    <div class="panel" id="page-tables">
+
+      <!-- Overview -->
+      <div id="tbl-overview">
+        <div class="config-panel">
+          <div class="config-panel-title">📊 Tables Mastery — Learn ×1 to ×25</div>
+          <div class="config-panel-sub">Proven Leitner spaced-repetition: Study a table, then quiz yourself. Each fact must be recalled correctly <strong>3 times</strong> to be mastered. Wrong answers reset to zero. Tables are ordered from easiest patterns to hardest.</div>
+
+          <div class="tbl-progress">
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <span style="font-family:var(--mono);font-size:0.72rem;color:var(--text-dim);">OVERALL PROGRESS</span>
+              <span style="font-family:var(--mono);font-size:0.72rem;color:var(--accent);" id="tbl-progress-text">0/25 mastered</span>
+            </div>
+            <div class="tbl-progress-bar"><div class="tbl-progress-fill" id="tbl-progress-fill" style="width:0%"></div></div>
+          </div>
+
+          <div class="tables-grid" id="tables-grid"></div>
+
+          <div class="btn-row" style="margin-top:20px;">
+            <button class="btn btn-primary" onclick="tblSmartStart()">▶ Smart Start (Next Table)</button>
+            <button class="btn btn-ghost" onclick="tblResetProgress()">↺ Reset Progress</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Study Phase -->
+      <div id="tbl-study" style="display:none;">
+        <div class="config-panel" style="padding:28px;">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px;">
+            <div style="font-size:2.2rem;">📖</div>
+            <div>
+              <div style="font-size:1.2rem;font-weight:700;">Study the ×<span id="tbl-study-num">1</span> Table</div>
+              <div style="font-size:0.82rem;color:var(--text-dim);">Read each fact carefully, then test yourself.</div>
+            </div>
+          </div>
+          <div class="tbl-tip-box" id="tbl-study-tip"></div>
+          <div class="tbl-fact-grid" id="tbl-study-facts"></div>
+          <div class="btn-row">
+            <button class="btn btn-primary" onclick="tblStartQuiz()">✓ I Know It — Quiz Me!</button>
+            <button class="btn btn-ghost" onclick="tblBackToOverview()">← Back</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quiz Phase -->
+      <div id="tbl-quiz" style="display:none;">
+        <div class="practice-card" id="tbl-quiz-card">
+          <div class="practice-mode-badge" id="tbl-quiz-badge">× 1 TABLE</div>
+          <div style="margin-bottom:16px;"><div class="prog-wrap"><div class="prog-fill" id="tbl-quiz-prog" style="width:0%"></div></div></div>
+          <div class="question-text" id="tbl-quiz-question">—</div>
+          <input class="answer-field" id="tbl-quiz-ans" type="text" placeholder="?" autocomplete="off"
+                 inputmode="numeric" pattern="[0-9]*"
+                 oninput="tblAutoCheck()" onkeydown="tblQuizKeydown(event)"/>
+          <div class="hint-text" id="tbl-hint">Press Space for hint</div>
+          <div class="tbl-feedback" id="tbl-quiz-feedback"></div>
+          <div class="practice-meta">
+            <div class="practice-stat-chip">Mastered <span id="tbl-quiz-mastered">0</span>/10</div>
+            <div class="practice-stat-chip">Remaining <span id="tbl-quiz-remaining">10</span></div>
+            <div class="practice-stat-chip">Score <span id="tbl-quiz-score">0</span></div>
+          </div>
+          <div class="section-label" style="margin-top:24px;">Leitner Boxes</div>
+          <div class="leitner-boxes" id="tbl-leitner-boxes"></div>
+        </div>
+        <div class="practice-actions">
+          <button class="btn btn-ghost" onclick="tblBackToOverview()">← Quit</button>
+          <button class="btn btn-secondary" onclick="tblStartStudy(tblState.currentTable)">📖 Review Table</button>
+        </div>
+      </div>
+
+      <!-- Complete -->
+      <div id="tbl-complete" style="display:none;">
+        <div class="config-panel" style="padding:28px;">
+          <div class="result-hero">
+            <div style="font-size:4rem;margin-bottom:12px;">🏆</div>
+            <div class="result-pct">×<span id="tbl-complete-num">?</span></div>
+            <div class="result-lbl">TABLE MASTERED</div>
+            <div class="result-msg" id="tbl-complete-msg"></div>
+          </div>
+          <div class="res-grid">
+            <div class="res-stat"><div class="res-stat-val" id="tbl-complete-count">0</div><div class="res-stat-lbl">Tables Done</div></div>
+            <div class="res-stat"><div class="res-stat-val" id="tbl-complete-remaining">25</div><div class="res-stat-lbl">Remaining</div></div>
+            <div class="res-stat"><div class="res-stat-val" id="tbl-complete-score">0</div><div class="res-stat-lbl">Score</div></div>
+          </div>
+          <div class="btn-row" style="margin-top:20px;">
+            <button class="btn btn-primary" onclick="tblSmartStart()">▶ Next Table</button>
+            <button class="btn btn-secondary" onclick="tblBackToOverview()">📊 Overview</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ══ HISTORY ══ -->
+    <div class="panel" id="page-history">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
+        <div style="flex:1;" class="section-label">Session History</div>
+        <button class="btn btn-ghost" style="padding:8px 14px;font-size:0.8rem;" onclick="clearHistory()">🗑 Clear</button>
+      </div>
+      <div id="history-list-full"></div>
+    </div>
+
+    <!-- ══ TABLE: FRACTIONS ══ -->
+    <div class="panel" id="page-tbl-fractions">
+      <div class="section-label" style="margin-bottom:16px;">Fraction → Percentage Reference</div>
+      <div class="table-wrap">
+        <div class="table-header">
+          <input class="table-search" id="frac-search" placeholder="Search fraction or %..." oninput="filterFracTable()"/>
+          <span style="font-family:var(--mono);font-size:0.72rem;color:var(--text-dim);margin-left:auto;" id="frac-count"></span>
+        </div>
+        <div class="table-scroll">
+          <table id="frac-table">
+            <thead><tr><th>Fraction</th><th>=</th><th>Percentage</th></tr></thead>
+            <tbody id="frac-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ TABLE: SQUARES ══ -->
+    <div class="panel" id="page-tbl-squares">
+      <div class="section-label" style="margin-bottom:16px;">Perfect Squares Reference (1–50)</div>
+      <div class="table-wrap">
+        <div class="table-header">
+          <input class="table-search" id="sq-search" placeholder="Search..." oninput="filterSqTable()"/>
+          <span style="font-family:var(--mono);font-size:0.72rem;color:var(--text-dim);margin-left:auto;" id="sq-count"></span>
+        </div>
+        <div class="table-scroll">
+          <table id="sq-table">
+            <thead><tr><th>n</th><th>n²</th><th>√(n²)</th></tr></thead>
+            <tbody id="sq-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ TABLE: CUBES ══ -->
+    <div class="panel" id="page-tbl-cubes">
+      <div class="section-label" style="margin-bottom:16px;">Perfect Cubes Reference (1–20)</div>
+      <div class="table-wrap">
+        <div class="table-header">
+          <input class="table-search" id="cu-search" placeholder="Search..." oninput="filterCuTable()"/>
+          <span style="font-family:var(--mono);font-size:0.72rem;color:var(--text-dim);margin-left:auto;" id="cu-count"></span>
+        </div>
+        <div class="table-scroll">
+          <table id="cu-table">
+            <thead><tr><th>n</th><th>n³</th><th>∛(n³)</th></tr></thead>
+            <tbody id="cu-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+</div><!-- /app -->
+
+<!-- Bottom Navigation for Mobile -->
+<div class="bottom-nav">
+  <div class="bottom-nav-inner">
+    <div class="b-nav-item active" onclick="showPage('dashboard')" id="bnav-dashboard">
+      <span class="b-nav-icon">⊞</span>
+      <span class="b-nav-label">Dash</span>
+    </div>
+    <div class="b-nav-item" onclick="showPage('arithmetic')" id="bnav-arithmetic">
+      <span class="b-nav-icon">🔢</span>
+      <span class="b-nav-label">Math</span>
+    </div>
+    <div class="b-nav-item" onclick="showPage('tables')" id="bnav-tables">
+      <span class="b-nav-icon">📊</span>
+      <span class="b-nav-label">Tables</span>
+    </div>
+    <div class="b-nav-item" onclick="showPage('history')" id="bnav-history">
+      <span class="b-nav-icon">📋</span>
+      <span class="b-nav-label">Logs</span>
+    </div>
+    <div class="b-nav-item" onclick="toggleSidebar()">
+      <span class="b-nav-icon">☰</span>
+      <span class="b-nav-label">More</span>
+    </div>
+  </div>
+</div>
+
+<div class="flash-overlay" id="flashOverlay">
+  <div class="flash-emoji" id="flashEmoji"></div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════════════
+const excludeSquares = new Set([1,2,3,4,5,6,7,8,9,10,11,12,20,30,40,50]);
+const excludeCubes   = new Set([1,2]);
+
+const PERFECT_SQUARES = Array.from({length:50},(_,i)=>i+1).filter(i=>!excludeSquares.has(i)).map(i=>({n:i,val:i*i}));
+const PERFECT_CUBES   = Array.from({length:20},(_,i)=>i+1).filter(i=>!excludeCubes.has(i)).map(i=>({n:i,val:i**3}));
+
+const FRACTIONS_TO_PERCENT = {
+  "2/5":"40%","3/5":"60%","4/5":"80%","6/5":"120%","7/5":"140%","8/5":"160%","11/5":"220%",
+  "1/6":"16.66%","5/6":"83.33%","1/7":"14.28%",
+  "1/8":"12.5%","3/8":"37.5%","5/8":"62.5%","7/8":"87.5%",
+  "1/9":"11.11%","2/9":"22.22%","4/9":"44.44%","5/9":"55.55%","7/9":"77.77%","8/9":"88.88%",
+  "1/11":"9.09%","2/11":"18.18%","3/11":"27.27%","4/11":"36.36%","5/11":"45.45%","6/11":"54.54%","7/11":"63.63%","8/11":"72.72%","9/11":"81.81%",
+  "1/12":"8.33%","5/12":"41.66%","7/12":"58.33%","11/12":"91.66%",
+  "1/13":"7.69%","2/13":"15.38%","1/14":"7.14%","3/14":"21.42%","5/14":"35.71%",
+  "1/15":"6.66%","2/15":"13.33%","4/15":"26.66%","7/15":"46.66%","8/15":"53.33%","14/15":"93.33%",
+  "1/16":"6.25%","3/16":"18.75%","5/16":"31.25%","7/16":"43.75%","9/16":"56.25%","15/16":"93.75%",
+  "1/17":"5.88%","1/18":"5.55%","1/19":"5.26%","1/24":"4.166%",
+  "1/25":"4%","2/25":"8%","3/25":"12%","4/25":"16%","6/25":"24%","7/25":"28%","8/25":"32%","9/25":"36%",
+  "11/25":"44%","12/25":"48%","13/25":"52%","14/25":"56%","16/25":"64%","17/25":"68%",
+  "18/25":"72%","19/25":"76%","21/25":"84%","22/25":"88%",
+  "1/30":"3.33%","1/40":"2.5%","3/40":"7.5%","7/40":"17.5%","9/40":"22.5%","11/40":"27.5%",
+  "13/40":"32.5%","19/40":"47.5%","21/40":"52.5%","23/40":"57.5%"
+};
+const PERCENT_TO_FRACTIONS = Object.fromEntries(Object.entries(FRACTIONS_TO_PERCENT).map(([k,v])=>[v,k]));
+
+// ═══════════════════════════════════════════════════════
+// GLOBAL STATE
+// ═══════════════════════════════════════════════════════
+let history = JSON.parse(localStorage.getItem('nc_history')||'[]');
+let streak  = parseInt(localStorage.getItem('nc_streak')||'0');
+let globalScore = parseInt(localStorage.getItem('nc_gscore')||'0');
+
+function updateGlobalScore(points) {
+  globalScore += points;
+  localStorage.setItem('nc_gscore', globalScore);
+}
+
+// Memory config
+const memCfg = { sets:3, nums:2, time:30, ops:['+'], diff:'easy' };
+const DIFF_MAX = { easy:9, medium:50, hard:99 };
+
+// Memory session
+let memSession = { sets:[], peeked:false, startTime:null, timerInt:null, timeLeft:30 };
+
+// Arithmetic
+let arithMode = 'Addition';
+let arithDigits = { size:2, first:1, second:1, num:2, den:1 };
+let arithState = { answer:null, hint:'', score:0, correct:0, total:0, streak:[] };
+
+// Roots
+let rootMode = 'square';
+let rootState = {
+  pool:[], correctCount:{}, mastered:0, score:0, total:0,
+  answer:null, hint:'', streak:[], curNum:null
+};
+
+// Fractions
+let fracMode = 'f2p';
+let fracState = { answer:null, hint:'', score:0, correct:0, total:0, streak:[], isF2P:true };
+
+// Mixed
+let mixedState = { answer:null, hint:'', score:0, correct:0, total:0, streak:[], subMode:'' };
+
+// Global Drill Timer
+let drillTimer = { interval: null, timeLeft: 0, total: 0, active: false, mode: '' };
+
+// ═══════════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════════
+const PAGE_META = {
+  dashboard:     { title:'Dashboard',               sub:'Your training hub' },
+  history:       { title:'Session History',         sub:'All past sessions' },
+  memory:        { title:'Memory Calculation',      sub:'Memorize → Recall mode' },
+  arithmetic:    { title:'Arithmetic Drill',        sub:'Speed calculation practice' },
+  roots:         { title:'Roots Practice',          sub:'Squares & cubes' },
+  fractions:     { title:'Fractions ↔ Percentages', sub:'Conversion mastery' },
+  mixed:         { title:'Mixed Practice',          sub:'Everything at once' },
+  'tbl-fractions':{ title:'Fraction → % Table',    sub:'Reference table' },
+  'tbl-squares': { title:'Perfect Squares Table',  sub:'1² to 50²' },
+  'tbl-cubes':   { title:'Perfect Cubes Table',    sub:'1³ to 20³' },
+  'tables':      { title:'Tables Mastery',         sub:'Learn ×1 to ×25 with spaced repetition' },
+};
+
+function showPage(id) {
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  
+  // Update sidebar nav
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  const nav = document.getElementById('nav-'+id);
+  if(nav) nav.classList.add('active');
+  
+  // Update bottom nav
+  document.querySelectorAll('.b-nav-item').forEach(n=>n.classList.remove('active'));
+  const bnav = document.getElementById('bnav-'+id);
+  if(bnav) bnav.classList.add('active');
+
+  const meta = PAGE_META[id]||{title:id,sub:''};
+  document.getElementById('topbar-title').textContent = meta.title;
+  document.getElementById('topbar-sub').textContent   = meta.sub;
+  if(id==='dashboard')      renderDashHistory();
+  if(id==='history')        renderFullHistory();
+  if(id==='tbl-fractions')  buildFracTable();
+  if(id==='tbl-squares')    buildSqTable();
+  if(id==='tbl-cubes')      buildCuTable();
+  if(id==='tables')         tblRenderOverview();
+  closeSidebar();
+}
+
+function toggleSidebar() {
+  const sb = document.getElementById('sidebar');
+  const ol = document.getElementById('sidebarOverlay');
+  const ham = document.querySelector('.hamburger');
+  const isOpen = sb.classList.contains('open');
+  if (isOpen) {
+    sb.classList.remove('open');
+    ol.classList.remove('show');
+    ham.classList.remove('open');
+  } else {
+    sb.classList.add('open');
+    ol.classList.add('show');
+    ham.classList.add('open');
+  }
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebarOverlay').classList.remove('show');
+  document.querySelector('.hamburger').classList.remove('open');
+}
+
+// ═══════════════════════════════════════════════════════
+// STATS
+// ═══════════════════════════════════════════════════════
+function updateStats() {
+  const sessions = history.length;
+  const scores = history.map(h=>h.score);
+  const best = scores.length ? Math.max(...scores)+'%' : '—';
+  ['top-sessions','sb-sessions'].forEach(id=>{ const e=document.getElementById(id); if(e) e.textContent=sessions; });
+  const e1=document.getElementById('top-best'); if(e1) e1.textContent=best;
+  const e2=document.getElementById('top-streak'); if(e2) e2.textContent=streak+'🔥';
+  const e3=document.getElementById('sb-streak'); if(e3) e3.textContent=streak+'🔥';
+  const e4=document.getElementById('top-xp'); if(e4) e4.textContent=globalScore.toLocaleString();
+}
+
+function saveHistory(entry) {
+  // Use a more descriptive date
+  const now = new Date();
+  entry.date = now.toLocaleDateString([], {month:'short', day:'numeric'}) + ' ' + now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+  
+  history.unshift(entry);
+  if(history.length>100) history.pop();
+  localStorage.setItem('nc_history', JSON.stringify(history));
+}
+
+function clearHistory() {
+  if(!confirm('Clear all history?')) return;
+  history=[]; streak=0;
+  localStorage.removeItem('nc_history');
+  localStorage.removeItem('nc_streak');
+  updateStats();
+  renderFullHistory();
+  renderDashHistory();
+}
+
+// ═══════════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════════
+function rnd(max,min=1){return Math.floor(Math.random()*(max-min+1))+min;}
+function flash(emoji){
+  const o=document.getElementById('flashOverlay'),t=document.getElementById('flashEmoji');
+  t.textContent=emoji; o.classList.add('show');
+  setTimeout(()=>o.classList.remove('show'),700);
+}
+function flashCard(id){
+  const c=document.getElementById(id);
+  c.classList.remove('flash-correct');
+  void c.offsetWidth;
+  c.classList.add('flash-correct');
+}
+
+function buildStreakBar(id, streakArr, max=10) {
+  const bar = document.getElementById(id);
+  if(!bar) return;
+  bar.innerHTML = Array.from({length:max},(_,i)=>`<div class="streak-dot ${i<streakArr.length?'lit':''}"></div>`).join('');
+}
+
+// ── DRILL TIMER LOGIC ──
+function startDrillTimer(mode, duration, onEnd) {
+  stopDrillTimer();
+  drillTimer.active = true;
+  drillTimer.mode = mode;
+  drillTimer.total = duration;
+  drillTimer.timeLeft = duration;
+
+  const display = document.getElementById(mode + '-timer-display');
+  const ring = document.getElementById(mode + '-timer-fill');
+  const num = document.getElementById(mode + '-timer-num');
+  
+  if(display) display.style.display = 'flex';
+  if(num) num.textContent = duration;
+  if(ring) {
+    ring.style.strokeDashoffset = 0;
+    ring.style.stroke = 'var(--accent)';
+  }
+
+  drillTimer.interval = setInterval(() => {
+    drillTimer.timeLeft--;
+    if(num) num.textContent = drillTimer.timeLeft;
+    
+    if(ring) {
+      const pct = drillTimer.timeLeft / drillTimer.total;
+      ring.style.strokeDashoffset = 88 * (1 - pct);
+      if(pct < 0.25) ring.style.stroke = 'var(--accent2)';
+      else if(pct < 0.5) ring.style.stroke = 'var(--accent3)';
+    }
+
+    if(drillTimer.timeLeft <= 0) {
+      stopDrillTimer();
+      if(onEnd) onEnd();
+    }
+  }, 1000);
+}
+
+function stopDrillTimer() {
+  if(drillTimer.interval) clearInterval(drillTimer.interval);
+  drillTimer.interval = null;
+  drillTimer.active = false;
+  const display = document.getElementById(drillTimer.mode + '-timer-display');
+  if(display) display.style.display = 'none';
+}
+
+function finishTimedSession(mode, state) {
+  stopDrillTimer();
+  const finalTotal = state.answer ? state.total - 1 : state.total;
+  const score = finalTotal > 0 ? Math.round((state.correct / finalTotal) * 100) : 0;
+  
+  // Save to history
+  saveHistory({
+    score: score,
+    correct: state.correct,
+    total: finalTotal,
+    time: drillTimer.total,
+    mode: mode + ' (Timed)',
+    diff: drillTimer.total + 's'
+  });
+  updateStats();
+
+  // Show summary overlay
+  const overlay = document.createElement('div');
+  overlay.className = 'flash-overlay show';
+  overlay.style.pointerEvents = 'auto';
+  overlay.style.background = 'rgba(8,8,16,0.98)';
+  
+  overlay.innerHTML = `
+    <div class="config-panel" style="width:90%; max-width:500px; text-align:center; animation: fadeIn 0.4s ease;">
+      <div class="result-hero" style="padding: 10px 0;">
+        <div style="font-size:3rem; margin-bottom:10px;">⏱</div>
+        <div class="result-pct">${score}%</div>
+        <div class="result-lbl">ACCURACY</div>
+        <div class="result-msg">${finalTotal} Problems Solved</div>
+      </div>
+      <div class="res-grid" style="margin: 15px 0;">
+        <div class="res-stat"><div class="res-stat-val">${state.correct}</div><div class="res-stat-lbl">Correct</div></div>
+        <div class="res-stat"><div class="res-stat-val">${state.score}</div><div class="res-stat-lbl">Points</div></div>
+        <div class="res-stat"><div class="res-stat-val">${drillTimer.total}s</div><div class="res-stat-lbl">Time</div></div>
+      </div>
+      <div class="btn-row" style="justify-content:center;">
+        <button class="btn btn-primary" onclick="this.closest('.flash-overlay').remove(); window[mode.toLowerCase() + 'Back']();">✓ Done</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+  flash(score >= 80 ? '🌟' : '💪');
+}
+
+// ═══════════════════════════════════════════════════════
+// STEPPER (memory config)
+// ═══════════════════════════════════════════════════════
+const stepperCfg = {
+  memSets:  {cfg:'sets',  min:1,  max:10, step:1,  target:memCfg},
+  memNums:  {cfg:'nums',  min:2,  max:5,  step:1,  target:memCfg},
+  memTime:  {cfg:'time',  min:1,  max:300,step:1,  target:memCfg},
+};
+
+function adj(key, delta) {
+  const c = stepperCfg[key];
+  c.target[c.cfg] = Math.max(c.min, Math.min(c.max, c.target[c.cfg] + delta * c.step));
+  document.getElementById(key+'-disp').value = c.target[c.cfg];
+}
+
+function manualAdj(key) {
+  const c = stepperCfg[key];
+  const el = document.getElementById(key+'-disp');
+  let val = parseInt(el.value);
+  if(isNaN(val)) return;
+  // Keep within bounds
+  if(val > c.max) val = c.max;
+  if(val < c.min) val = c.min;
+  c.target[c.cfg] = val;
+}
+
+function toggleMemOp(el) {
+  const op=el.dataset.op;
+  if(el.classList.contains('selected')){
+    if(memCfg.ops.length===1) return;
+    memCfg.ops=memCfg.ops.filter(o=>o!==op); el.classList.remove('selected');
+  } else { memCfg.ops.push(op); el.classList.add('selected'); }
+}
+
+function setMemDiff(d,el){
+  memCfg.diff=d;
+  document.querySelectorAll('.diff-btn').forEach(b=>{b.classList.remove('sel-easy','sel-medium','sel-hard');});
+  el.classList.add('sel-'+d);
+}
+
+// ═══════════════════════════════════════════════════════
+// MEMORY MODE
+// ═══════════════════════════════════════════════════════
+function genMemSets(){
+  const max=DIFF_MAX[memCfg.diff];
+  return Array.from({length:memCfg.sets},()=>{
+    const nums=Array.from({length:memCfg.nums},()=>rnd(max));
+    const ops=Array.from({length:memCfg.nums-1},()=>memCfg.ops[Math.floor(Math.random()*memCfg.ops.length)]);
+    let result=nums[0];
+    ops.forEach((op,i)=>{
+      if(op==='+') result+=nums[i+1];
+      else if(op==='-') result-=nums[i+1];
+      else result*=nums[i+1];
+    });
+    return {nums,ops,result};
+  });
+}
+
+function memShow(wrap,id){
+  ['mem-config-wrap','mem-practice-wrap','mem-answer-wrap','mem-result-wrap'].forEach(w=>{
+    document.getElementById(w).style.display=w===wrap?'block':'none';
+  });
+}
+
+function memCancel(){ memShow('mem-config-wrap'); clearInterval(memSession.timerInt); }
+function memReset() { memShow('mem-config-wrap'); }
+
+function startMemSession(){
+  memSession.sets=genMemSets();
+  memSession.peeked=false;
+  memSession.startTime=Date.now();
+  memSession.timeLeft=memCfg.time;
+  document.getElementById('peek-btn').disabled=false;
+  document.getElementById('peek-btn').textContent='👁 Peek (−10pts)';
+
+  // render sets
+  const container=document.getElementById('mem-sets-container');
+  container.innerHTML='';
+  memSession.sets.forEach((s,i)=>{
+    const eqHtml=s.nums.map((n,ni)=>
+      `<span class="n">${n}</span>${ni<s.ops.length?`<span class="o">${s.ops[ni]}</span>`:''}`
+    ).join('');
+    container.innerHTML+=`
+      <div class="mem-set-card" style="animation-delay:${i*0.07}s">
+        <span class="mem-set-idx">SET ${i+1}</span>
+        <div class="mem-eq">${eqHtml}<span class="o">=</span><span style="color:var(--text-dim)">?</span></div>
+      </div>`;
+  });
+
+  memShow('mem-practice-wrap');
+  startMemTimer();
+}
+
+function startMemTimer(){
+  const total=memCfg.time;
+  const circ=176;
+  const ring=document.getElementById('tr-fill');
+  const num=document.getElementById('tr-num');
+  const desc=document.getElementById('tr-desc');
+  const prog=document.getElementById('mem-prog');
+  clearInterval(memSession.timerInt);
+  memSession.timeLeft=total;
+
+  function tick(){
+    const pct=memSession.timeLeft/total;
+    ring.style.strokeDashoffset=circ*(1-pct);
+    prog.style.width=(pct*100)+'%';
+    num.textContent=memSession.timeLeft;
+    ring.style.stroke=pct>0.5?'var(--accent)':pct>0.25?'var(--accent3)':'var(--accent2)';
+    if(memSession.timeLeft<=0){
+      clearInterval(memSession.timerInt);
+      desc.textContent="Time's up! Now answer…";
+      setTimeout(memGoAnswer,600); return;
+    }
+    memSession.timeLeft--;
+  }
+  tick();
+  memSession.timerInt=setInterval(tick,1000);
+}
+
+function memGoAnswer(){
+  clearInterval(memSession.timerInt);
+  const rows=document.getElementById('mem-ans-rows');
+  rows.innerHTML='';
+  memSession.sets.forEach((_,i)=>{
+    rows.innerHTML+=`
+      <div class="ans-row" id="ar${i}">
+        <span class="ans-row-lbl">Set ${i+1}</span>
+        <span class="ans-row-hidden">[ hidden — recall from memory ]</span>
+        <input class="ans-inp" id="ai${i}" type="number" placeholder="?"
+               onkeydown="memEnter(event,${i})"/>
+      </div>`;
+  });
+  memShow('mem-answer-wrap');
+  document.getElementById('ai0')?.focus();
+}
+
+function memEnter(e,i){
+  if(e.key==='Enter'){ const n=document.getElementById(`ai${i+1}`); if(n) n.focus(); else memSubmit(); }
+}
+
+function memPeek(){
+  memSession.peeked=true;
+  const btn=document.getElementById('peek-btn');
+  btn.disabled=true; btn.textContent='👁 Peeked (−10pts)';
+  const ol=document.createElement('div');
+  ol.style.cssText='position:fixed;inset:0;background:rgba(8,8,16,0.95);z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:40px;';
+  memSession.sets.forEach((s,i)=>{
+    const eq=s.nums.map((n,ni)=>`<span style="color:var(--accent4)">${n}</span>${ni<s.ops.length?` <span style="color:var(--accent3)">${s.ops[ni]}</span> `:''}`).join('');
+    ol.innerHTML+=`<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 28px;font-family:var(--mono);font-size:1.1rem;">
+      <span style="color:var(--text-dim);font-size:0.65rem;margin-right:14px;">SET ${i+1}</span>${eq}
+    </div>`;
+  });
+  const cb=document.createElement('button');
+  cb.textContent='✕ Close'; cb.className='btn btn-secondary'; cb.style.marginTop='16px';
+  cb.onclick=()=>document.body.removeChild(ol);
+  ol.appendChild(cb);
+  document.body.appendChild(ol);
+}
+
+function memSubmit(){
+  let correct=0;
+  const elapsed=Math.round((Date.now()-memSession.startTime)/1000);
+  memSession.sets.forEach((s,i)=>{
+    const inp=document.getElementById(`ai${i}`);
+    const row=document.getElementById(`ar${i}`);
+    const userVal=parseInt(inp.value);
+    const ok=userVal===s.result;
+    if(ok) correct++;
+    row.classList.add(ok?'correct':'wrong');
+    inp.disabled=true;
+    const badge=document.createElement('span');
+    badge.className='ans-badge '+(ok?'correct':'wrong');
+    badge.textContent=ok?'✓':'✗ '+s.result;
+    row.appendChild(badge);
+  });
+
+  let score=Math.round((correct/memSession.sets.length)*100);
+  if(memSession.peeked) score=Math.max(0,score-10);
+  if(score===100) streak++; else streak=0;
+  localStorage.setItem('nc_streak',streak);
+
+  saveHistory({score,correct,total:memSession.sets.length,time:elapsed,mode:'Memory',diff:memCfg.diff});
+  updateGlobalScore(correct * 10);
+  updateStats();
+
+  // build review
+  const review=document.getElementById('mem-review');
+  review.innerHTML='<div class="divider"></div><div style="font-family:var(--mono);font-size:0.62rem;color:var(--text-dim);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;">Review</div>';
+  memSession.sets.forEach((s,i)=>{
+    const inp=document.getElementById(`ai${i}`);
+    const userVal=parseInt(inp?.value);
+    const ok=userVal===s.result;
+    const eqStr=s.nums.map((n,ni)=>n+(ni<s.ops.length?' '+s.ops[ni]+' ':'')).join('')+'= ';
+    review.innerHTML+=`<div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border);font-family:var(--mono);font-size:0.82rem;">
+      <span style="color:var(--text-dim);min-width:46px;">Set ${i+1}</span>
+      <span style="flex:1;color:var(--text-mid);">${eqStr}<strong style="color:var(--accent)">${s.result}</strong></span>
+      <span style="color:${ok?'var(--success)':'var(--danger)'};">${ok?'✓ Correct':'✗ You: '+(isNaN(userVal)?'—':userVal)}</span>
+    </div>`;
+  });
+
+  document.getElementById('mem-res-pct').textContent=score+'%';
+  document.getElementById('mem-res-correct').textContent=correct;
+  document.getElementById('mem-res-total').textContent=memSession.sets.length;
+  document.getElementById('mem-res-time').textContent=elapsed+'s';
+  const msgs=['Keep Training! 💪','Good Effort! 👍','Well Done! 🌟','Excellent! 🎯','Perfect Memory! 🏆'];
+  document.getElementById('mem-res-msg').textContent=msgs[Math.min(4,Math.floor(score/20))];
+  flash(score===100?'🏆':score>=80?'🌟':'💪');
+
+  setTimeout(()=>memShow('mem-result-wrap'),500);
+}
+
+// ═══════════════════════════════════════════════════════
+// ARITHMETIC MODE
+// ═══════════════════════════════════════════════════════
+function selArithMode(el){
+  document.querySelectorAll('#arith-mode-cards .mode-card').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  arithMode=el.dataset.mode;
+  renderArithSubConfig();
+}
+
+function renderArithSubConfig(){
+  const wrap=document.getElementById('arith-sub-config');
+  if(['Addition','Subtraction'].includes(arithMode)){
+    wrap.innerHTML=`<div class="config-grid">
+      <div class="cfg-item"><label>1st Number Digits</label>
+        <div class="diff-row">${[1,2,3,4].map(d=>`<div class="diff-btn ${d===arithDigits.first?'sel-easy':''}" onclick="setArithFirst(${d},this)">${d}d</div>`).join('')}</div>
+      </div>
+      <div class="cfg-item"><label>2nd Number Digits</label>
+        <div class="diff-row">${[1,2,3,4].map(d=>`<div class="diff-btn ${d===arithDigits.second?'sel-easy':''}" onclick="setArithSecond(${d},this)">${d}d</div>`).join('')}</div>
+      </div>
+    </div>`;
+  } else if(arithMode==='Multiplication'){
+    wrap.innerHTML=`<div class="config-grid"><div class="cfg-item"><label>1st Number Digits</label>
+      <div class="diff-row">${[1,2,3].map(d=>`<div class="diff-btn ${d===arithDigits.first?'sel-easy':''}" onclick="setArithFirst(${d},this)">${d}d</div>`).join('')}</div>
+    </div><div class="cfg-item"><label>2nd Number Digits</label>
+      <div class="diff-row">${[1,2,3].map(d=>`<div class="diff-btn ${d===arithDigits.second?'sel-easy':''}" onclick="setArithSecond(${d},this)">${d}d</div>`).join('')}</div>
+    </div></div>`;
+  } else if(arithMode==='Division'){
+    wrap.innerHTML=`<div class="config-grid"><div class="cfg-item"><label>Numerator Digits</label>
+      <div class="diff-row">${[1,2,3,4].map(d=>`<div class="diff-btn ${d===arithDigits.num?'sel-easy':''}" onclick="setArithNum(${d},this)">${d}d</div>`).join('')}</div>
+    </div><div class="cfg-item"><label>Denominator Digits</label>
+      <div class="diff-row">${[1,2,3].map(d=>`<div class="diff-btn ${d===arithDigits.den?'sel-easy':''}" onclick="setArithDen(${d},this)">${d}d</div>`).join('')}</div>
+    </div></div>`;
+  } else { wrap.innerHTML=''; }
+}
+
+function setArithDigit(d,el){ arithDigits.size=d; document.querySelectorAll('#arith-sub-config .diff-btn').forEach(b=>b.classList.remove('sel-easy')); el.classList.add('sel-easy'); }
+function setArithFirst(d,el){ arithDigits.first=d; el.closest('.cfg-item').querySelectorAll('.diff-btn').forEach(b=>b.classList.remove('sel-easy')); el.classList.add('sel-easy'); }
+function setArithSecond(d,el){ arithDigits.second=d; el.closest('.cfg-item').querySelectorAll('.diff-btn').forEach(b=>b.classList.remove('sel-easy')); el.classList.add('sel-easy'); }
+function setArithNum(d,el){ arithDigits.num=d; el.closest('.cfg-item').querySelectorAll('.diff-btn').forEach(b=>b.classList.remove('sel-easy')); el.classList.add('sel-easy'); }
+function setArithDen(d,el){ arithDigits.den=d; el.closest('.cfg-item').querySelectorAll('.diff-btn').forEach(b=>b.classList.remove('sel-easy')); el.classList.add('sel-easy'); }
+
+function startArith(){
+  arithState={answer:null,hint:'',score:0,correct:0,total:0,streak:[]};
+  document.getElementById('arith-config-wrap').style.display='none';
+  document.getElementById('arith-practice-wrap').style.display='block';
+  document.getElementById('arith-mode-badge').textContent=arithMode.toUpperCase();
+  
+  if(document.getElementById('arith-timed-toggle').checked) {
+    const duration = parseInt(document.getElementById('arith-time-select').value);
+    startDrillTimer('arith', duration, () => finishTimedSession('Arith', arithState));
+  }
+  
+  updateArithStats();
+  newArithQ();
+}
+
+function arithBack(){
+  stopDrillTimer();
+  document.getElementById('arith-config-wrap').style.display='block';
+  document.getElementById('arith-practice-wrap').style.display='none';
+  if(arithState.total > 1){ // only save if they actually played
+    const finalTotal = arithState.answer ? arithState.total - 1 : arithState.total;
+    if(finalTotal > 0) {
+      saveHistory({score:Math.round(arithState.correct/finalTotal*100),correct:arithState.correct,total:finalTotal,time:0,mode:arithMode,diff:''});
+      updateStats();
+    }
+  }
+}
+
+function newArithQ(){
+  const inp=document.getElementById('arith-ans');
+  inp.value=''; inp.className='answer-field';
+  document.getElementById('arith-hint').textContent='Press Space for hint';
+  document.getElementById('arith-hint').className='hint-text';
+  inp.focus();
+
+  const mode=arithMode;
+  if(['Addition','Subtraction'].includes(mode)){
+    const d1=arithDigits.first, d2=arithDigits.second;
+    let a=rnd(10**d1-1, 10**(d1-1)), b=rnd(10**d2-1, 10**(d2-1));
+    if(mode==='Subtraction'&&a<b){[a,b]=[b,a];}
+    arithState.answer=mode==='Addition'?a+b:a-b;
+    arithState.hint=String(arithState.answer);
+    document.getElementById('arith-question').textContent=`${a} ${mode==='Addition'?'+':'−'} ${b} = ?`;
+  } else if(mode==='Carry Subtraction'){
+    let a=rnd(9), b=rnd(9);
+    while(a>=b){a=rnd(9);b=rnd(9);}
+    arithState.answer=(10+a)-b;
+    arithState.hint=String(arithState.answer);
+    document.getElementById('arith-question').textContent=`${a} − ${b}  (carry) = ?`;
+  } else if(mode==='Multiplication'){
+    const d1=arithDigits.first, d2=arithDigits.second;
+    const a=rnd(10**d1-1,10**(d1-1)), b=rnd(10**d2-1,10**(d2-1));
+    arithState.answer=a*b;
+    arithState.hint=String(arithState.answer);
+    document.getElementById('arith-question').textContent=`${a} × ${b} = ?`;
+  } else if(mode==='Division'){
+    const n=arithDigits.num, d=arithDigits.den;
+    const divisor=rnd(10**d-1,10**(d-1));
+    const maxQ = n > 2 ? 100 : 25; // Scale difficulty
+    const quotient=rnd(maxQ, 2);
+    const dividend=divisor*quotient;
+    arithState.answer=quotient;
+    arithState.hint=String(quotient);
+    document.getElementById('arith-question').textContent=`${dividend} ÷ ${divisor} = ?`;
+  }
+  arithState.total++;
+  updateArithStats();
+}
+
+function checkArith(){
+  const val=document.getElementById('arith-ans').value.trim();
+  if(!val) return;
+  if(String(arithState.answer)===val){
+    document.getElementById('arith-ans').className='answer-field correct';
+    arithState.correct++;
+    arithState.score+=10;
+    updateGlobalScore(10);
+    arithState.streak.push(1); if(arithState.streak.length>10) arithState.streak.shift();
+    flash('✓');
+    flashCard('arith-card');
+    updateArithStats();
+    setTimeout(newArithQ,300);
+  }
+}
+
+function arithHintKey(e){ if(e.key===' '){ e.preventDefault(); showArithHint(); } }
+function showArithHint(){
+  document.getElementById('arith-hint').textContent='Hint: '+arithState.hint;
+  document.getElementById('arith-hint').className='hint-text shown';
+}
+
+function updateArithStats(){
+  document.getElementById('arith-score').textContent=arithState.score;
+  document.getElementById('arith-correct').textContent=arithState.correct;
+  document.getElementById('arith-total').textContent=arithState.total;
+  buildStreakBar('arith-streak-bar',arithState.streak);
+}
+
+// ═══════════════════════════════════════════════════════
+// ROOTS MODE
+// ═══════════════════════════════════════════════════════
+function selRootMode(el){
+  document.querySelectorAll('#page-roots .mode-card').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  rootMode=el.dataset.root;
+}
+
+function startRoots(){
+  const pool=rootMode==='square'
+    ? [...PERFECT_SQUARES].sort(()=>Math.random()-0.5).slice(0,8)
+    : [...PERFECT_CUBES].sort(()=>Math.random()-0.5).slice(0,4);
+  rootState={
+    pool:pool.map(p=>p.val), correctCount:{}, mastered:0,
+    score:0, total:0, answer:null, hint:'', streak:[], curNum:null,
+    allPool:rootMode==='square'?PERFECT_SQUARES:PERFECT_CUBES
+  };
+  pool.forEach(p=>{ rootState.correctCount[p.val]=0; });
+  document.getElementById('roots-config-wrap').style.display='none';
+  document.getElementById('roots-practice-wrap').style.display='block';
+  document.getElementById('roots-mode-badge').textContent=(rootMode==='square'?'SQUARE':'CUBE')+' ROOTS';
+  document.getElementById('roots-pool').textContent=rootState.pool.length;
+  
+  if(document.getElementById('roots-timed-toggle').checked) {
+    const duration = parseInt(document.getElementById('roots-time-select').value);
+    startDrillTimer('roots', duration, () => finishTimedSession('Roots', rootState));
+  }
+  
+  updateRootsPool();
+  newRootQ();
+}
+
+function rootsBack(){
+  stopDrillTimer();
+  document.getElementById('roots-config-wrap').style.display='block';
+  document.getElementById('roots-practice-wrap').style.display='none';
+  const finalTotal = rootState.answer ? rootState.total - 1 : rootState.total;
+  if(finalTotal > 0) {
+    saveHistory({score:Math.round(rootState.score/(finalTotal*10)*100),correct:rootState.correctCount ? Object.values(rootState.correctCount).reduce((a,b)=>a+b,0) : 0,total:finalTotal,time:0,mode:'Roots',diff:rootMode});
+    updateStats();
+  }
+}
+
+function newRootQ(){
+  const inp=document.getElementById('roots-ans');
+  inp.value=''; inp.className='answer-field';
+  document.getElementById('roots-hint').textContent='Press Space for hint';
+  document.getElementById('roots-hint').className='hint-text';
+  inp.focus();
+
+  const num=rootState.pool[Math.floor(Math.random()*rootState.pool.length)];
+  rootState.curNum=num;
+  if(rootMode==='square'){
+    const n=Math.round(Math.sqrt(num));
+    rootState.answer=n; rootState.hint=String(n);
+    document.getElementById('roots-question').textContent=`√${num} = ?`;
+  } else {
+    const n=Math.round(num**(1/3));
+    rootState.answer=n; rootState.hint=String(n);
+    document.getElementById('roots-question').textContent=`∛${num} = ?`;
+  }
+  rootState.total++;
+  updateRootsStats();
+}
+
+function checkRoot(){
+  const val=document.getElementById('roots-ans').value.trim();
+  if(!val) return;
+  if(String(rootState.answer)===val){
+    document.getElementById('roots-ans').className='answer-field correct';
+    rootState.score+=10;
+    updateGlobalScore(10);
+    rootState.streak.push(1); if(rootState.streak.length>10) rootState.streak.shift();
+
+    const num=rootState.curNum;
+    rootState.correctCount[num]=(rootState.correctCount[num]||0)+1;
+
+    if(rootState.correctCount[num]>=5){
+      const allVals=rootState.allPool.map(p=>p.val);
+      const remaining=allVals.filter(v=>!rootState.pool.includes(v));
+      if(remaining.length>0){
+        const newVal=remaining[Math.floor(Math.random()*remaining.length)];
+        const idx=rootState.pool.findIndex(v=>v===num);
+        rootState.pool.splice(idx,1,newVal);
+        delete rootState.correctCount[num];
+        rootState.correctCount[newVal]=0;
+        rootState.mastered++;
+        flash('🏆');
+      }
+    } else { flash('✓'); }
+
+    flashCard('roots-card');
+    updateRootsStats();
+    updateRootsPool();
+    setTimeout(newRootQ,300);
+  }
+}
+
+function rootHintKey(e){ if(e.key===' '){ e.preventDefault(); document.getElementById('roots-hint').textContent='Hint: '+rootState.hint; document.getElementById('roots-hint').className='hint-text shown'; } }
+
+function updateRootsStats(){
+  document.getElementById('roots-score').textContent=rootState.score;
+  document.getElementById('roots-mastered').textContent=rootState.mastered;
+  document.getElementById('roots-pool').textContent=rootState.pool.length;
+  buildStreakBar('roots-streak-bar',rootState.streak);
+}
+
+function updateRootsPool(){
+  const d=document.getElementById('roots-pool-display');
+  d.innerHTML=rootState.pool.map(v=>{
+    const cnt=rootState.correctCount[v]||0;
+    const dots=Array.from({length:5},(_,i)=>`<span style="color:${i<cnt?'var(--accent)':'var(--border2)'};font-size:0.6rem;">●</span>`).join('');
+    return `<div style="background:var(--surface3);border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-family:var(--mono);font-size:0.78rem;text-align:center;">
+      <div style="color:var(--accent4);">${v}</div>
+      <div style="margin-top:3px;">${dots}</div>
+    </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════════════
+// FRACTIONS MODE
+// ═══════════════════════════════════════════════════════
+function selFracMode(el){
+  document.querySelectorAll('#page-fractions .mode-card').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  fracMode=el.dataset.frac;
+}
+
+function startFrac(){
+  fracState={answer:null,hint:'',score:0,correct:0,total:0,streak:[]};
+  document.getElementById('frac-config-wrap').style.display='none';
+  document.getElementById('frac-practice-wrap').style.display='block';
+  const labels={'f2p':'FRACTION → %','p2f':'% → FRACTION','mixed':'MIXED FRACTIONS'};
+  document.getElementById('frac-mode-badge').textContent=labels[fracMode];
+  
+  if(document.getElementById('frac-timed-toggle').checked) {
+    const duration = parseInt(document.getElementById('frac-time-select').value);
+    startDrillTimer('frac', duration, () => finishTimedSession('Frac', fracState));
+  }
+  
+  updateFracStats();
+  newFracQ();
+}
+
+function fracBack(){
+  stopDrillTimer();
+  document.getElementById('frac-config-wrap').style.display='block';
+  document.getElementById('frac-practice-wrap').style.display='none';
+  const finalTotal = fracState.answer ? fracState.total - 1 : fracState.total;
+  if(finalTotal > 0) {
+    saveHistory({score:Math.round(fracState.correct/finalTotal*100),correct:fracState.correct,total:finalTotal,time:0,mode:'Fractions',diff:fracMode});
+    updateStats();
+  }
+}
+
+function newFracQ(){
+  const inp=document.getElementById('frac-ans');
+  inp.value=''; inp.className='answer-field';
+  document.getElementById('frac-hint').textContent='Press Space for hint';
+  document.getElementById('frac-hint').className='hint-text';
+  inp.focus();
+
+  let isF2P=fracMode==='f2p'||(fracMode==='mixed'&&Math.random()<0.5);
+  fracState.isF2P=isF2P;
+
+  if(isF2P){
+    const [f,p]=Object.entries(FRACTIONS_TO_PERCENT)[Math.floor(Math.random()*Object.keys(FRACTIONS_TO_PERCENT).length)];
+    fracState.answer=p.replace('%','');
+    fracState.hint=p;
+    document.getElementById('frac-question').textContent=`${f}  =  ? %`;
+    document.getElementById('frac-mode-badge').textContent='FRACTION → %';
+  } else {
+    const [p,f]=Object.entries(PERCENT_TO_FRACTIONS)[Math.floor(Math.random()*Object.keys(PERCENT_TO_FRACTIONS).length)];
+    fracState.answer=f;
+    fracState.hint=f;
+    document.getElementById('frac-question').textContent=`${p}  =  ?`;
+    document.getElementById('frac-mode-badge').textContent='% → FRACTION';
+  }
+  fracState.total++;
+  updateFracStats();
+}
+
+function checkFrac(){
+  const val=document.getElementById('frac-ans').value.trim();
+  if(!val) return;
+  if(String(fracState.answer)===val){
+    document.getElementById('frac-ans').className='answer-field correct';
+    fracState.correct++;
+    fracState.score+=10;
+    updateGlobalScore(10);
+    fracState.streak.push(1); if(fracState.streak.length>10) fracState.streak.shift();
+    flash('✓');
+    flashCard('frac-card');
+    updateFracStats();
+    setTimeout(newFracQ,300);
+  }
+}
+
+function fracHintKey(e){ if(e.key===' '){ e.preventDefault(); document.getElementById('frac-hint').textContent='Hint: '+fracState.hint; document.getElementById('frac-hint').className='hint-text shown'; } }
+
+function updateFracStats(){
+  document.getElementById('frac-score').textContent=fracState.score;
+  document.getElementById('frac-correct').textContent=fracState.correct;
+  document.getElementById('frac-total').textContent=fracState.total;
+  buildStreakBar('frac-streak-bar',fracState.streak);
+}
+
+// ═══════════════════════════════════════════════════════
+// MIXED MODE
+// ═══════════════════════════════════════════════════════
+const MIXED_MODES=['Addition','Subtraction','Multiplication','Square Roots','Cube Roots','Fractions→%','%→Fractions'];
+
+function startMixed(){
+  mixedState={answer:null,hint:'',score:0,correct:0,total:0,streak:[],subMode:''};
+  document.getElementById('mixed-config-wrap').style.display='none';
+  document.getElementById('mixed-practice-wrap').style.display='block';
+  
+  if(document.getElementById('mixed-timed-toggle').checked) {
+    const duration = parseInt(document.getElementById('mixed-time-select').value);
+    startDrillTimer('mixed', duration, () => finishTimedSession('Mixed', mixedState));
+  }
+  
+  newMixedQ();
+}
+
+function mixedBack(){
+  stopDrillTimer();
+  document.getElementById('mixed-config-wrap').style.display='block';
+  document.getElementById('mixed-practice-wrap').style.display='none';
+  const finalTotal = mixedState.answer ? mixedState.total - 1 : mixedState.total;
+  if(finalTotal > 0) {
+    saveHistory({score:Math.round(mixedState.correct/finalTotal*100),correct:mixedState.correct,total:finalTotal,time:0,mode:'Mixed',diff:''});
+    updateStats();
+  }
+}
+
+function newMixedQ(){
+  const inp=document.getElementById('mixed-ans');
+  inp.value=''; inp.className='answer-field';
+  document.getElementById('mixed-hint').textContent='Press Space for hint';
+  document.getElementById('mixed-hint').className='hint-text';
+  inp.focus();
+
+  const m=MIXED_MODES[Math.floor(Math.random()*MIXED_MODES.length)];
+  mixedState.subMode=m;
+  document.getElementById('mixed-mode-badge').textContent=m.toUpperCase();
+
+  if(m==='Addition'){
+    const a=rnd(999,10),b=rnd(999,10);
+    mixedState.answer=a+b; mixedState.hint=String(a+b);
+    document.getElementById('mixed-question').textContent=`${a} + ${b} = ?`;
+  } else if(m==='Subtraction'){
+    let a=rnd(999,10),b=rnd(999,10); if(a<b)[a,b]=[b,a];
+    mixedState.answer=a-b; mixedState.hint=String(a-b);
+    document.getElementById('mixed-question').textContent=`${a} − ${b} = ?`;
+  } else if(m==='Multiplication'){
+    const a=rnd(99,2),b=rnd(19,2);
+    mixedState.answer=a*b; mixedState.hint=String(a*b);
+    document.getElementById('mixed-question').textContent=`${a} × ${b} = ?`;
+  } else if(m==='Square Roots'){
+    const s=PERFECT_SQUARES[Math.floor(Math.random()*PERFECT_SQUARES.length)];
+    mixedState.answer=s.n; mixedState.hint=String(s.n);
+    document.getElementById('mixed-question').textContent=`√${s.val} = ?`;
+  } else if(m==='Cube Roots'){
+    const c=PERFECT_CUBES[Math.floor(Math.random()*PERFECT_CUBES.length)];
+    mixedState.answer=c.n; mixedState.hint=String(c.n);
+    document.getElementById('mixed-question').textContent=`∛${c.val} = ?`;
+  } else if(m==='Fractions→%'){
+    const [f,p]=Object.entries(FRACTIONS_TO_PERCENT)[Math.floor(Math.random()*Object.keys(FRACTIONS_TO_PERCENT).length)];
+    mixedState.answer=p.replace('%',''); mixedState.hint=p;
+    document.getElementById('mixed-question').textContent=`${f} = ?%`;
+  } else {
+    const [p,f]=Object.entries(PERCENT_TO_FRACTIONS)[Math.floor(Math.random()*Object.keys(PERCENT_TO_FRACTIONS).length)];
+    mixedState.answer=f; mixedState.hint=f;
+    document.getElementById('mixed-question').textContent=`${p} = ?`;
+  }
+
+  mixedState.total++;
+  updateMixedStats();
+}
+
+function checkMixed(){
+  const val=document.getElementById('mixed-ans').value.trim();
+  if(!val) return;
+  if(String(mixedState.answer)===val){
+    document.getElementById('mixed-ans').className='answer-field correct';
+    mixedState.correct++;
+    mixedState.score+=10;
+    updateGlobalScore(10);
+    mixedState.streak.push(1); if(mixedState.streak.length>10) mixedState.streak.shift();
+    flash('✓');
+    flashCard('mixed-card');
+    updateMixedStats();
+    setTimeout(newMixedQ,300);
+  }
+}
+
+function mixedHintKey(e){ if(e.key===' '){ e.preventDefault(); document.getElementById('mixed-hint').textContent='Hint: '+mixedState.hint; document.getElementById('mixed-hint').className='hint-text shown'; } }
+
+function updateMixedStats(){
+  document.getElementById('mixed-score').textContent=mixedState.score;
+  document.getElementById('mixed-correct').textContent=mixedState.correct;
+  document.getElementById('mixed-total').textContent=mixedState.total;
+  buildStreakBar('mixed-streak-bar',mixedState.streak);
+}
+
+// ═══════════════════════════════════════════════════════
+// HISTORY RENDERING
+// ═══════════════════════════════════════════════════════
+function histItem(h){
+  const diffBadge=h.diff?`<span class="badge badge-${h.diff||'math'}">${h.diff}</span>`:'';
+  return `<div class="hist-item">
+    <span class="hist-score">${h.score}%</span>
+    <span class="hist-mode">${h.mode||'Practice'} · ${h.correct}/${h.total}</span>
+    ${diffBadge}
+    ${h.time?`<span class="hist-time">${h.time}s</span>`:''}
+    <span class="hist-time" style="margin-left:6px;">${h.date||''}</span>
+  </div>`;
+}
+
+function renderDashHistory(){
+  const wrap=document.getElementById('dash-history-preview');
+  if(!history.length){ wrap.innerHTML='<div class="empty-state">No sessions yet. Start training!</div>'; return; }
+  wrap.innerHTML=`<div class="hist-list">${history.slice(0,5).map(histItem).join('')}</div>`;
+}
+
+function renderFullHistory(){
+  const wrap=document.getElementById('history-list-full');
+  if(!history.length){ wrap.innerHTML='<div class="empty-state">No sessions recorded yet.</div>'; return; }
+  wrap.innerHTML=`<div class="hist-list">${history.map(histItem).join('')}</div>`;
+}
+
+// ═══════════════════════════════════════════════════════
+// REFERENCE TABLES
+// ═══════════════════════════════════════════════════════
+function buildFracTable(){
+  const data=Object.entries(FRACTIONS_TO_PERCENT);
+  const tbody=document.getElementById('frac-tbody');
+  tbody.innerHTML=data.map(([f,p])=>`<tr><td>${f}</td><td style="color:var(--text-dim)">=</td><td>${p}</td></tr>`).join('');
+  document.getElementById('frac-count').textContent=data.length+' entries';
+}
+
+function filterFracTable(){
+  const q=document.getElementById('frac-search').value.toLowerCase();
+  const rows=document.querySelectorAll('#frac-tbody tr');
+  let vis=0;
+  rows.forEach(r=>{
+    const match=r.textContent.toLowerCase().includes(q);
+    r.style.display=match?'':'none';
+    if(match) vis++;
+  });
+  document.getElementById('frac-count').textContent=vis+' entries';
+}
+
+function buildSqTable(){
+  const data=PERFECT_SQUARES;
+  const tbody=document.getElementById('sq-tbody');
+  tbody.innerHTML=data.map(({n,val})=>`<tr><td>${n}</td><td>${val}</td><td>${n}</td></tr>`).join('');
+  document.getElementById('sq-count').textContent=data.length+' entries';
+}
+
+function filterSqTable(){
+  const q=document.getElementById('sq-search').value.toLowerCase();
+  const rows=document.querySelectorAll('#sq-tbody tr');
+  let vis=0;
+  rows.forEach(r=>{
+    const match=r.textContent.toLowerCase().includes(q);
+    r.style.display=match?'':'none';
+    if(match) vis++;
+  });
+  document.getElementById('sq-count').textContent=vis+' entries';
+}
+
+function buildCuTable(){
+  const data=PERFECT_CUBES;
+  const tbody=document.getElementById('cu-tbody');
+  tbody.innerHTML=data.map(({n,val})=>`<tr><td>${n}</td><td>${val}</td><td>${n}</td></tr>`).join('');
+  document.getElementById('cu-count').textContent=data.length+' entries';
+}
+
+function filterCuTable(){
+  const q=document.getElementById('cu-search').value.toLowerCase();
+  const rows=document.querySelectorAll('#cu-tbody tr');
+  let vis=0;
+  rows.forEach(r=>{
+    const match=r.textContent.toLowerCase().includes(q);
+    r.style.display=match?'':'none';
+    if(match) vis++;
+  });
+  document.getElementById('cu-count').textContent=vis+' entries';
+}
+
+// ═══════════════════════════════════════════════════════
+// TABLES MASTERY MODE (Leitner Spaced Repetition)
+// ═══════════════════════════════════════════════════════
+
+// Optimal learning order: easiest patterns first
+const TABLES_ORDER = [1,2,10,5,11,9,3,4,6,8,7,12,15,20,25,13,14,16,17,18,19,21,22,23,24];
+
+const TABLES_TIPS = {
+  1:  '💡 Identity: any number × 1 = itself. Instant confidence boost!',
+  2:  '💡 Doubling: add the number to itself. 2×7 = 7+7 = 14',
+  3:  '💡 Triple: double + one more. 3×7 = 14+7 = 21',
+  4:  '💡 Double the double: 4×7 = 2×(2×7) = 2×14 = 28',
+  5:  '💡 Half of ×10. Always ends in 0 or 5. 5×7 = 70÷2 = 35',
+  6:  '💡 Triple then double: 6×7 = 2×(3×7) = 2×21 = 42',
+  7:  '💡 The tough one! Key: 7×7=49, 7×8=56 (digits 5,6,7,8)',
+  8:  '💡 Double ×4: 8×7 = 2×(4×7) = 2×28 = 56',
+  9:  '💡 ×10 minus number: 9×7 = 70−7 = 63. Digits always sum to 9!',
+  10: '💡 Just add a zero! 10×7 = 70',
+  11: '💡 For 1-9: repeat the digit (11,22,33…77). Teens: split & add middle.',
+  12: '💡 ×10 + ×2: 12×7 = 70+14 = 84',
+  13: '💡 ×10 + ×3: 13×7 = 70+21 = 91',
+  14: '💡 ×10 + ×4: 14×7 = 70+28 = 98',
+  15: '💡 ×10 + ×5: 15×7 = 70+35 = 105',
+  16: '💡 ×10 + ×6: 16×7 = 70+42 = 112',
+  17: '💡 ×10 + ×7: 17×7 = 70+49 = 119',
+  18: '💡 ×20 − ×2: 18×7 = 140−14 = 126. Or double ×9.',
+  19: '💡 ×20 − n: 19×7 = 140−7 = 133',
+  20: '💡 Double then add zero: 20×7 = 140',
+  21: '💡 ×20 + n: 21×7 = 140+7 = 147',
+  22: '💡 ×20 + ×2: 22×7 = 140+14 = 154',
+  23: '💡 ×20 + ×3: 23×7 = 140+21 = 161',
+  24: '💡 ×25 − n: 24×7 = 175−7 = 168. Or ×20+×4.',
+  25: '💡 Quarter of ×100: 25×n = n×100÷4. 25×8 = 800÷4 = 200'
+};
+
+let tblState = {
+  mastered: new Set(JSON.parse(localStorage.getItem('nc_tbl_mastered') || '[]')),
+  phase: 'overview',
+  currentTable: null,
+  facts: {},
+  currentFact: null,
+  factsMastered: 0,
+  factsTotal: 10,
+  score: 0,
+  wrongStreak: 0,
+  lastFact: null
+};
+
+function tblShowView(view) {
+  ['tbl-overview','tbl-study','tbl-quiz','tbl-complete'].forEach(function(id) {
+    document.getElementById(id).style.display = id === view ? 'block' : 'none';
+  });
+}
+
+function tblRenderOverview() {
+  var grid = document.getElementById('tables-grid');
+  var masteredCount = tblState.mastered.size;
+  var nextTable = TABLES_ORDER.find(function(t) { return !tblState.mastered.has(t); });
+
+  document.getElementById('tbl-progress-fill').style.width = (masteredCount/25*100)+'%';
+  document.getElementById('tbl-progress-text').textContent = masteredCount + '/25 tables mastered';
+
+  var html = '';
+  for(var i = 0; i < TABLES_ORDER.length; i++) {
+    var n = TABLES_ORDER[i];
+    var isMastered = tblState.mastered.has(n);
+    var isNext = (n === nextTable);
+    var cls = 'tbl-cell';
+    if(isMastered) cls += ' mastered';
+    else if(isNext) cls += ' next';
+    html += '<div class="' + cls + '" onclick="tblStartStudy(' + n + ')">' +
+      '<div class="tbl-cell-num">×' + n + '</div>' +
+      '<div class="tbl-cell-status">' + (isMastered ? '✓ Done' : isNext ? '→ Next' : '○') + '</div></div>';
+  }
+  grid.innerHTML = html;
+}
+
+function tblSmartStart() {
+  var next = TABLES_ORDER.find(function(t) { return !tblState.mastered.has(t); });
+  if(!next) { flash('🏆'); alert('🏆 You have mastered ALL 25 tables!'); return; }
+  tblStartStudy(next);
+}
+
+function tblStartStudy(n) {
+  tblState.currentTable = n;
+  document.getElementById('tbl-study-num').textContent = n;
+  document.getElementById('tbl-study-tip').textContent = TABLES_TIPS[n] || '';
+
+  var html = '';
+  for(var m = 1; m <= 10; m++) {
+    html += '<div class="tbl-fact-card">' +
+      '<span class="tbl-fact-eq">' + n + ' × ' + m + '</span>' +
+      '<span class="tbl-fact-ans">= ' + (n * m) + '</span></div>';
+  }
+  document.getElementById('tbl-study-facts').innerHTML = html;
+  tblShowView('tbl-study');
+}
+
+function tblStartQuiz() {
+  var n = tblState.currentTable;
+  tblState.facts = {};
+  tblState.factsMastered = 0;
+  tblState.factsTotal = 10;
+  tblState.score = 0;
+  tblState.wrongStreak = 0;
+  tblState.lastFact = null;
+
+  for(var m = 1; m <= 10; m++) {
+    tblState.facts[m] = { level: 0, correct: 0, wrong: 0 };
+  }
+
+  tblShowView('tbl-quiz');
+  document.getElementById('tbl-quiz-badge').textContent = '× ' + n + ' TABLE';
+  tblUpdateQuizStats();
+  tblNextFact();
+}
+
+function tblNextFact() {
+  var inp = document.getElementById('tbl-quiz-ans');
+  inp.value = ''; inp.className = 'answer-field'; inp.disabled = false;
+  document.getElementById('tbl-quiz-feedback').textContent = '';
+  document.getElementById('tbl-quiz-feedback').className = 'tbl-feedback';
+  document.getElementById('tbl-hint').textContent = 'Press Space for hint';
+  document.getElementById('tbl-hint').className = 'hint-text';
+  inp.focus();
+
+  // Check if all mastered
+  var unmastered = [];
+  for(var key in tblState.facts) {
+    if(tblState.facts[key].level < 3) unmastered.push({ m: parseInt(key), f: tblState.facts[key] });
+  }
+
+  if(unmastered.length === 0) {
+    tblCompleteTable();
+    return;
+  }
+
+  // Weighted selection: lower level = more frequent
+  var pool = [];
+  for(var i = 0; i < unmastered.length; i++) {
+    var weight = unmastered[i].f.level === 0 ? 4 : unmastered[i].f.level === 1 ? 2 : 1;
+    for(var w = 0; w < weight; w++) pool.push(unmastered[i].m);
+  }
+
+  // Avoid same fact twice
+  var pick, attempts = 0;
+  do {
+    pick = pool[Math.floor(Math.random() * pool.length)];
+    attempts++;
+  } while(pool.length > 1 && pick === tblState.lastFact && attempts < 20);
+
+  tblState.currentFact = pick;
+  tblState.lastFact = pick;
+  var n = tblState.currentTable;
+  tblState.hint = String(n * pick);
+  document.getElementById('tbl-quiz-question').textContent = n + ' × ' + pick + ' = ?';
+  tblUpdateBoxes();
+}
+
+function tblCheckQuiz() {
+  var inp = document.getElementById('tbl-quiz-ans');
+  var val = inp.value.trim();
+  if(!val || inp.disabled) return;
+
+  var n = tblState.currentTable;
+  var m = tblState.currentFact;
+  var correctAns = n * m;
+  var isCorrect = parseInt(val) === correctAns;
+  var fact = tblState.facts[m];
+  var fb = document.getElementById('tbl-quiz-feedback');
+
+  inp.disabled = true;
+
+  if(isCorrect) {
+    inp.className = 'answer-field correct';
+    fact.level = Math.min(3, fact.level + 1);
+    fact.correct++;
+    tblState.score += 10;
+    tblState.wrongStreak = 0;
+
+    if(fact.level >= 3) {
+      tblState.factsMastered++;
+      fb.textContent = '✓ Correct! "' + n + '×' + m + '=' + correctAns + '" MASTERED!';
+      fb.className = 'tbl-feedback mastered-fb';
+      flash('🏆');
+    } else {
+      fb.textContent = '✓ Correct! (' + fact.level + '/3 to master)';
+      fb.className = 'tbl-feedback correct';
+      flash('✓');
+    }
+
+    updateGlobalScore(10);
+    flashCard('tbl-quiz-card');
+    tblUpdateQuizStats();
+    tblUpdateBoxes();
+    setTimeout(tblNextFact, 700);
+  } else {
+    inp.className = 'answer-field wrong';
+    fact.level = 0;
+    fact.wrong++;
+    tblState.wrongStreak++;
+
+    var msg = '✗ ' + n + ' × ' + m + ' = ' + correctAns + ' (you typed ' + val + '). Reset to start.';
+    if(tblState.wrongStreak >= 3) {
+      msg += ' ' + (TABLES_TIPS[n] || '');
+    }
+    fb.textContent = msg;
+    fb.className = 'tbl-feedback wrong';
+
+    tblUpdateQuizStats();
+    tblUpdateBoxes();
+    setTimeout(tblNextFact, 2000);
+  }
+}
+
+function tblCompleteTable() {
+  var n = tblState.currentTable;
+  tblState.mastered.add(n);
+  localStorage.setItem('nc_tbl_mastered', JSON.stringify(Array.from(tblState.mastered)));
+
+  var masteredCount = tblState.mastered.size;
+  var remaining = 25 - masteredCount;
+
+  document.getElementById('tbl-complete-num').textContent = n;
+  document.getElementById('tbl-complete-count').textContent = masteredCount;
+  document.getElementById('tbl-complete-remaining').textContent = remaining;
+  document.getElementById('tbl-complete-score').textContent = tblState.score;
+
+  var msgs = ['Good start! 💪', 'Building momentum! 🔥', 'Halfway there! ⚡', 'Almost done! 🌟', 'LEGENDARY! 🏆'];
+  document.getElementById('tbl-complete-msg').textContent = msgs[Math.min(4, Math.floor(masteredCount / 5))];
+
+  saveHistory({score:100, correct:10, total:10, time:0, mode:'Tables ×' + n, diff:'mastered'});
+  updateStats();
+  flash('🏆');
+  tblShowView('tbl-complete');
+}
+
+function tblUpdateQuizStats() {
+  document.getElementById('tbl-quiz-mastered').textContent = tblState.factsMastered;
+  document.getElementById('tbl-quiz-remaining').textContent = tblState.factsTotal - tblState.factsMastered;
+  document.getElementById('tbl-quiz-score').textContent = tblState.score;
+  var pct = (tblState.factsMastered / tblState.factsTotal) * 100;
+  document.getElementById('tbl-quiz-prog').style.width = pct + '%';
+}
+
+function tblUpdateBoxes() {
+  var container = document.getElementById('tbl-leitner-boxes');
+  var boxes = [[], [], [], []];
+  for(var key in tblState.facts) {
+    boxes[tblState.facts[key].level].push(parseInt(key));
+  }
+
+  var n = tblState.currentTable;
+  var labels = ['📥 New', '📦 Learning', '📋 Familiar', '✅ Mastered'];
+  var html = '';
+  for(var i = 0; i < labels.length; i++) {
+    var facts = boxes[i];
+    html += '<div class="leitner-box ' + (i === 3 ? 'done' : '') + '">' +
+      '<div class="leitner-box-label">' + labels[i] + '</div>' +
+      '<div class="leitner-box-facts">';
+    if(facts.length) {
+      for(var j = 0; j < facts.length; j++) {
+        html += '<span class="leitner-fact ' + (facts[j] === tblState.currentFact ? 'active' : '') + '">' + n + '×' + facts[j] + '</span>';
+      }
+    } else {
+      html += '<span style="color:var(--text-dim);font-size:0.65rem;">—</span>';
+    }
+    html += '</div></div>';
+  }
+  container.innerHTML = html;
+}
+
+function tblQuizKeydown(e) {
+  if(e.key === 'Enter') { e.preventDefault(); tblCheckQuiz(); }
+  if(e.key === ' ') { e.preventDefault(); tblShowHint(); }
+}
+
+function tblAutoCheck() {
+  var inp = document.getElementById('tbl-quiz-ans');
+  var val = inp.value.trim();
+  if(!val || inp.disabled) return;
+  var correctAns = tblState.currentTable * tblState.currentFact;
+  if(val === String(correctAns)) {
+    tblCheckQuiz();
+  }
+}
+
+function tblShowHint() {
+  document.getElementById('tbl-hint').textContent = 'Hint: ' + tblState.hint;
+  document.getElementById('tbl-hint').className = 'hint-text shown';
+}
+
+function tblBackToOverview() {
+  tblShowView('tbl-overview');
+  tblRenderOverview();
+}
+
+function tblResetProgress() {
+  if(!confirm('Reset all tables mastery progress? This cannot be undone.')) return;
+  tblState.mastered = new Set();
+  localStorage.removeItem('nc_tbl_mastered');
+  tblRenderOverview();
+}
+
+// ═══════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════
+renderArithSubConfig();
+updateStats();
+renderDashHistory();
+</script>
+</body>
+</html>
