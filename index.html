@@ -9,26 +9,35 @@
 :root {
   --bg: #080810;
   --surface: #0f0f1a;
-  --surface2: #161625;
-  --surface3: #1e1e30;
-  --border: #252538;
-  --border2: #32324a;
+  --surface2: #14141f;
+  --surface3: #1c1c2e;
+  --surface4: #24243a;
+  --border: #22223a;
+  --border2: #2e2e48;
   --accent: #4fffb0;
-  --accent-dim: rgba(79,255,176,0.12);
+  --accent-dim: rgba(79,255,176,0.1);
   --accent2: #ff6b6b;
   --accent3: #ffd166;
   --accent4: #74b9ff;
   --accent5: #a29bfe;
   --text: #e8e8f5;
-  --text-dim: #6b6b90;
-  --text-mid: #a0a0c0;
+  --text-dim: #6a6a8a;
+  --text-mid: #a8a8c8;
   --success: #4fffb0;
   --danger: #ff6b6b;
   --warning: #ffd166;
+  --info: #74b9ff;
   --mono: 'Space Mono', monospace;
   --sans: 'Outfit', sans-serif;
-  --radius: 14px;
-  --radius-sm: 8px;
+  --radius-sm: 6px;
+  --radius: 12px;
+  --radius-lg: 16px;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+  --shadow: 0 4px 12px rgba(0,0,0,0.4);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.5);
+  --transition-fast: 0.15s ease;
+  --transition: 0.25s ease;
+  --transition-slow: 0.4s ease;
   --switch-bg: #1e1e30;
   --switch-active: #4fffb0;
   --nav-height: 64px;
@@ -71,17 +80,17 @@ body {
 
 /* ── Sidebar ── */
 .sidebar {
-  width: 260px; min-height: 100vh;
+  width: 248px; min-height: 100vh;
   background: var(--surface);
   border-right: 1px solid var(--border);
   display: flex; flex-direction: column;
   position: fixed; left: 0; top: 0; bottom: 0;
   z-index: 50;
-  transition: transform 0.3s ease;
+  transition: transform var(--transition-slow);
 }
 
 .sidebar-header {
-  padding: 28px 24px 20px;
+  padding: 24px 20px 16px;
   border-bottom: 1px solid var(--border);
 }
 
@@ -89,42 +98,46 @@ body {
   display: flex; align-items: center; gap: 10px;
 }
 .logo-icon {
-  width: 36px; height: 36px;
+  width: 34px; height: 34px;
   background: linear-gradient(135deg, var(--accent5), var(--accent));
   border-radius: 10px;
   display: flex; align-items: center; justify-content: center;
-  font-size: 18px;
+  font-size: 17px;
+  box-shadow: 0 2px 12px rgba(79,255,176,0.15);
 }
 .logo-text {
-  font-size: 1.2rem; font-weight: 800;
+  font-size: 1.15rem; font-weight: 800;
   background: linear-gradient(90deg, var(--accent), var(--accent5));
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 .logo-sub {
-  font-family: var(--mono); font-size: 0.6rem;
-  color: var(--text-dim); letter-spacing: 2px; margin-top: 2px;
+  font-family: var(--mono); font-size: 0.55rem;
+  color: var(--text-dim); letter-spacing: 2.5px; margin-top: 3px;
 }
 
 .sidebar-section {
-  padding: 16px 12px 8px;
+  padding: 12px 8px 4px;
 }
 .sidebar-section-label {
-  font-family: var(--mono); font-size: 0.6rem; letter-spacing: 3px;
+  font-family: var(--mono); font-size: 0.55rem; letter-spacing: 3px;
   color: var(--text-dim); text-transform: uppercase;
   padding: 0 12px 8px;
 }
 
 .nav-item {
   display: flex; align-items: center; gap: 10px;
-  padding: 10px 12px;
+  padding: 9px 12px;
   border-radius: var(--radius-sm);
   cursor: pointer;
-  transition: all 0.18s;
-  font-size: 0.88rem; font-weight: 500;
+  transition: var(--transition-fast);
+  font-size: 0.85rem; font-weight: 500;
   color: var(--text-mid);
   user-select: none;
   position: relative;
+  -webkit-tap-highlight-color: transparent;
+  background: none; border: none; width: 100%; text-align: left;
+  font-family: var(--sans);
 }
 .nav-item:hover { background: var(--surface2); color: var(--text); }
 .nav-item.active {
@@ -136,18 +149,20 @@ body {
   position: absolute; left: 0; top: 20%; bottom: 20%;
   width: 3px; border-radius: 2px;
   background: var(--accent);
+  box-shadow: 0 0 8px rgba(79,255,176,0.4);
 }
-.nav-icon { font-size: 1rem; width: 20px; text-align: center; }
+.nav-icon { font-size: 0.95rem; width: 20px; text-align: center; flex-shrink: 0; }
 .nav-badge {
   margin-left: auto;
-  font-family: var(--mono); font-size: 0.6rem;
-  background: var(--surface3); color: var(--text-dim);
-  padding: 2px 6px; border-radius: 4px;
+  font-family: var(--mono); font-size: 0.55rem;
+  background: var(--accent-dim); color: var(--accent);
+  padding: 2px 7px; border-radius: 10px;
+  font-weight: 600;
 }
 
 .sidebar-footer {
   margin-top: auto;
-  padding: 16px 12px;
+  padding: 14px 12px;
   border-top: 1px solid var(--border);
 }
 
@@ -207,11 +222,13 @@ body {
 .dash-card {
   background: var(--surface); border: 1px solid var(--border);
   border-radius: var(--radius); padding: 24px;
-  cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden;
+  cursor: pointer; transition: var(--transition); position: relative; overflow: hidden;
+  box-shadow: var(--shadow-sm);
 }
-.dash-card:hover { border-color: var(--border2); transform: translateY(-2px); }
+.dash-card:hover { border-color: var(--border2); transform: translateY(-3px); box-shadow: var(--shadow); }
+.dash-card:active { transform: translateY(-1px); }
 .dash-card::before {
-  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
 }
 .dash-card.green::before  { background: linear-gradient(90deg, var(--accent), transparent); }
 .dash-card.red::before    { background: linear-gradient(90deg, var(--accent2), transparent); }
@@ -219,16 +236,16 @@ body {
 .dash-card.blue::before   { background: linear-gradient(90deg, var(--accent4), transparent); }
 .dash-card.purple::before { background: linear-gradient(90deg, var(--accent5), transparent); }
 
-.dash-card-icon { font-size: 2rem; margin-bottom: 12px; }
+.dash-card-icon { font-size: 1.8rem; margin-bottom: 10px; }
 .dash-card-title { font-size: 1rem; font-weight: 700; margin-bottom: 4px; }
-.dash-card-sub { font-size: 0.8rem; color: var(--text-dim); }
+.dash-card-sub { font-size: 0.78rem; color: var(--text-dim); line-height: 1.4; }
 .dash-card-arrow {
   position: absolute; right: 20px; top: 50%;
   transform: translateY(-50%);
   color: var(--text-dim); font-size: 1.2rem;
-  transition: all 0.2s;
+  transition: var(--transition);
 }
-.dash-card:hover .dash-card-arrow { color: var(--accent); transform: translateY(-50%) translateX(3px); }
+.dash-card:hover .dash-card-arrow { color: var(--accent); transform: translateY(-50%) translateX(4px); }
 
 .section-label {
   font-family: var(--mono); font-size: 0.65rem; letter-spacing: 3px;
@@ -243,6 +260,7 @@ body {
   background: var(--surface); border: 1px solid var(--border);
   border-radius: var(--radius); padding: 32px;
   margin-bottom: 20px;
+  box-shadow: var(--shadow-sm);
 }
 .config-panel-title {
   font-size: 1.2rem; font-weight: 700; margin-bottom: 6px;
@@ -297,27 +315,29 @@ body {
 /* ── Practice Area ── */
 .practice-card {
   background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 40px 36px;
+  border-radius: var(--radius-lg); padding: 48px 36px 40px;
   text-align: center; position: relative; overflow: hidden;
+  box-shadow: var(--shadow);
 }
 .practice-card::before {
-  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
   background: linear-gradient(90deg, var(--accent5), var(--accent), transparent);
 }
 .practice-mode-badge {
-  display: inline-block;
-  font-family: var(--mono); font-size: 0.65rem; letter-spacing: 2px;
-  text-transform: uppercase; color: var(--text-dim);
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--mono); font-size: 0.6rem; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--text-mid);
   background: var(--surface2); border: 1px solid var(--border);
-  padding: 4px 12px; border-radius: 4px; margin-bottom: 32px;
+  padding: 5px 14px; border-radius: 20px; margin-bottom: 28px;
 }
 .question-text {
   font-family: var(--mono); font-size: 2.8rem; font-weight: 700;
   color: var(--text); margin-bottom: 32px; line-height: 1.2;
-  min-height: 80px; display: flex; align-items: center; justify-content: center;
+  min-height: 90px; display: flex; align-items: center; justify-content: center;
+  letter-spacing: 2px;
 }
-.question-text .num { color: var(--accent4); }
-.question-text .op  { color: var(--accent3); margin: 0 12px; }
+.question-text .num { color: var(--accent4); text-shadow: 0 0 20px rgba(116,185,255,0.15); }
+.question-text .op  { color: var(--accent3); margin: 0 14px; }
 .question-text .unk { color: var(--text-dim); }
 
 .answer-field-wrap { position: relative; display: inline-block; }
@@ -326,11 +346,12 @@ body {
   border-radius: var(--radius-sm); color: var(--text);
   font-family: var(--mono); font-size: 1.6rem; font-weight: 700;
   padding: 14px 24px; outline: none; text-align: center;
-  width: 220px; transition: border-color 0.2s;
+  width: 220px; transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast);
+  caret-color: var(--accent);
 }
-.answer-field:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(79,255,176,0.1); }
-.answer-field.correct { border-color: var(--success); background: rgba(79,255,176,0.08); }
-.answer-field.wrong   { border-color: var(--danger);  background: rgba(255,107,107,0.08); }
+.answer-field:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(79,255,176,0.1), var(--shadow-sm); }
+.answer-field.correct { border-color: var(--success); background: rgba(79,255,176,0.08); box-shadow: 0 0 0 3px rgba(79,255,176,0.1); }
+.answer-field.wrong   { border-color: var(--danger);  background: rgba(255,107,107,0.08); box-shadow: 0 0 0 3px rgba(255,107,107,0.1); }
 
 .hint-text {
   font-family: var(--mono); font-size: 0.85rem; color: var(--text-dim);
@@ -339,39 +360,59 @@ body {
 .hint-text.shown { color: var(--accent3); }
 
 .practice-meta {
-  display: flex; align-items: center; justify-content: center; gap: 24px;
+  display: flex; align-items: center; justify-content: center; gap: 20px;
   margin-top: 28px; flex-wrap: wrap;
 }
 .practice-stat-chip {
-  font-family: var(--mono); font-size: 0.75rem; color: var(--text-dim);
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 20px; padding: 6px 14px;
+  font-family: var(--mono); font-size: 0.72rem; color: var(--text-dim);
   display: flex; align-items: center; gap: 6px;
 }
-.practice-stat-chip span { color: var(--accent); font-weight: 700; font-size: 0.9rem; }
+.practice-stat-chip span { color: var(--accent); font-weight: 700; font-size: 0.85rem; }
 
 .practice-actions { display: flex; gap: 10px; justify-content: center; margin-top: 24px; flex-wrap: wrap; }
 
 /* Streak display */
 .streak-bar {
-  display: flex; gap: 6px; justify-content: center; margin-top: 20px; flex-wrap: wrap;
+  display: flex; gap: 5px; justify-content: center; margin-top: 20px; flex-wrap: wrap;
+  align-items: center;
 }
 .streak-dot {
-  width: 10px; height: 10px; border-radius: 50%;
-  background: var(--border); transition: all 0.3s;
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--border); transition: var(--transition-fast);
 }
-.streak-dot.lit { background: var(--accent); box-shadow: 0 0 8px rgba(79,255,176,0.6); }
+.streak-dot.lit { background: var(--accent); box-shadow: 0 0 6px rgba(79,255,176,0.5); }
+.streak-count {
+  font-family: var(--mono); font-size: 0.65rem; color: var(--text-dim);
+  margin-left: 4px;
+}
 
-/* Flash */
+/* Flash / Notification */
 .flash-overlay {
   position: fixed; inset: 0; z-index: 200;
   display: flex; align-items: center; justify-content: center;
   pointer-events: none; opacity: 0; transition: opacity 0.2s;
 }
 .flash-overlay.show { opacity: 1; }
-.flash-emoji { font-size: 5rem; animation: flashPop 0.5s ease; }
+.flash-emoji {
+  font-size: 4.5rem; animation: flashPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  filter: drop-shadow(0 4px 20px rgba(79,255,176,0.3));
+}
 @keyframes flashPop {
-  0%   { transform: scale(0.5); opacity: 0; }
-  60%  { transform: scale(1.2); }
-  100% { transform: scale(1); opacity: 1; }
+  0%   { transform: scale(0.3) rotate(-10deg); opacity: 0; }
+  50%  { transform: scale(1.15) rotate(2deg); }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+/* Confetti burst for achievements */
+@keyframes confetti {
+  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(-120px) rotate(720deg); opacity: 0; }
+}
+.confetti-piece {
+  position: fixed; width: 6px; height: 6px; border-radius: 2px;
+  pointer-events: none; z-index: 201; animation: confetti 0.8s ease-out forwards;
 }
 
 /* ── Memory Mode ── */
@@ -416,23 +457,28 @@ body {
 .prog-fill { height: 100%; background: linear-gradient(90deg, var(--accent5), var(--accent)); border-radius: 2px; transition: width 1s linear; }
 
 /* Ans input rows */
-.ans-rows { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+.ans-rows { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; }
 .ans-row {
-  display: flex; align-items: center; gap: 12px;
+  display: flex; align-items: center; gap: 14px;
   background: var(--surface2); border: 1px solid var(--border);
-  border-radius: var(--radius-sm); padding: 12px 16px;
-  transition: border-color 0.2s;
+  border-radius: var(--radius-sm); padding: 14px 18px;
+  transition: border-color 0.2s, background 0.2s;
 }
-.ans-row:focus-within { border-color: var(--accent); }
-.ans-row.correct { border-color: var(--success); background: rgba(79,255,176,0.05); }
-.ans-row.wrong   { border-color: var(--danger);  background: rgba(255,107,107,0.05); }
-.ans-row-lbl { font-family: var(--mono); font-size: 0.72rem; color: var(--text-dim); min-width: 52px; }
-.ans-row-hidden { font-family: var(--mono); font-size: 0.78rem; color: var(--text-dim); font-style: italic; flex: 1; }
+.ans-row:focus-within { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(79,195,247,0.12); }
+.ans-row.correct { border-color: var(--success); background: rgba(79,255,176,0.06); }
+.ans-row.wrong   { border-color: var(--danger);  background: rgba(255,107,107,0.06); }
+.ans-badge-sm { font-family: var(--mono); font-size: 0.65rem; letter-spacing: 1px; color: var(--text-dim); min-width: 46px; }
 .ans-inp {
   background: none; border: none; outline: none;
-  font-family: var(--mono); font-size: 1.05rem; font-weight: 700;
-  color: var(--text); width: 90px; text-align: right;
+  font-family: var(--mono); font-size: 1.2rem; font-weight: 700;
+  color: var(--text); width: 100px; flex: 1;
+  border-bottom: 2px solid var(--border);
+  transition: border-color 0.2s;
+  -moz-appearance: textfield;
 }
+.ans-inp::-webkit-outer-spin-button,
+.ans-inp::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.ans-inp:focus { border-bottom-color: var(--accent); }
 .ans-inp::placeholder { color: var(--border2); }
 .ans-badge {
   font-family: var(--mono); font-size: 0.75rem;
@@ -498,25 +544,38 @@ td:last-child  { color: var(--accent); font-weight: 700; }
 
 /* Buttons */
 .btn {
-  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
   padding: 12px 24px; border-radius: var(--radius-sm); border: none;
-  font-family: var(--sans); font-weight: 600; font-size: 0.9rem;
-  cursor: pointer; transition: all 0.18s; letter-spacing: 0.3px;
+  font-family: var(--sans); font-weight: 600; font-size: 0.88rem;
+  cursor: pointer; transition: var(--transition-fast); letter-spacing: 0.2px;
+  position: relative; overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
 }
+.btn::after {
+  content: ''; position: absolute; inset: 0;
+  background: rgba(255,255,255,0); transition: var(--transition-fast);
+}
+.btn:hover::after { background: rgba(255,255,255,0.06); }
+.btn:active::after { background: rgba(255,255,255,0.1); }
 .btn-primary {
   background: linear-gradient(135deg, var(--accent5), var(--accent));
-  color: #0a0a10; box-shadow: 0 4px 20px rgba(79,255,176,0.2);
+  color: #0a0a10; box-shadow: 0 4px 16px rgba(79,255,176,0.15);
 }
-.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 28px rgba(79,255,176,0.35); }
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(79,255,176,0.25); }
 .btn-secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
-.btn-secondary:hover { border-color: var(--accent4); color: var(--accent4); }
-.btn-ghost { background: none; color: var(--text-dim); border: 1px solid var(--border); }
-.btn-ghost:hover { color: var(--text); border-color: var(--border2); }
+.btn-secondary:hover { border-color: var(--accent4); color: var(--accent4); transform: translateY(-1px); }
+.btn-ghost { background: none; color: var(--text-dim); border: 1px solid var(--border2); }
+.btn-ghost:hover { color: var(--text); border-color: var(--border2); background: var(--surface2); }
 .btn-success { background: linear-gradient(135deg, #00c896, var(--accent)); color: #0a0a10; }
-.btn-warn { background: rgba(255,209,102,0.12); color: var(--accent3); border: 1px solid rgba(255,209,102,0.3); }
-.btn-warn:hover { background: rgba(255,209,102,0.2); }
-.btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
+.btn-warn { background: rgba(255,209,102,0.1); color: var(--accent3); border: 1px solid rgba(255,209,102,0.2); }
+.btn-warn:hover { background: rgba(255,209,102,0.18); }
+.btn-danger { background: rgba(255,107,107,0.1); color: var(--accent2); border: 1px solid rgba(255,107,107,0.2); }
+.btn-danger:hover { background: rgba(255,107,107,0.18); }
+.btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none !important; }
+.btn:disabled::after { display: none; }
 .btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
+.btn-sm { padding: 8px 16px; font-size: 0.8rem; }
+.btn-lg { padding: 14px 32px; font-size: 1rem; }
 
 /* History */
 .hist-list { display: flex; flex-direction: column; gap: 8px; }
@@ -539,7 +598,12 @@ td:last-child  { color: var(--accent); font-weight: 700; }
 .badge-mem    { background: rgba(162,155,254,0.12); color: var(--accent5); }
 .badge-math   { background: rgba(116,185,255,0.12); color: var(--accent4); }
 
-.empty-state { text-align: center; padding: 40px; color: var(--text-dim); font-family: var(--mono); font-size: 0.82rem; }
+.empty-state {
+  text-align: center; padding: 48px 24px;
+  background: var(--surface); border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  color: var(--text-dim); font-size: 0.85rem; line-height: 1.6;
+}
 
 /* Mode Selector Cards */
 .mode-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
@@ -559,7 +623,15 @@ td:last-child  { color: var(--accent); font-weight: 700; }
   0%   { background: rgba(79,255,176,0.25); }
   100% { background: var(--surface); }
 }
+@keyframes wrongShake {
+  0%,100% { transform: translateX(0); }
+  20% { transform: translateX(-8px); }
+  40% { transform: translateX(8px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
+}
 .practice-card.flash-correct { animation: correctFlash 0.4s ease; }
+.practice-card.flash-wrong { animation: wrongShake 0.4s ease; }
 
 /* Sidebar overlay */
 .sidebar-overlay {
@@ -619,15 +691,26 @@ td:last-child  { color: var(--accent); font-weight: 700; }
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: 3px;
   color: var(--text-dim);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: var(--transition-fast);
   -webkit-tap-highlight-color: transparent;
+  background: none; border: none; padding: 0 4px;
+  position: relative;
+  min-height: 48px;
+}
+.b-nav-item::after {
+  content: '';
+  position: absolute; top: 0; left: 20%; right: 20%;
+  height: 2px; border-radius: 0 0 2px 2px;
+  background: var(--accent);
+  opacity: 0; transition: var(--transition-fast);
 }
 .b-nav-item.active { color: var(--accent); }
-.b-nav-icon { font-size: 1.2rem; }
-.b-nav-label { font-size: 0.65rem; font-weight: 600; font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.5px; }
+.b-nav-item.active::after { opacity: 1; }
+.b-nav-icon { font-size: 1.2rem; line-height: 1; }
+.b-nav-label { font-size: 0.6rem; font-weight: 600; font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.3px; }
 
 /* Hamburger Animation */
 .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
@@ -670,6 +753,14 @@ td:last-child  { color: var(--accent); font-weight: 700; }
 
 @supports (height: 100dvh) {
   body, .app, .sidebar, .main { min-height: 100dvh; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 
@@ -754,7 +845,13 @@ input:checked + .slider:before { transform: translateX(22px); background-color: 
 </head>
 <body>
 
-<div class="bg-grid"></div>
+  <a href="#main-content" class="skip-link" style="position:fixed;top:-100%;left:0;padding:12px 20px;background:var(--accent);color:#0a0a10;z-index:9999;font-weight:700;border-radius:0 0 8px 0;">
+    Skip to content
+  </a>
+  <style>
+    .skip-link:focus { top: 0; }
+  </style>
+  <div class="bg-grid"></div>
 <div class="bg-glow1"></div>
 <div class="bg-glow2"></div>
 <div class="app">
@@ -762,8 +859,8 @@ input:checked + .slider:before { transform: translateX(22px); background-color: 
 <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
 
 <!-- ── SIDEBAR ── -->
-<nav class="sidebar" id="sidebar">
-  <button class="sidebar-close" onclick="closeSidebar()">✕</button>
+<nav class="sidebar" id="sidebar" aria-label="Main navigation">
+  <button class="sidebar-close" onclick="closeSidebar()" aria-label="Close menu">✕</button>
   <div class="sidebar-header">
     <div class="logo">
       <div class="logo-icon">🧠</div>
@@ -776,53 +873,68 @@ input:checked + .slider:before { transform: translateX(22px); background-color: 
 
   <div class="sidebar-section">
     <div class="sidebar-section-label">Overview</div>
-    <div class="nav-item active" onclick="showPage('dashboard')" id="nav-dashboard">
-      <span class="nav-icon">⊞</span> Dashboard
-    </div>
-    <div class="nav-item" onclick="showPage('history')" id="nav-history">
-      <span class="nav-icon">📋</span> History
-    </div>
+    <button class="nav-item active" onclick="showPage('dashboard')" id="nav-dashboard" role="tab">
+      <span class="nav-icon" aria-hidden="true">⊞</span> Dashboard
+    </button>
+    <button class="nav-item" onclick="showPage('history')" id="nav-history" role="tab">
+      <span class="nav-icon" aria-hidden="true">📋</span> History
+    </button>
   </div>
 
   <div class="sidebar-section">
-    <div class="sidebar-section-label">Practice Modes</div>
-    <div class="nav-item" onclick="showPage('memory')" id="nav-memory">
-      <span class="nav-icon">🧩</span> Memory Calc <span class="nav-badge">NEW</span>
-    </div>
-    <div class="nav-item" onclick="showPage('arithmetic')" id="nav-arithmetic">
-      <span class="nav-icon">🔢</span> Arithmetic
-    </div>
-    <div class="nav-item" onclick="showPage('roots')" id="nav-roots">
-      <span class="nav-icon">√</span> Roots
-    </div>
-    <div class="nav-item" onclick="showPage('fractions')" id="nav-fractions">
-      <span class="nav-icon">%</span> Fractions/Percent
-    </div>
-    <div class="nav-item" onclick="showPage('mixed')" id="nav-mixed">
-      <span class="nav-icon">🎲</span> Mixed Practice
-    </div>
-    <div class="nav-item" onclick="showPage('tables')" id="nav-tables">
-      <span class="nav-icon">📊</span> Tables Mastery <span class="nav-badge">1-25</span>
-    </div>
+    <div class="sidebar-section-label">Practice</div>
+    <button class="nav-item" onclick="showPage('arithmetic')" id="nav-arithmetic" role="tab">
+      <span class="nav-icon" aria-hidden="true">🔢</span> Arithmetic
+    </button>
+    <button class="nav-item" onclick="showPage('tables')" id="nav-tables" role="tab">
+      <span class="nav-icon" aria-hidden="true">📊</span> Tables <span class="nav-badge">1-25</span>
+    </button>
+    <button class="nav-item" onclick="showPage('roots')" id="nav-roots" role="tab">
+      <span class="nav-icon" aria-hidden="true">√</span> Roots
+    </button>
+    <button class="nav-item" onclick="showPage('fractions')" id="nav-fractions" role="tab">
+      <span class="nav-icon" aria-hidden="true">%</span> Fractions
+    </button>
+    <button class="nav-item" onclick="showPage('memory')" id="nav-memory" role="tab">
+      <span class="nav-icon" aria-hidden="true">🧩</span> Memory <span class="nav-badge" style="background:rgba(116,185,255,0.12);color:var(--accent4);">Recall</span>
+    </button>
+    <button class="nav-item" onclick="showPage('mixed')" id="nav-mixed" role="tab">
+      <span class="nav-icon" aria-hidden="true">🎲</span> Mixed
+    </button>
   </div>
 
   <div class="sidebar-section">
-    <div class="sidebar-section-label">Reference Tables</div>
-    <div class="nav-item" onclick="showPage('tbl-fractions')" id="nav-tbl-fractions">
-      <span class="nav-icon">📘</span> Fraction → %
-    </div>
-    <div class="nav-item" onclick="showPage('tbl-squares')" id="nav-tbl-squares">
-      <span class="nav-icon">📗</span> Perfect Squares
-    </div>
-    <div class="nav-item" onclick="showPage('tbl-cubes')" id="nav-tbl-cubes">
-      <span class="nav-icon">📙</span> Perfect Cubes
-    </div>
+    <div class="sidebar-section-label">References</div>
+    <button class="nav-item" onclick="showPage('tbl-fractions')" id="nav-tbl-fractions" role="tab">
+      <span class="nav-icon" aria-hidden="true">📘</span> Fraction → %
+    </button>
+    <button class="nav-item" onclick="showPage('tbl-squares')" id="nav-tbl-squares" role="tab">
+      <span class="nav-icon" aria-hidden="true">📗</span> Squares
+    </button>
+    <button class="nav-item" onclick="showPage('tbl-cubes')" id="nav-tbl-cubes" role="tab">
+      <span class="nav-icon" aria-hidden="true">📙</span> Cubes
+    </button>
   </div>
 
   <div class="sidebar-footer">
-    <div style="font-family:var(--mono);font-size:0.65rem;color:var(--text-dim);">
-      Sessions: <span id="sb-sessions" style="color:var(--accent)">0</span> &nbsp;|&nbsp;
-      Streak: <span id="sb-streak" style="color:var(--accent3)">0🔥</span>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div style="font-size:1.6rem;line-height:1;">🏆</div>
+      <div style="flex:1;min-width:0;">
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span style="font-family:var(--mono);font-size:0.6rem;color:var(--text-dim);">LEVEL</span>
+          <span style="font-family:var(--mono);font-size:0.85rem;font-weight:700;color:var(--accent);" id="sb-level">1</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;margin-top:2px;">
+          <div style="flex:1;height:3px;background:var(--border);border-radius:2px;overflow:hidden;">
+            <div style="height:100%;background:linear-gradient(90deg,var(--accent5),var(--accent));border-radius:2px;width:0%;transition:width 0.5s ease;" id="sb-xp-bar"></div>
+          </div>
+          <span style="font-family:var(--mono);font-size:0.55rem;color:var(--text-dim);" id="sb-xp-text">0 XP</span>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:space-between;margin-top:10px;font-family:var(--mono);font-size:0.6rem;color:var(--text-dim);">
+      <span>Sessions: <strong style="color:var(--accent);font-weight:700;" id="sb-sessions">0</strong></span>
+      <span>Streak: <strong style="color:var(--accent3);font-weight:700;" id="sb-streak">0🔥</strong></span>
     </div>
   </div>
 </nav>
@@ -832,7 +944,7 @@ input:checked + .slider:before { transform: translateX(22px); background-color: 
 
   <!-- Topbar -->
   <div class="topbar">
-    <button class="hamburger" onclick="toggleSidebar()" aria-label="Menu">
+    <button class="hamburger" onclick="toggleSidebar()" aria-label="Toggle menu">
       <span></span>
       <span></span>
       <span></span>
@@ -844,56 +956,82 @@ input:checked + .slider:before { transform: translateX(22px); background-color: 
     <div class="stats-row">
       <div class="mini-stat">Sessions <span class="mini-stat-val" id="top-sessions">0</span></div>
       <div class="mini-stat">Best <span class="mini-stat-val" id="top-best">—</span></div>
-      <div class="mini-stat">Streak <span class="mini-stat-val" id="top-streak">0🔥</span></div>
-      <div class="mini-stat">Total XP <span class="mini-stat-val" id="top-xp">0</span></div>
+      <div class="mini-stat" title="Current streak">Streak <span class="mini-stat-val" id="top-streak">0</span></div>
+      <div class="mini-stat" title="Total experience points">XP <span class="mini-stat-val" id="top-xp">0</span></div>
+      <div class="mini-stat" title="Your level">Lv. <span class="mini-stat-val" id="top-level">1</span></div>
     </div>
   </div>
 
-  <div class="content">
+  <div class="content" id="main-content">
 
     <!-- ══ DASHBOARD ══ -->
     <div class="panel active" id="page-dashboard">
-      <div class="section-label" style="margin-bottom:20px;">Quick Start</div>
-      <div class="dash-grid">
-        <div class="dash-card green" onclick="showPage('memory')">
-          <div class="dash-card-icon">🧩</div>
-          <div class="dash-card-title">Memory Calculation</div>
-          <div class="dash-card-sub">See sets, memorize, recall answers</div>
-          <div class="dash-card-arrow">›</div>
+      <!-- Hero -->
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px 32px;margin-bottom:24px;box-shadow:var(--shadow-sm);">
+        <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;">
+          <div style="font-size:3rem;line-height:1;flex-shrink:0;">🧠</div>
+          <div style="flex:1;min-width:200px;">
+            <div style="font-size:1.4rem;font-weight:800;margin-bottom:2px;">Welcome back!</div>
+            <div style="color:var(--text-dim);font-size:0.85rem;" id="dash-hero-sub">Select a mode below to start training.</div>
+          </div>
+          <div style="display:flex;gap:16px;flex-wrap:wrap;">
+            <div style="text-align:center;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 20px;min-width:80px;">
+              <div style="font-family:var(--mono);font-size:1.5rem;font-weight:700;color:var(--accent);" id="dash-level">1</div>
+              <div style="font-family:var(--mono);font-size:0.55rem;color:var(--text-dim);letter-spacing:2px;text-transform:uppercase;">Level</div>
+            </div>
+            <div style="text-align:center;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 20px;min-width:80px;">
+              <div style="font-family:var(--mono);font-size:1.5rem;font-weight:700;color:var(--accent3);" id="dash-streak">0</div>
+              <div style="font-family:var(--mono);font-size:0.55rem;color:var(--text-dim);letter-spacing:2px;text-transform:uppercase;">Streak</div>
+            </div>
+            <div style="text-align:center;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 20px;min-width:80px;">
+              <div style="font-family:var(--mono);font-size:1.5rem;font-weight:700;color:var(--accent4);" id="dash-xp">0</div>
+              <div style="font-family:var(--mono);font-size:0.55rem;color:var(--text-dim);letter-spacing:2px;text-transform:uppercase;">XP</div>
+            </div>
+          </div>
         </div>
-        <div class="dash-card blue" onclick="showPage('arithmetic')">
+      </div>
+
+      <div class="section-label">Quick Start</div>
+      <div class="dash-grid">
+        <div class="dash-card green" onclick="showPage('arithmetic')" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' ')showPage('arithmetic')">
           <div class="dash-card-icon">🔢</div>
           <div class="dash-card-title">Arithmetic Drill</div>
           <div class="dash-card-sub">+, −, ×, ÷ speed practice</div>
           <div class="dash-card-arrow">›</div>
         </div>
-        <div class="dash-card yellow" onclick="showPage('roots')">
+        <div class="dash-card blue" onclick="showPage('tables')" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' ')showPage('tables')">
+          <div class="dash-card-icon">📊</div>
+          <div class="dash-card-title">Tables Mastery</div>
+          <div class="dash-card-sub">Learn ×1 to ×25 with spaced repetition</div>
+          <div class="dash-card-arrow">›</div>
+        </div>
+        <div class="dash-card yellow" onclick="showPage('roots')" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' ')showPage('roots')">
           <div class="dash-card-icon">√</div>
           <div class="dash-card-title">Square & Cube Roots</div>
           <div class="dash-card-sub">Progressive root memorization</div>
           <div class="dash-card-arrow">›</div>
         </div>
-        <div class="dash-card purple" onclick="showPage('fractions')">
+        <div class="dash-card purple" onclick="showPage('fractions')" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' ')showPage('fractions')">
           <div class="dash-card-icon">%</div>
           <div class="dash-card-title">Fractions ↔ Percentages</div>
           <div class="dash-card-sub">Conversion mastery</div>
           <div class="dash-card-arrow">›</div>
         </div>
-        <div class="dash-card red" onclick="showPage('mixed')">
-          <div class="dash-card-icon">🎲</div>
-          <div class="dash-card-title">Mixed Practice</div>
-          <div class="dash-card-sub">Random mode challenge</div>
+        <div class="dash-card" style="--card-accent:var(--accent5);" onclick="showPage('memory')" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' ')showPage('memory')">
+          <div class="dash-card-icon">🧩</div>
+          <div class="dash-card-title">Memory Calculation</div>
+          <div class="dash-card-sub">Memorize sets, recall from memory</div>
           <div class="dash-card-arrow">›</div>
         </div>
-        <div class="dash-card purple" onclick="showPage('tables')" style="grid-column:span 2;">
-          <div class="dash-card-icon">📊</div>
-          <div class="dash-card-title">Tables Mastery (1–25)</div>
-          <div class="dash-card-sub">Proven Leitner spaced-repetition: Master all tables in one day</div>
+        <div class="dash-card" style="--card-accent:var(--accent2);" onclick="showPage('mixed')" tabindex="0" role="button" onkeydown="if(event.key==='Enter'||event.key===' ')showPage('mixed')">
+          <div class="dash-card-icon">🎲</div>
+          <div class="dash-card-title">Mixed Practice</div>
+          <div class="dash-card-sub">Random challenge from all modes</div>
           <div class="dash-card-arrow">›</div>
         </div>
       </div>
 
-      <div class="section-label">Recent History</div>
+      <div class="section-label">Recent Sessions</div>
       <div id="dash-history-preview"></div>
     </div>
 
@@ -953,6 +1091,7 @@ input:checked + .slider:before { transform: translateX(22px); background-color: 
 
           <div class="btn-row">
             <button class="btn btn-primary" onclick="startMemSession()">▶ Start Memory Training</button>
+            <button class="btn btn-ghost" onclick="showPage('dashboard')">← Back</button>
           </div>
         </div>
       </div>
@@ -986,9 +1125,9 @@ input:checked + .slider:before { transform: translateX(22px); background-color: 
       <!-- Answer view -->
       <div id="mem-answer-wrap" style="display:none;">
         <div class="config-panel" style="padding:28px;">
-          <div style="margin-bottom:18px;">
-            <div style="font-size:1rem;font-weight:700;margin-bottom:4px;">Enter Your Answers</div>
-            <div style="color:var(--text-dim);font-size:0.83rem;">All sets are hidden. Recall each result from memory.</div>
+          <div style="margin-bottom:16px;">
+            <div style="font-size:1rem;font-weight:700;margin-bottom:2px;">Enter Your Answers</div>
+            <div style="color:var(--text-dim);font-size:0.83rem;">Recall each result from memory and type it in.</div>
           </div>
           <div class="ans-rows" id="mem-ans-rows"></div>
           <div class="divider"></div>
@@ -1017,6 +1156,7 @@ input:checked + .slider:before { transform: translateX(22px); background-color: 
           <div class="btn-row" style="margin-top:20px;">
             <button class="btn btn-primary" onclick="startMemSession()">↺ Play Again</button>
             <button class="btn btn-secondary" onclick="memReset()">⚙ New Config</button>
+            <button class="btn btn-ghost" onclick="memReset()">← Back to Config</button>
           </div>
         </div>
       </div>
@@ -1030,29 +1170,29 @@ input:checked + .slider:before { transform: translateX(22px); background-color: 
           <div class="config-panel-sub">Speed practice for all arithmetic operations.</div>
 
           <div class="cfg-item" style="margin-bottom:18px;">
-            <label>Select Mode</label>
+            <label>Select Modes <span style="color:var(--text-dim);font-size:0.7rem;font-family:var(--mono);">(tap to toggle multiple)</span></label>
             <div class="mode-grid" id="arith-mode-cards">
-              <div class="mode-card selected" data-mode="Addition" onclick="selArithMode(this)">
+              <div class="mode-card selected" data-mode="Addition" onclick="toggleArithMode(this)">
                 <div class="mode-card-icon">➕</div>
                 <div class="mode-card-name">Addition</div>
                 <div class="mode-card-desc">Sum up numbers</div>
               </div>
-              <div class="mode-card" data-mode="Subtraction" onclick="selArithMode(this)">
+              <div class="mode-card" data-mode="Subtraction" onclick="toggleArithMode(this)">
                 <div class="mode-card-icon">➖</div>
                 <div class="mode-card-name">Subtraction</div>
                 <div class="mode-card-desc">Find the difference</div>
               </div>
-              <div class="mode-card" data-mode="Carry Subtraction" onclick="selArithMode(this)">
+              <div class="mode-card" data-mode="Carry Subtraction" onclick="toggleArithMode(this)">
                 <div class="mode-card-icon">↩</div>
                 <div class="mode-card-name">Carry Subtraction</div>
                 <div class="mode-card-desc">Borrow method drill</div>
               </div>
-              <div class="mode-card" data-mode="Multiplication" onclick="selArithMode(this)">
+              <div class="mode-card" data-mode="Multiplication" onclick="toggleArithMode(this)">
                 <div class="mode-card-icon">✖</div>
                 <div class="mode-card-name">Multiplication</div>
                 <div class="mode-card-desc">Times tables & beyond</div>
               </div>
-              <div class="mode-card" data-mode="Division" onclick="selArithMode(this)">
+              <div class="mode-card" data-mode="Division" onclick="toggleArithMode(this)">
                 <div class="mode-card-icon">➗</div>
                 <div class="mode-card-name">Division</div>
                 <div class="mode-card-desc">Quotient finder</div>
@@ -1082,6 +1222,7 @@ input:checked + .slider:before { transform: translateX(22px); background-color: 
 
           <div class="btn-row" style="margin-top:20px;">
             <button class="btn btn-primary" onclick="startArith()">▶ Start Drill</button>
+            <button class="btn btn-ghost" onclick="showPage('dashboard')">← Back</button>
           </div>
         </div>
       </div>
@@ -1126,24 +1267,44 @@ input:checked + .slider:before { transform: translateX(22px); background-color: 
           <div class="config-panel-title">√ Roots Practice</div>
           <div class="config-panel-sub">Progressive memorization — master a root 5 times to unlock a harder one.</div>
           <div class="cfg-item" style="margin-bottom:20px;">
-            <label>Select Mode</label>
-            <div style="display:flex;gap:10px;flex-wrap:wrap;">
-              <div class="mode-card selected" data-root="square" onclick="selRootMode(this)" style="flex:1;min-width:150px;">
+            <label>Select Modes <span style="color:var(--text-dim);font-size:0.7rem;font-family:var(--mono);">(tap to toggle multiple)</span></label>
+            <div class="mode-grid" id="roots-mode-cards">
+              <div class="mode-card selected" data-root="sq-to-root" onclick="toggleRootMode(this)">
                 <div class="mode-card-icon">√</div>
-                <div class="mode-card-name">Square Roots</div>
-                <div class="mode-card-desc">Perfect squares 13²–50²</div>
+                <div class="mode-card-name">Square → Root</div>
+                <div class="mode-card-desc">√196 = ?</div>
               </div>
-              <div class="mode-card" data-root="cube" onclick="selRootMode(this)" style="flex:1;min-width:150px;">
+              <div class="mode-card" data-root="root-to-sq" onclick="toggleRootMode(this)">
+                <div class="mode-card-icon">²</div>
+                <div class="mode-card-name">Root → Square</div>
+                <div class="mode-card-desc">14² = ?</div>
+              </div>
+              <div class="mode-card" data-root="cu-to-root" onclick="toggleRootMode(this)">
                 <div class="mode-card-icon">∛</div>
-                <div class="mode-card-name">Cube Roots</div>
-                <div class="mode-card-desc">Perfect cubes 3³–20³</div>
+                <div class="mode-card-name">Cube → Root</div>
+                <div class="mode-card-desc">∛343 = ?</div>
               </div>
+              <div class="mode-card" data-root="root-to-cu" onclick="toggleRootMode(this)">
+                <div class="mode-card-icon">³</div>
+                <div class="mode-card-name">Root → Cube</div>
+                <div class="mode-card-desc">7³ = ?</div>
+              </div>
+            </div>
+          </div>
+          <div class="cfg-item" style="margin-bottom:18px;" id="roots-sq-range-wrap">
+            <label>Square Range <span style="color:var(--text-dim);font-size:0.7rem;font-family:var(--mono);">(tap ranges to practice)</span></label>
+            <div class="diff-row" id="roots-sq-ranges">
+              <div class="diff-btn sel-easy" data-range="13-19" onclick="toggleRootSqRange('13-19',this)">13–19</div>
+              <div class="diff-btn sel-easy" data-range="21-29" onclick="toggleRootSqRange('21-29',this)">21–29</div>
+              <div class="diff-btn sel-easy" data-range="31-39" onclick="toggleRootSqRange('31-39',this)">31–39</div>
+              <div class="diff-btn sel-easy" data-range="41-49" onclick="toggleRootSqRange('41-49',this)">41–49</div>
             </div>
           </div>
           <div class="btn-row">
             <button class="btn btn-primary" onclick="startRoots()">▶ Start Practice</button>
             <button class="btn btn-ghost" onclick="showPage('tbl-squares')">📗 View Square Table</button>
             <button class="btn btn-ghost" onclick="showPage('tbl-cubes')">📙 View Cube Table</button>
+            <button class="btn btn-ghost" onclick="showPage('dashboard')">← Back</button>
           </div>
 
           <!-- Timed Challenge -->
@@ -1180,7 +1341,7 @@ input:checked + .slider:before { transform: translateX(22px); background-color: 
           <div class="question-text" id="roots-question">—</div>
           <input class="answer-field" id="roots-ans" type="text" placeholder="?" autocomplete="off"
                  inputmode="numeric" pattern="[0-9]*"
-                 oninput="checkRoot()" onkeydown="rootHintKey(event)"/>
+                 oninput="onRootInput()" onkeydown="rootHintKey(event)"/>
           <div class="hint-text" id="roots-hint">Press Space for hint</div>
           <div class="practice-meta">
             <div class="practice-stat-chip">Score <span id="roots-score">0</span></div>
@@ -1191,7 +1352,7 @@ input:checked + .slider:before { transform: translateX(22px); background-color: 
         </div>
         <div style="margin-top:14px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 16px;">
           <div style="font-family:var(--mono);font-size:0.65rem;color:var(--text-dim);margin-bottom:8px;letter-spacing:2px;">CURRENT POOL</div>
-          <div id="roots-pool-display" style="display:flex;gap:8px;flex-wrap:wrap;"></div>
+          <div id="roots-pool-display" style="display:flex;gap:6px;flex-wrap:wrap;"></div>
         </div>
         <div class="practice-actions">
           <button class="btn btn-ghost" onclick="rootsBack()">← Back to Config</button>
@@ -1226,9 +1387,22 @@ input:checked + .slider:before { transform: translateX(22px); background-color: 
               </div>
             </div>
           </div>
+          <div class="cfg-item" style="margin-bottom:18px;">
+            <label>Fraction Pool</label>
+            <div class="diff-row">
+              <div class="diff-btn sel-easy" onclick="setFracPool('all',this)">All Fractions</div>
+              <div class="diff-btn" onclick="setFracPool('selected',this)">Selected...</div>
+            </div>
+            <div id="frac-picker-wrap" style="display:none;margin-top:12px;max-height:260px;overflow-y:auto;border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 12px;background:var(--surface2);"></div>
+            <script id="frac-embedded-selected" type="application/json">["2/5","3/5","4/5","6/5","7/5","8/5","11/5","1/6","5/6","1/7","1/8","3/8","5/8","7/8","1/9","2/9","4/9","5/9","7/9","8/9","1/11","2/11","3/11","4/11","5/11","6/11","7/11","8/11","9/11","1/12","5/12","7/12","11/12","1/13","2/13","1/14","3/14","5/14","1/15","2/15","4/15","7/15","8/15","14/15","1/16","3/16","5/16","7/16","9/16","15/16","1/17","1/18","1/19","1/24","1/25","2/25","3/25","4/25","6/25","7/25","8/25","9/25","11/25","12/25","13/25","14/25","16/25","17/25","18/25","19/25","21/25","22/25","1/30","1/40","3/40","7/40","9/40","11/40","13/40","19/40","21/40","23/40"]</script>
+            <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;" id="frac-picker-actions">
+              <button class="btn btn-ghost" onclick="downloadFracConfig()" style="font-size:0.7rem;padding:5px 12px;">💾 Save selections to file</button>
+            </div>
+          </div>
           <div class="btn-row">
             <button class="btn btn-primary" onclick="startFrac()">▶ Start Practice</button>
             <button class="btn btn-ghost" onclick="showPage('tbl-fractions')">📘 View Table</button>
+            <button class="btn btn-ghost" onclick="showPage('dashboard')">← Back</button>
           </div>
 
           <!-- Timed Challenge -->
@@ -1265,7 +1439,7 @@ input:checked + .slider:before { transform: translateX(22px); background-color: 
           <div class="question-text" id="frac-question">—</div>
           <input class="answer-field" id="frac-ans" type="text" placeholder="?" autocomplete="off"
                  inputmode="numeric" pattern="[0-9\.]*"
-                 oninput="checkFrac()" onkeydown="fracHintKey(event)"/>
+                 oninput="onFracInput()" onkeydown="fracHintKey(event)"/>
           <div class="hint-text" id="frac-hint">Press Space for hint</div>
           <div class="practice-meta">
             <div class="practice-stat-chip">Score <span id="frac-score">0</span></div>
@@ -1306,6 +1480,7 @@ input:checked + .slider:before { transform: translateX(22px); background-color: 
 
           <div class="btn-row">
             <button class="btn btn-primary" onclick="startMixed()">▶ Start Mixed Practice</button>
+            <button class="btn btn-ghost" onclick="showPage('dashboard')">← Back</button>
           </div>
         </div>
       </div>
@@ -1363,11 +1538,34 @@ input:checked + .slider:before { transform: translateX(22px); background-color: 
           <div class="btn-row" style="margin-top:20px;">
             <button class="btn btn-primary" onclick="tblSmartStart()">▶ Smart Start (Next Table)</button>
             <button class="btn btn-ghost" onclick="tblResetProgress()">↺ Reset Progress</button>
+            <button class="btn btn-ghost" onclick="showPage('dashboard')">← Back</button>
+          </div>
           </div>
         </div>
-      </div>
 
-      <!-- Study Phase -->
+        <!-- Custom Facts -->
+        <div class="config-panel" style="margin-top:20px;">
+          <div class="config-panel-title">✏️ Custom Facts</div>
+          <div class="config-panel-sub">Save your own math facts ( + − × ÷ ) and practice them anytime.</div>
+
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;align-items:center;">
+            <input class="answer-field" id="tbl-custom-a" type="text" placeholder="a" style="width:70px;text-align:center;" inputmode="numeric" pattern="[0-9]*" onkeydown="if(event.key==='Enter')document.getElementById('tbl-custom-op-+').click()">
+            <div class="diff-row" id="tbl-custom-op-select" style="gap:4px;">
+              <div class="diff-btn sel-easy" data-op="+" onclick="selectCustomOp(this)" id="tbl-custom-op-+" style="min-width:36px;text-align:center;font-size:1rem;">+</div>
+              <div class="diff-btn" data-op="-" onclick="selectCustomOp(this)" style="min-width:36px;text-align:center;font-size:1rem;">−</div>
+              <div class="diff-btn" data-op="*" onclick="selectCustomOp(this)" style="min-width:36px;text-align:center;font-size:1rem;">×</div>
+              <div class="diff-btn" data-op="/" onclick="selectCustomOp(this)" style="min-width:36px;text-align:center;font-size:1rem;">÷</div>
+            </div>
+            <input class="answer-field" id="tbl-custom-b" type="text" placeholder="b" style="width:70px;text-align:center;" inputmode="numeric" pattern="[0-9]*" onkeydown="if(event.key==='Enter')tblAddCustomFact()">
+            <button class="btn btn-primary" onclick="tblAddCustomFact()" style="padding:8px 18px;">+ Add</button>
+          </div>
+
+          <div id="tbl-custom-facts-list"></div>
+
+          <div class="btn-row" style="margin-top:16px;">
+            <button class="btn btn-primary" id="tbl-custom-practice-btn" onclick="tblPracticeCustomFacts()" disabled>▶ Practice Selected (0)</button>
+          </div>
+        </div>
       <div id="tbl-study" style="display:none;">
         <div class="config-panel" style="padding:28px;">
           <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px;">
@@ -1499,30 +1697,30 @@ input:checked + .slider:before { transform: translateX(22px); background-color: 
 </div><!-- /app -->
 
 <!-- Bottom Navigation for Mobile -->
-<div class="bottom-nav">
+<nav class="bottom-nav" aria-label="Primary navigation">
   <div class="bottom-nav-inner">
-    <div class="b-nav-item active" onclick="showPage('dashboard')" id="bnav-dashboard">
-      <span class="b-nav-icon">⊞</span>
-      <span class="b-nav-label">Dash</span>
-    </div>
-    <div class="b-nav-item" onclick="showPage('arithmetic')" id="bnav-arithmetic">
-      <span class="b-nav-icon">🔢</span>
+    <button class="b-nav-item active" onclick="showPage('dashboard')" id="bnav-dashboard" aria-label="Dashboard">
+      <span class="b-nav-icon" aria-hidden="true">⊞</span>
+      <span class="b-nav-label">Home</span>
+    </button>
+    <button class="b-nav-item" onclick="showPage('arithmetic')" id="bnav-arithmetic" aria-label="Arithmetic practice">
+      <span class="b-nav-icon" aria-hidden="true">🔢</span>
       <span class="b-nav-label">Math</span>
-    </div>
-    <div class="b-nav-item" onclick="showPage('tables')" id="bnav-tables">
-      <span class="b-nav-icon">📊</span>
+    </button>
+    <button class="b-nav-item" onclick="showPage('tables')" id="bnav-tables" aria-label="Tables mastery">
+      <span class="b-nav-icon" aria-hidden="true">📊</span>
       <span class="b-nav-label">Tables</span>
-    </div>
-    <div class="b-nav-item" onclick="showPage('history')" id="bnav-history">
-      <span class="b-nav-icon">📋</span>
-      <span class="b-nav-label">Logs</span>
-    </div>
-    <div class="b-nav-item" onclick="toggleSidebar()">
-      <span class="b-nav-icon">☰</span>
-      <span class="b-nav-label">More</span>
-    </div>
+    </button>
+    <button class="b-nav-item" onclick="showPage('roots')" id="bnav-roots" aria-label="Roots practice">
+      <span class="b-nav-icon" aria-hidden="true">√</span>
+      <span class="b-nav-label">Roots</span>
+    </button>
+    <button class="b-nav-item" onclick="showPage('mixed')" id="bnav-mixed" aria-label="Mixed practice">
+      <span class="b-nav-icon" aria-hidden="true">🎲</span>
+      <span class="b-nav-label">Mixed</span>
+    </button>
   </div>
-</div>
+</nav>
 
 <div class="flash-overlay" id="flashOverlay">
   <div class="flash-emoji" id="flashEmoji"></div>
@@ -1560,13 +1758,22 @@ const PERCENT_TO_FRACTIONS = Object.fromEntries(Object.entries(FRACTIONS_TO_PERC
 // ═══════════════════════════════════════════════════════
 // GLOBAL STATE
 // ═══════════════════════════════════════════════════════
-let history = JSON.parse(localStorage.getItem('nc_history')||'[]');
-let streak  = parseInt(localStorage.getItem('nc_streak')||'0');
-let globalScore = parseInt(localStorage.getItem('nc_gscore')||'0');
+function safeGet(key, def){
+  try{ const v=localStorage.getItem(key); return v!==null ? JSON.parse(v) : def; }
+  catch(e){ return def; }
+}
+function safeSet(key, val){
+  try{ localStorage.setItem(key, typeof val==='string'?val:JSON.stringify(val)); }
+  catch(e){ /* storage full or disabled */ }
+}
+
+let history = safeGet('nc_history')||[];
+let streak  = parseInt(safeGet('nc_streak')||'0')||0;
+let globalScore = parseInt(safeGet('nc_gscore')||'0')||0;
 
 function updateGlobalScore(points) {
   globalScore += points;
-  localStorage.setItem('nc_gscore', globalScore);
+  safeSet('nc_gscore', globalScore);
 }
 
 // Memory config
@@ -1577,26 +1784,78 @@ const DIFF_MAX = { easy:9, medium:50, hard:99 };
 let memSession = { sets:[], peeked:false, startTime:null, timerInt:null, timeLeft:30 };
 
 // Arithmetic
-let arithMode = 'Addition';
-let arithDigits = { size:2, first:1, second:1, num:2, den:1 };
-let arithState = { answer:null, hint:'', score:0, correct:0, total:0, streak:[] };
+let arithModes = ['Addition'];
+let arithOperandCount = 2;
+let arithDigits = { first:2, second:2, num:2, den:1 };
+let arithState = { answer:null, hint:'', score:0, correct:0, total:0, streak:[], pending:false };
 
 // Roots
-let rootMode = 'square';
+let rootModes = ['sq-to-root'];
+const ROOT_MODE_ALL = {
+  'sq-to-root': PERFECT_SQUARES.map(p => p.val),
+  'root-to-sq': PERFECT_SQUARES.map(p => p.n),
+  'cu-to-root': PERFECT_CUBES.map(p => p.val),
+  'root-to-cu': PERFECT_CUBES.map(p => p.n)
+};
+const ROOT_POOL_SIZES = { 'sq-to-root': 8, 'root-to-sq': 8, 'cu-to-root': 4, 'root-to-cu': 4 };
+const ROOT_SQ_RANGES = [
+  { label:'13-19', min:13, max:19 },
+  { label:'21-29', min:21, max:29 },
+  { label:'31-39', min:31, max:39 },
+  { label:'41-49', min:41, max:49 }
+];
+let rootSqRanges = ROOT_SQ_RANGES.map(r => r.label);
+
+function getRootAllItems(mode) {
+  const all = ROOT_MODE_ALL[mode];
+  if (mode !== 'sq-to-root' && mode !== 'root-to-sq') return all;
+  return all.filter(v => {
+    const n = mode === 'sq-to-root' ? Math.round(Math.sqrt(v)) : v;
+    return rootSqRanges.some(r => {
+      const rng = ROOT_SQ_RANGES.find(x => x.label === r);
+      return rng && rng.min <= n && n <= rng.max;
+    });
+  });
+}
+
+function buildRootPool(mode) {
+  const all = getRootAllItems(mode);
+  const size = ROOT_POOL_SIZES[mode];
+  const shuffled = shuffle([...all]);
+  const items = shuffled.slice(0, Math.min(size, shuffled.length));
+  const correctCount = {};
+  items.forEach(v => { correctCount[v] = 0; });
+  return { items, correctCount, masteredItems: [] };
+}
 let rootState = {
-  pool:[], correctCount:{}, mastered:0, score:0, total:0,
-  answer:null, hint:'', streak:[], curNum:null
+  pools: {
+    'sq-to-root': buildRootPool('sq-to-root'),
+    'root-to-sq': buildRootPool('root-to-sq'),
+    'cu-to-root': buildRootPool('cu-to-root'),
+    'root-to-cu': buildRootPool('root-to-cu')
+  },
+  mastered:0, score:0, correct:0, total:0,
+  answer:null, hint:'', streak:[], curItem:null, curMode:'', pending:false
 };
 
 // Fractions
 let fracMode = 'f2p';
-let fracState = { answer:null, hint:'', score:0, correct:0, total:0, streak:[], isF2P:true };
+let fracState = { answer:null, hint:'', score:0, correct:0, total:0, streak:[], isF2P:true, pending:false };
+let fracPoolMode = 'all';
+let fracSelected = (function(){
+  var fromLS = safeGet('nc_frac_selected');
+  if(fromLS) return fromLS;
+  var embedded = document.getElementById('frac-embedded-selected');
+  if(embedded) try { var d = JSON.parse(embedded.textContent); if(d && d.length) return d; } catch(e) {}
+  return Object.keys(FRACTIONS_TO_PERCENT);
+})();
 
 // Mixed
-let mixedState = { answer:null, hint:'', score:0, correct:0, total:0, streak:[], subMode:'' };
+let mixedState = { answer:null, hint:'', score:0, correct:0, total:0, streak:[], subMode:'', pending:false };
 
 // Global Drill Timer
 let drillTimer = { interval: null, timeLeft: 0, total: 0, active: false, mode: '' };
+let allTimers = []; // registry for cleanup on unload
 
 // ═══════════════════════════════════════════════════════
 // NAVIGATION
@@ -1638,6 +1897,13 @@ function showPage(id) {
   if(id==='tbl-squares')    buildSqTable();
   if(id==='tbl-cubes')      buildCuTable();
   if(id==='tables')         tblRenderOverview();
+  if(id==='fractions') {
+    const wrap = document.getElementById('frac-picker-wrap');
+    if(wrap) {
+      wrap.style.display = fracPoolMode === 'selected' ? 'block' : 'none';
+      if(fracPoolMode === 'selected') renderFracPicker();
+    }
+  }
   closeSidebar();
 }
 
@@ -1665,15 +1931,34 @@ function closeSidebar() {
 // ═══════════════════════════════════════════════════════
 // STATS
 // ═══════════════════════════════════════════════════════
+function getLevel(xp) {
+  return Math.max(1, Math.floor(Math.sqrt(xp / 50)) + 1);
+}
+function getLevelProgress(xp) {
+  const lvl = getLevel(xp);
+  const xpForCurrent = 50 * Math.pow(lvl - 1, 2);
+  const xpForNext = 50 * Math.pow(lvl, 2);
+  return (xp - xpForCurrent) / (xpForNext - xpForCurrent);
+}
+
 function updateStats() {
   const sessions = history.length;
   const scores = history.map(h=>h.score);
   const best = scores.length ? Math.max(...scores)+'%' : '—';
+  const level = getLevel(globalScore);
+  const progress = getLevelProgress(globalScore);
   ['top-sessions','sb-sessions'].forEach(id=>{ const e=document.getElementById(id); if(e) e.textContent=sessions; });
   const e1=document.getElementById('top-best'); if(e1) e1.textContent=best;
   const e2=document.getElementById('top-streak'); if(e2) e2.textContent=streak+'🔥';
   const e3=document.getElementById('sb-streak'); if(e3) e3.textContent=streak+'🔥';
   const e4=document.getElementById('top-xp'); if(e4) e4.textContent=globalScore.toLocaleString();
+  const e5=document.getElementById('sb-level'); if(e5) e5.textContent=level;
+  const e6=document.getElementById('sb-xp-bar'); if(e6) e6.style.width=(progress*100)+'%';
+  const e7=document.getElementById('sb-xp-text'); if(e7) e7.textContent=globalScore.toLocaleString()+' XP';
+  const e8=document.getElementById('top-level'); if(e8) e8.textContent=level;
+  const e9=document.getElementById('dash-level'); if(e9) e9.textContent=level;
+  const e10=document.getElementById('dash-streak'); if(e10) e10.textContent=streak;
+  const e11=document.getElementById('dash-xp'); if(e11) e11.textContent=globalScore.toLocaleString();
 }
 
 function saveHistory(entry) {
@@ -1683,14 +1968,14 @@ function saveHistory(entry) {
   
   history.unshift(entry);
   if(history.length>100) history.pop();
-  localStorage.setItem('nc_history', JSON.stringify(history));
+  safeSet('nc_history', history);
 }
 
 function clearHistory() {
   if(!confirm('Clear all history?')) return;
   history=[]; streak=0;
-  localStorage.removeItem('nc_history');
-  localStorage.removeItem('nc_streak');
+  safeSet('nc_history', history);
+  safeSet('nc_streak', streak);
   updateStats();
   renderFullHistory();
   renderDashHistory();
@@ -1700,22 +1985,50 @@ function clearHistory() {
 // HELPERS
 // ═══════════════════════════════════════════════════════
 function rnd(max,min=1){return Math.floor(Math.random()*(max-min+1))+min;}
+function shuffle(arr){
+  for(let i=arr.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]]; }
+  return arr;
+}
 function flash(emoji){
   const o=document.getElementById('flashOverlay'),t=document.getElementById('flashEmoji');
   t.textContent=emoji; o.classList.add('show');
   setTimeout(()=>o.classList.remove('show'),700);
 }
+function confetti(){
+  const colors=['#4fffb0','#ff6b6b','#ffd166','#74b9ff','#a29bfe','#ff9ff3'];
+  for(let i=0;i<30;i++){
+    const el=document.createElement('div');
+    el.className='confetti-piece';
+    el.style.left=Math.random()*100+'vw';
+    el.style.top=Math.random()*100+'vh';
+    el.style.background=colors[Math.floor(Math.random()*colors.length)];
+    el.style.animationDelay=Math.random()*0.3+'s';
+    el.style.width=(3+Math.random()*4)+'px';
+    el.style.height=(3+Math.random()*4)+'px';
+    document.body.appendChild(el);
+    setTimeout(()=>el.remove(),1200);
+  }
+}
+
 function flashCard(id){
   const c=document.getElementById(id);
-  c.classList.remove('flash-correct');
+  c.classList.remove('flash-correct','flash-wrong');
   void c.offsetWidth;
   c.classList.add('flash-correct');
+}
+function flashCardWrong(id){
+  const c=document.getElementById(id);
+  c.classList.remove('flash-correct','flash-wrong');
+  void c.offsetWidth;
+  c.classList.add('flash-wrong');
 }
 
 function buildStreakBar(id, streakArr, max=10) {
   const bar = document.getElementById(id);
   if(!bar) return;
-  bar.innerHTML = Array.from({length:max},(_,i)=>`<div class="streak-dot ${i<streakArr.length?'lit':''}"></div>`).join('');
+  const dots = Array.from({length:max},(_,i)=>`<div class="streak-dot ${i<streakArr.length?'lit':''}"></div>`).join('');
+  const count = streakArr.length;
+  bar.innerHTML = dots + (count > 0 ? `<span class="streak-count">${count}</span>` : '');
 }
 
 // ── DRILL TIMER LOGIC ──
@@ -1737,15 +2050,18 @@ function startDrillTimer(mode, duration, onEnd) {
     ring.style.stroke = 'var(--accent)';
   }
 
+  const circumference = ring ? 2 * Math.PI * parseFloat(ring.getAttribute('r')) : 88;
+
   drillTimer.interval = setInterval(() => {
     drillTimer.timeLeft--;
     if(num) num.textContent = drillTimer.timeLeft;
     
     if(ring) {
-      const pct = drillTimer.timeLeft / drillTimer.total;
-      ring.style.strokeDashoffset = 88 * (1 - pct);
+      const pct = Math.max(0, drillTimer.timeLeft / drillTimer.total);
+      ring.style.strokeDashoffset = circumference * (1 - pct);
       if(pct < 0.25) ring.style.stroke = 'var(--accent2)';
       else if(pct < 0.5) ring.style.stroke = 'var(--accent3)';
+      else ring.style.stroke = 'var(--accent)';
     }
 
     if(drillTimer.timeLeft <= 0) {
@@ -1753,19 +2069,22 @@ function startDrillTimer(mode, duration, onEnd) {
       if(onEnd) onEnd();
     }
   }, 1000);
+  allTimers.push(drillTimer.interval);
 }
 
 function stopDrillTimer() {
-  if(drillTimer.interval) clearInterval(drillTimer.interval);
+  if(drillTimer.interval) { clearInterval(drillTimer.interval); allTimers = allTimers.filter(t=>t!==drillTimer.interval); }
   drillTimer.interval = null;
   drillTimer.active = false;
-  const display = document.getElementById(drillTimer.mode + '-timer-display');
-  if(display) display.style.display = 'none';
+  if(drillTimer.mode) {
+    const display = document.getElementById(drillTimer.mode + '-timer-display');
+    if(display) display.style.display = 'none';
+  }
 }
 
 function finishTimedSession(mode, state) {
   stopDrillTimer();
-  const finalTotal = state.answer ? state.total - 1 : state.total;
+  const finalTotal = state.pending ? state.total - 1 : state.total;
   const score = finalTotal > 0 ? Math.round((state.correct / finalTotal) * 100) : 0;
   
   // Save to history
@@ -1786,17 +2105,17 @@ function finishTimedSession(mode, state) {
   overlay.style.background = 'rgba(8,8,16,0.98)';
   
   overlay.innerHTML = `
-    <div class="config-panel" style="width:90%; max-width:500px; text-align:center; animation: fadeIn 0.4s ease;">
-      <div class="result-hero" style="padding: 10px 0;">
-        <div style="font-size:3rem; margin-bottom:10px;">⏱</div>
+    <div class="config-panel" style="width:90%; max-width:460px; text-align:center; animation: fadeIn 0.4s ease; box-shadow:var(--shadow-lg);">
+      <div class="result-hero" style="padding: 8px 0;">
+        <div style="font-size:2.8rem; margin-bottom:8px;">⏱</div>
         <div class="result-pct">${score}%</div>
         <div class="result-lbl">ACCURACY</div>
-        <div class="result-msg">${finalTotal} Problems Solved</div>
+        <div class="result-msg">${finalTotal} problems solved</div>
       </div>
-      <div class="res-grid" style="margin: 15px 0;">
+      <div class="res-grid" style="margin: 12px 0;">
         <div class="res-stat"><div class="res-stat-val">${state.correct}</div><div class="res-stat-lbl">Correct</div></div>
         <div class="res-stat"><div class="res-stat-val">${state.score}</div><div class="res-stat-lbl">Points</div></div>
-        <div class="res-stat"><div class="res-stat-val">${drillTimer.total}s</div><div class="res-stat-lbl">Time</div></div>
+        <div class="res-stat"><div class="res-stat-val">${drillTimer.total}s</div><div class="res-stat-lbl">Duration</div></div>
       </div>
       <div class="btn-row" style="justify-content:center;">
         <button class="btn btn-primary" onclick="this.closest('.flash-overlay').remove(); window[mode.toLowerCase() + 'Back']();">✓ Done</button>
@@ -1804,6 +2123,7 @@ function finishTimedSession(mode, state) {
     </div>
   `;
   document.body.appendChild(overlay);
+  if(score >= 80) confetti();
   flash(score >= 80 ? '🌟' : '💪');
 }
 
@@ -1853,14 +2173,18 @@ function setMemDiff(d,el){
 function genMemSets(){
   const max=DIFF_MAX[memCfg.diff];
   return Array.from({length:memCfg.sets},()=>{
-    const nums=Array.from({length:memCfg.nums},()=>rnd(max));
-    const ops=Array.from({length:memCfg.nums-1},()=>memCfg.ops[Math.floor(Math.random()*memCfg.ops.length)]);
-    let result=nums[0];
-    ops.forEach((op,i)=>{
-      if(op==='+') result+=nums[i+1];
-      else if(op==='-') result-=nums[i+1];
-      else result*=nums[i+1];
-    });
+    let nums, ops, result;
+    for(let attempt=0;attempt<20;attempt++){
+      nums=Array.from({length:memCfg.nums},()=>rnd(max));
+      ops=Array.from({length:memCfg.nums-1},()=>memCfg.ops[Math.floor(Math.random()*memCfg.ops.length)]);
+      result=nums[0];
+      ops.forEach((op,i)=>{
+        if(op==='+') result+=nums[i+1];
+        else if(op==='-') result-=nums[i+1];
+        else if(op==='×') result*=nums[i+1];
+      });
+      if(Number.isInteger(result) && result>=0) break;
+    }
     return {nums,ops,result};
   });
 }
@@ -1914,7 +2238,9 @@ function startMemTimer(){
     const pct=memSession.timeLeft/total;
     ring.style.strokeDashoffset=circ*(1-pct);
     prog.style.width=(pct*100)+'%';
-    num.textContent=memSession.timeLeft;
+    const mins=Math.floor(memSession.timeLeft/60);
+    const secs=memSession.timeLeft%60;
+    num.textContent=mins>0?`${mins}:${String(secs).padStart(2,'0')}`:secs;
     ring.style.stroke=pct>0.5?'var(--accent)':pct>0.25?'var(--accent3)':'var(--accent2)';
     if(memSession.timeLeft<=0){
       clearInterval(memSession.timerInt);
@@ -1934,9 +2260,8 @@ function memGoAnswer(){
   memSession.sets.forEach((_,i)=>{
     rows.innerHTML+=`
       <div class="ans-row" id="ar${i}">
-        <span class="ans-row-lbl">Set ${i+1}</span>
-        <span class="ans-row-hidden">[ hidden — recall from memory ]</span>
-        <input class="ans-inp" id="ai${i}" type="number" placeholder="?"
+        <span class="ans-badge-sm">Set ${i+1}</span>
+        <input class="ans-inp" id="ai${i}" type="number" placeholder="?" autocomplete="off"
                onkeydown="memEnter(event,${i})"/>
       </div>`;
   });
@@ -1987,7 +2312,7 @@ function memSubmit(){
   let score=Math.round((correct/memSession.sets.length)*100);
   if(memSession.peeked) score=Math.max(0,score-10);
   if(score===100) streak++; else streak=0;
-  localStorage.setItem('nc_streak',streak);
+  safeSet('nc_streak', streak);
 
   saveHistory({score,correct,total:memSession.sets.length,time:elapsed,mode:'Memory',diff:memCfg.diff});
   updateGlobalScore(correct * 10);
@@ -2014,6 +2339,7 @@ function memSubmit(){
   document.getElementById('mem-res-time').textContent=elapsed+'s';
   const msgs=['Keep Training! 💪','Good Effort! 👍','Well Done! 🌟','Excellent! 🎯','Perfect Memory! 🏆'];
   document.getElementById('mem-res-msg').textContent=msgs[Math.min(4,Math.floor(score/20))];
+  if(score===100) confetti();
   flash(score===100?'🏆':score>=80?'🌟':'💪');
 
   setTimeout(()=>memShow('mem-result-wrap'),500);
@@ -2022,68 +2348,135 @@ function memSubmit(){
 // ═══════════════════════════════════════════════════════
 // ARITHMETIC MODE
 // ═══════════════════════════════════════════════════════
-function selArithMode(el){
-  document.querySelectorAll('#arith-mode-cards .mode-card').forEach(c=>c.classList.remove('selected'));
-  el.classList.add('selected');
-  arithMode=el.dataset.mode;
+function toggleArithMode(el){
+  const mode = el.dataset.mode;
+  const idx = arithModes.indexOf(mode);
+  if(idx >= 0){
+    if(arithModes.length === 1) return; // keep at least 1
+    arithModes.splice(idx, 1);
+    el.classList.remove('selected');
+  } else {
+    arithModes.push(mode);
+    el.classList.add('selected');
+  }
+  renderArithSubConfig();
+}
+
+function setArithOpCount(n, el){
+  arithOperandCount = n;
+  el.closest('.cfg-item').querySelectorAll('.diff-btn').forEach(b=>b.classList.remove('sel-easy'));
+  el.classList.add('sel-easy');
   renderArithSubConfig();
 }
 
 function renderArithSubConfig(){
-  const wrap=document.getElementById('arith-sub-config');
-  if(['Addition','Subtraction'].includes(arithMode)){
-    wrap.innerHTML=`<div class="config-grid">
-      <div class="cfg-item"><label>1st Number Digits</label>
-        <div class="diff-row">${[1,2,3,4].map(d=>`<div class="diff-btn ${d===arithDigits.first?'sel-easy':''}" onclick="setArithFirst(${d},this)">${d}d</div>`).join('')}</div>
-      </div>
-      <div class="cfg-item"><label>2nd Number Digits</label>
-        <div class="diff-row">${[1,2,3,4].map(d=>`<div class="diff-btn ${d===arithDigits.second?'sel-easy':''}" onclick="setArithSecond(${d},this)">${d}d</div>`).join('')}</div>
-      </div>
+  const wrap = document.getElementById('arith-sub-config');
+  const hasDiv = arithModes.includes('Division');
+  const hasMul = arithModes.includes('Multiplication');
+  const hasAddSub = arithModes.some(m=>['Addition','Subtraction','Carry Subtraction'].includes(m));
+  const isMixed = (hasMul || hasDiv) && hasAddSub;
+  const maxDig = hasMul ? 3 : 4;
+
+  // Operand count row
+  const opRow = `<div class="config-grid" style="margin-bottom:16px;"><div class="cfg-item"><label>Numbers per Question</label>
+    <div class="diff-row">${[2,3,4,5].map(n=>`<div class="diff-btn ${n===arithOperandCount?'sel-easy':''}" onclick="setArithOpCount(${n},this)">${n}</div>`).join('')}</div>
+  </div></div>`;
+
+  // Digit config
+  let digitHtml = '';
+  if(hasDiv && arithModes.length===1){
+    digitHtml = `<div class="config-grid">
+      <div class="cfg-item"><label>Dividend Digits</label>
+        <div class="diff-row">${[1,2,3,4].map(d=>`<div class="diff-btn ${d===arithDigits.num?'sel-easy':''}" onclick="setArithNum(${d},this)">${d}d</div>`).join('')}</div></div>
+      <div class="cfg-item"><label>Divisor Digits</label>
+        <div class="diff-row">${[1,2,3].map(d=>`<div class="diff-btn ${d===arithDigits.den?'sel-easy':''}" onclick="setArithDen(${d},this)">${d}d</div>`).join('')}</div></div>
     </div>`;
-  } else if(arithMode==='Multiplication'){
-    wrap.innerHTML=`<div class="config-grid"><div class="cfg-item"><label>1st Number Digits</label>
-      <div class="diff-row">${[1,2,3].map(d=>`<div class="diff-btn ${d===arithDigits.first?'sel-easy':''}" onclick="setArithFirst(${d},this)">${d}d</div>`).join('')}</div>
-    </div><div class="cfg-item"><label>2nd Number Digits</label>
-      <div class="diff-row">${[1,2,3].map(d=>`<div class="diff-btn ${d===arithDigits.second?'sel-easy':''}" onclick="setArithSecond(${d},this)">${d}d</div>`).join('')}</div>
+  } else if(hasDiv){
+    digitHtml = `<div class="config-grid">
+      <div class="cfg-item"><label>Operand Digits</label>
+        <div class="diff-row">${[1,2,3].map(d=>`<div class="diff-btn ${d===arithDigits.first?'sel-easy':''}" onclick="setArithFirst(${d},this)">${d}d</div>`).join('')}</div></div>
+      <div class="cfg-item"><label>Divisor Digits</label>
+        <div class="diff-row">${[1,2].map(d=>`<div class="diff-btn ${d===arithDigits.den?'sel-easy':''}" onclick="setArithDen(${d},this)">${d}d</div>`).join('')}</div></div>
+    </div>`;
+  } else if(arithOperandCount===2){
+    digitHtml = `<div class="config-grid">
+      <div class="cfg-item"><label>1st Number Digits</label>
+        <div class="diff-row">${[1,2,3,maxDig].filter((v,i,a)=>a.indexOf(v)===i).map(d=>`<div class="diff-btn ${d===arithDigits.first?'sel-easy':''}" onclick="setArithFirst(${d},this)">${d}d</div>`).join('')}</div></div>
+      <div class="cfg-item"><label>2nd Number Digits</label>
+        <div class="diff-row">${[1,2,3,maxDig].filter((v,i,a)=>a.indexOf(v)===i).map(d=>`<div class="diff-btn ${d===arithDigits.second?'sel-easy':''}" onclick="setArithSecond(${d},this)">${d}d</div>`).join('')}</div></div>
+    </div>`;
+  } else {
+    digitHtml = `<div class="config-grid"><div class="cfg-item"><label>Operand Digits</label>
+      <div class="diff-row">${[1,2,3,maxDig].filter((v,i,a)=>a.indexOf(v)===i).map(d=>`<div class="diff-btn ${d===arithDigits.first?'sel-easy':''}" onclick="setArithFirst(${d},this);arithDigits.second=arithDigits.first;">${d}d</div>`).join('')}</div>
     </div></div>`;
-  } else if(arithMode==='Division'){
-    wrap.innerHTML=`<div class="config-grid"><div class="cfg-item"><label>Numerator Digits</label>
-      <div class="diff-row">${[1,2,3,4].map(d=>`<div class="diff-btn ${d===arithDigits.num?'sel-easy':''}" onclick="setArithNum(${d},this)">${d}d</div>`).join('')}</div>
-    </div><div class="cfg-item"><label>Denominator Digits</label>
-      <div class="diff-row">${[1,2,3].map(d=>`<div class="diff-btn ${d===arithDigits.den?'sel-easy':''}" onclick="setArithDen(${d},this)">${d}d</div>`).join('')}</div>
-    </div></div>`;
-  } else { wrap.innerHTML=''; }
+  }
+
+  // BODMAS note
+  const bodmasNote = (isMixed || arithOperandCount > 2)
+    ? `<div style="background:rgba(255,209,102,0.08);border:1px solid rgba(255,209,102,0.25);border-radius:var(--radius-sm);padding:10px 16px;margin-top:12px;font-family:var(--mono);font-size:0.75rem;color:var(--accent3);">⚡ BODMAS active — × ÷ are evaluated before + −</div>`
+    : '';
+
+  wrap.innerHTML = opRow + digitHtml + bodmasNote;
 }
 
-function setArithDigit(d,el){ arithDigits.size=d; document.querySelectorAll('#arith-sub-config .diff-btn').forEach(b=>b.classList.remove('sel-easy')); el.classList.add('sel-easy'); }
 function setArithFirst(d,el){ arithDigits.first=d; el.closest('.cfg-item').querySelectorAll('.diff-btn').forEach(b=>b.classList.remove('sel-easy')); el.classList.add('sel-easy'); }
 function setArithSecond(d,el){ arithDigits.second=d; el.closest('.cfg-item').querySelectorAll('.diff-btn').forEach(b=>b.classList.remove('sel-easy')); el.classList.add('sel-easy'); }
 function setArithNum(d,el){ arithDigits.num=d; el.closest('.cfg-item').querySelectorAll('.diff-btn').forEach(b=>b.classList.remove('sel-easy')); el.classList.add('sel-easy'); }
 function setArithDen(d,el){ arithDigits.den=d; el.closest('.cfg-item').querySelectorAll('.diff-btn').forEach(b=>b.classList.remove('sel-easy')); el.classList.add('sel-easy'); }
 
+// ── BODMAS evaluator ──
+function evalBODMAS(nums, ops) {
+  let n = nums.map(Number);
+  let o = [...ops];
+  // First pass: × and ÷
+  let i = 0;
+  while(i < o.length){
+    if(o[i]==='×'){
+      n.splice(i, 2, n[i] * n[i+1]);
+      o.splice(i, 1);
+    } else if(o[i]==='÷'){
+      if(n[i+1]===0) return NaN;
+      n.splice(i, 2, n[i] / n[i+1]);
+      o.splice(i, 1);
+    } else { i++; }
+  }
+  // Second pass: + and −
+  let result = n[0];
+  for(let j=0; j<o.length; j++){
+    if(o[j]==='+') result += n[j+1];
+    else if(o[j]==='−') result -= n[j+1];
+  }
+  return result;
+}
+
 function startArith(){
   arithState={answer:null,hint:'',score:0,correct:0,total:0,streak:[]};
   document.getElementById('arith-config-wrap').style.display='none';
   document.getElementById('arith-practice-wrap').style.display='block';
-  document.getElementById('arith-mode-badge').textContent=arithMode.toUpperCase();
-  
-  if(document.getElementById('arith-timed-toggle').checked) {
-    const duration = parseInt(document.getElementById('arith-time-select').value);
-    startDrillTimer('arith', duration, () => finishTimedSession('Arith', arithState));
+  // Build badge label
+  const symMap={'Addition':'+','Subtraction':'−','Carry Subtraction':'−','Multiplication':'×','Division':'÷'};
+  const badge = arithModes.length===1
+    ? arithModes[0].toUpperCase()
+    : arithModes.map(m=>symMap[m]).join(' ') + ' MIXED';
+  document.getElementById('arith-mode-badge').textContent=badge;
+  if(document.getElementById('arith-timed-toggle').checked){
+    const duration=parseInt(document.getElementById('arith-time-select').value);
+    startDrillTimer('arith', duration, ()=>finishTimedSession('Arith', arithState));
   }
-  
   updateArithStats();
   newArithQ();
 }
 
 function arithBack(){
+  if(arithState.pending && arithState.total > 1 && !confirm('Leave session? Progress will be lost.')) return;
   stopDrillTimer();
   document.getElementById('arith-config-wrap').style.display='block';
   document.getElementById('arith-practice-wrap').style.display='none';
-  if(arithState.total > 1){ // only save if they actually played
-    const finalTotal = arithState.answer ? arithState.total - 1 : arithState.total;
-    if(finalTotal > 0) {
-      saveHistory({score:Math.round(arithState.correct/finalTotal*100),correct:arithState.correct,total:finalTotal,time:0,mode:arithMode,diff:''});
+  if(arithState.total > 1){
+    const finalTotal = arithState.pending ? arithState.total-1 : arithState.total;
+    if(finalTotal > 0){
+      const modeLabel = arithModes.join(' + ');
+      saveHistory({score:Math.round(arithState.correct/finalTotal*100),correct:arithState.correct,total:finalTotal,time:0,mode:modeLabel,diff:arithOperandCount+'nums'});
       updateStats();
     }
   }
@@ -2096,36 +2489,53 @@ function newArithQ(){
   document.getElementById('arith-hint').className='hint-text';
   inp.focus();
 
-  const mode=arithMode;
-  if(['Addition','Subtraction'].includes(mode)){
-    const d1=arithDigits.first, d2=arithDigits.second;
-    let a=rnd(10**d1-1, 10**(d1-1)), b=rnd(10**d2-1, 10**(d2-1));
-    if(mode==='Subtraction'&&a<b){[a,b]=[b,a];}
-    arithState.answer=mode==='Addition'?a+b:a-b;
-    arithState.hint=String(arithState.answer);
-    document.getElementById('arith-question').textContent=`${a} ${mode==='Addition'?'+':'−'} ${b} = ?`;
-  } else if(mode==='Carry Subtraction'){
-    let a=rnd(9), b=rnd(9);
-    while(a>=b){a=rnd(9);b=rnd(9);}
-    arithState.answer=(10+a)-b;
-    arithState.hint=String(arithState.answer);
-    document.getElementById('arith-question').textContent=`${a} − ${b}  (carry) = ?`;
-  } else if(mode==='Multiplication'){
-    const d1=arithDigits.first, d2=arithDigits.second;
-    const a=rnd(10**d1-1,10**(d1-1)), b=rnd(10**d2-1,10**(d2-1));
-    arithState.answer=a*b;
-    arithState.hint=String(arithState.answer);
-    document.getElementById('arith-question').textContent=`${a} × ${b} = ?`;
-  } else if(mode==='Division'){
-    const n=arithDigits.num, d=arithDigits.den;
-    const divisor=rnd(10**d-1,10**(d-1));
-    const maxQ = n > 2 ? 100 : 25; // Scale difficulty
-    const quotient=rnd(maxQ, 2);
-    const dividend=divisor*quotient;
-    arithState.answer=quotient;
-    arithState.hint=String(quotient);
-    document.getElementById('arith-question').textContent=`${dividend} ÷ ${divisor} = ?`;
+  const count = arithOperandCount;
+  const symMap={'Addition':'+','Subtraction':'−','Carry Subtraction':'−','Multiplication':'×','Division':'÷'};
+
+  // Pick operators randomly from selected modes
+  const ops = Array.from({length:count-1}, ()=>{
+    const m = arithModes[Math.floor(Math.random()*arithModes.length)];
+    return symMap[m];
+  });
+
+  // Generate numbers (retry up to 40 times for clean result)
+  let nums = [], answer = null;
+  for(let attempt=0; attempt<40; attempt++){
+    nums = [];
+    for(let i=0; i<count; i++){
+      // Right side of a ÷ is the divisor → use den digits; else use first digits
+      const isDivisor = i>0 && ops[i-1]==='÷';
+      const d = isDivisor ? arithDigits.den : (count===2 && i===1 ? arithDigits.second : arithDigits.first);
+      nums.push(rnd(Math.max(10**d-1,1), 10**(d-1)));
+    }
+    // Fix ÷ nodes: make dividend cleanly divisible by divisor
+    for(let i=0; i<ops.length; i++){
+      if(ops[i]==='÷'){
+        const divisor = nums[i+1] < 1 ? 1 : nums[i+1];
+        nums[i+1] = divisor;
+        const maxQ = arithDigits.first <= 2 ? 25 : 9;
+        nums[i] = divisor * rnd(maxQ, 2);
+      }
+    }
+    const res = evalBODMAS(nums, ops);
+    if(Number.isInteger(res) && res>=0 && res<=999999){ answer=res; break; }
   }
+  // Fallback
+  if(answer===null){ const a=rnd(99,10),b=rnd(99,10); nums=[a,b]; ops.length=0; ops.push('+'); answer=a+b; }
+
+  arithState.answer = answer;
+  arithState.hint = String(answer);
+  arithState.pending = true;
+
+  // Build question HTML with spans
+  let qHtml = '';
+  for(let i=0; i<nums.length; i++){
+    qHtml += `<span class="num">${nums[i]}</span>`;
+    if(i<ops.length) qHtml += ` <span class="op">${ops[i]}</span> `;
+  }
+  qHtml += ' <span class="unk">= ?</span>';
+  document.getElementById('arith-question').innerHTML = qHtml;
+
   arithState.total++;
   updateArithStats();
 }
@@ -2137,16 +2547,26 @@ function checkArith(){
     document.getElementById('arith-ans').className='answer-field correct';
     arithState.correct++;
     arithState.score+=10;
+    arithState.pending = false;
     updateGlobalScore(10);
     arithState.streak.push(1); if(arithState.streak.length>10) arithState.streak.shift();
     flash('✓');
     flashCard('arith-card');
     updateArithStats();
     setTimeout(newArithQ,300);
+  } else {
+    document.getElementById('arith-ans').className='answer-field wrong';
+    flashCardWrong('arith-card');
+    setTimeout(()=>{
+      document.getElementById('arith-ans').className='answer-field';
+    },500);
   }
 }
 
-function arithHintKey(e){ if(e.key===' '){ e.preventDefault(); showArithHint(); } }
+function arithHintKey(e){
+  if(e.key==='Enter'){ e.preventDefault(); const v=document.getElementById('arith-ans').value.trim(); if(v) checkArith(); }
+  if(e.key===' '){ e.preventDefault(); showArithHint(); }
+}
 function showArithHint(){
   document.getElementById('arith-hint').textContent='Hint: '+arithState.hint;
   document.getElementById('arith-hint').className='hint-text shown';
@@ -2162,65 +2582,111 @@ function updateArithStats(){
 // ═══════════════════════════════════════════════════════
 // ROOTS MODE
 // ═══════════════════════════════════════════════════════
-function selRootMode(el){
-  document.querySelectorAll('#page-roots .mode-card').forEach(c=>c.classList.remove('selected'));
-  el.classList.add('selected');
-  rootMode=el.dataset.root;
+function toggleRootMode(el){
+  el.classList.toggle('selected');
+  rootModes = Array.from(document.querySelectorAll('#page-roots .mode-card.selected')).map(c => c.dataset.root);
+  if(rootModes.length === 0) {
+    el.classList.add('selected');
+    rootModes = [el.dataset.root];
+  }
 }
 
+function toggleRootSqRange(label, el){
+  el.classList.toggle('sel-easy');
+  rootSqRanges = Array.from(document.querySelectorAll('#roots-sq-ranges .diff-btn.sel-easy')).map(b => b.dataset.range);
+  if(rootSqRanges.length === 0) {
+    el.classList.add('sel-easy');
+    rootSqRanges = [label];
+  }
+}
+
+function onRootInput(){
+  const val=document.getElementById('roots-ans').value.trim();
+  if(!val||val.length<String(rootState.answer).length) return;
+  if(String(rootState.answer)===val) checkRoot();
+}
 function startRoots(){
-  const pool=rootMode==='square'
-    ? [...PERFECT_SQUARES].sort(()=>Math.random()-0.5).slice(0,8)
-    : [...PERFECT_CUBES].sort(()=>Math.random()-0.5).slice(0,4);
-  rootState={
-    pool:pool.map(p=>p.val), correctCount:{}, mastered:0,
-    score:0, total:0, answer:null, hint:'', streak:[], curNum:null,
-    allPool:rootMode==='square'?PERFECT_SQUARES:PERFECT_CUBES
-  };
-  pool.forEach(p=>{ rootState.correctCount[p.val]=0; });
+  if(rootModes.length === 0) rootModes = ['sq-to-root'];
+  ['sq-to-root','root-to-sq','cu-to-root','root-to-cu'].forEach(m => {
+    rootState.pools[m] = buildRootPool(m);
+  });
+  rootState.mastered=0; rootState.score=0; rootState.correct=0; rootState.total=0;
+  rootState.answer=null; rootState.hint=''; rootState.streak=[]; rootState.curItem=null; rootState.curMode=''; rootState.pending=false;
+
   document.getElementById('roots-config-wrap').style.display='none';
   document.getElementById('roots-practice-wrap').style.display='block';
-  document.getElementById('roots-mode-badge').textContent=(rootMode==='square'?'SQUARE':'CUBE')+' ROOTS';
-  document.getElementById('roots-pool').textContent=rootState.pool.length;
-  
+
   if(document.getElementById('roots-timed-toggle').checked) {
     const duration = parseInt(document.getElementById('roots-time-select').value);
     startDrillTimer('roots', duration, () => finishTimedSession('Roots', rootState));
   }
-  
-  updateRootsPool();
+
+  updateRootsStats();
   newRootQ();
 }
 
 function rootsBack(){
+  if(rootState.pending && rootState.total > 1 && !confirm('Leave session? Progress will be lost.')) return;
   stopDrillTimer();
   document.getElementById('roots-config-wrap').style.display='block';
   document.getElementById('roots-practice-wrap').style.display='none';
-  const finalTotal = rootState.answer ? rootState.total - 1 : rootState.total;
+  const finalTotal = rootState.pending ? rootState.total - 1 : rootState.total;
   if(finalTotal > 0) {
-    saveHistory({score:Math.round(rootState.score/(finalTotal*10)*100),correct:rootState.correctCount ? Object.values(rootState.correctCount).reduce((a,b)=>a+b,0) : 0,total:finalTotal,time:0,mode:'Roots',diff:rootMode});
+    saveHistory({score:finalTotal>0?Math.round(rootState.correct/finalTotal*100):0,correct:rootState.correct,total:finalTotal,time:0,mode:'Roots',diff:rootModes.join('|')});
     updateStats();
   }
 }
 
 function newRootQ(){
+  if(rootModes.length === 0) { rootsBack(); return; }
+  // Pick random mode from selected modes
+  const modeIdx = Math.floor(Math.random() * rootModes.length);
+  const mode = rootModes[modeIdx];
+  const pool = rootState.pools[mode];
+  if(pool.items.length === 0) {
+    rootModes.splice(modeIdx, 1);
+    if(rootModes.length === 0) { rootsBack(); return; }
+    return newRootQ();
+  }
+
   const inp=document.getElementById('roots-ans');
   inp.value=''; inp.className='answer-field';
   document.getElementById('roots-hint').textContent='Press Space for hint';
   document.getElementById('roots-hint').className='hint-text';
   inp.focus();
 
-  const num=rootState.pool[Math.floor(Math.random()*rootState.pool.length)];
-  rootState.curNum=num;
-  if(rootMode==='square'){
-    const n=Math.round(Math.sqrt(num));
-    rootState.answer=n; rootState.hint=String(n);
-    document.getElementById('roots-question').textContent=`√${num} = ?`;
-  } else {
-    const n=Math.round(num**(1/3));
-    rootState.answer=n; rootState.hint=String(n);
-    document.getElementById('roots-question').textContent=`∛${num} = ?`;
+  const idx = Math.floor(Math.random() * pool.items.length);
+  const item = pool.items[idx];
+  rootState.curItem = item;
+  rootState.curMode = mode;
+  rootState.pending = true;
+
+  const badgeMap = {
+    'sq-to-root': 'SQUARE → ROOT',
+    'root-to-sq': 'ROOT → SQUARE',
+    'cu-to-root': 'CUBE → ROOT',
+    'root-to-cu': 'ROOT → CUBE'
+  };
+  document.getElementById('roots-mode-badge').textContent = badgeMap[mode] || 'ROOTS';
+
+  if(mode === 'sq-to-root'){
+    const n = Math.round(Math.sqrt(item));
+    rootState.answer = n; rootState.hint = String(n);
+    document.getElementById('roots-question').textContent = `√${item} = ?`;
+  } else if(mode === 'root-to-sq'){
+    const sq = item * item;
+    rootState.answer = sq; rootState.hint = String(sq);
+    document.getElementById('roots-question').textContent = `${item}² = ?`;
+  } else if(mode === 'cu-to-root'){
+    const n = Math.round(item ** (1/3));
+    rootState.answer = n; rootState.hint = String(n);
+    document.getElementById('roots-question').textContent = `∛${item} = ?`;
+  } else if(mode === 'root-to-cu'){
+    const cu = item ** 3;
+    rootState.answer = cu; rootState.hint = String(cu);
+    document.getElementById('roots-question').textContent = `${item}³ = ?`;
   }
+
   rootState.total++;
   updateRootsStats();
 }
@@ -2231,54 +2697,84 @@ function checkRoot(){
   if(String(rootState.answer)===val){
     document.getElementById('roots-ans').className='answer-field correct';
     rootState.score+=10;
+    rootState.correct++;
+    rootState.pending = false;
     updateGlobalScore(10);
     rootState.streak.push(1); if(rootState.streak.length>10) rootState.streak.shift();
 
-    const num=rootState.curNum;
-    rootState.correctCount[num]=(rootState.correctCount[num]||0)+1;
+    const item = rootState.curItem;
+    const mode = rootState.curMode;
+    const pool = rootState.pools[mode];
+    pool.correctCount[item] = (pool.correctCount[item] || 0) + 1;
 
-    if(rootState.correctCount[num]>=5){
-      const allVals=rootState.allPool.map(p=>p.val);
-      const remaining=allVals.filter(v=>!rootState.pool.includes(v));
-      if(remaining.length>0){
-        const newVal=remaining[Math.floor(Math.random()*remaining.length)];
-        const idx=rootState.pool.findIndex(v=>v===num);
-        rootState.pool.splice(idx,1,newVal);
-        delete rootState.correctCount[num];
-        rootState.correctCount[newVal]=0;
+    if(pool.correctCount[item] >= 5){
+      pool.masteredItems.push(item);
+      const idx = pool.items.findIndex(v => v === item);
+      if(idx !== -1) pool.items.splice(idx, 1);
+      delete pool.correctCount[item];
+
+      const allForMode = getRootAllItems(mode);
+      const unmastered = allForMode.filter(v => !pool.masteredItems.includes(v));
+      if(unmastered.length > 0){
+        const newVal = unmastered[Math.floor(Math.random() * unmastered.length)];
+        pool.items.push(newVal);
+        pool.correctCount[newVal] = 0;
         rootState.mastered++;
         flash('🏆');
+      } else {
+        const size = ROOT_POOL_SIZES[mode];
+        pool.masteredItems = [];
+        const shuffled = shuffle([...allForMode]);
+        pool.items = shuffled.slice(0, Math.min(size, shuffled.length));
+        pool.items.forEach(v => { pool.correctCount[v] = 0; });
+        rootState.mastered++;
+        flash('🎉 ALL MASTERED!');
       }
     } else { flash('✓'); }
 
     flashCard('roots-card');
     updateRootsStats();
-    updateRootsPool();
     setTimeout(newRootQ,300);
+  } else {
+    document.getElementById('roots-ans').className='answer-field wrong';
+    flashCardWrong('roots-card');
+    setTimeout(()=>{ document.getElementById('roots-ans').className='answer-field'; },500);
   }
 }
 
-function rootHintKey(e){ if(e.key===' '){ e.preventDefault(); document.getElementById('roots-hint').textContent='Hint: '+rootState.hint; document.getElementById('roots-hint').className='hint-text shown'; } }
+function rootHintKey(e){
+  if(e.key==='Enter'){ e.preventDefault(); const v=document.getElementById('roots-ans').value.trim(); if(v) checkRoot(); }
+  if(e.key===' '){ e.preventDefault(); document.getElementById('roots-hint').textContent='Hint: '+rootState.hint; document.getElementById('roots-hint').className='hint-text shown'; }
+}
 
 function updateRootsStats(){
+  const poolSize = rootModes.reduce((sum, m) => sum + (rootState.pools[m] ? rootState.pools[m].items.length : 0), 0);
   document.getElementById('roots-score').textContent=rootState.score;
   document.getElementById('roots-mastered').textContent=rootState.mastered;
-  document.getElementById('roots-pool').textContent=rootState.pool.length;
+  document.getElementById('roots-pool').textContent=poolSize;
   buildStreakBar('roots-streak-bar',rootState.streak);
+  updateRootsPool();
 }
 
 function updateRootsPool(){
+  const badgeColors = { 'sq-to-root':'#4fc3f7','root-to-sq':'#81c784','cu-to-root':'#ffb74d','root-to-cu':'#ce93d8' };
+  const badgeLabels = { 'sq-to-root':'√→?','root-to-sq':'?→²','cu-to-root':'∛→?','root-to-cu':'?→³' };
   const d=document.getElementById('roots-pool-display');
-  d.innerHTML=rootState.pool.map(v=>{
-    const cnt=rootState.correctCount[v]||0;
-    const dots=Array.from({length:5},(_,i)=>`<span style="color:${i<cnt?'var(--accent)':'var(--border2)'};font-size:0.6rem;">●</span>`).join('');
-    return `<div style="background:var(--surface3);border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-family:var(--mono);font-size:0.78rem;text-align:center;">
-      <div style="color:var(--accent4);">${v}</div>
-      <div style="margin-top:3px;">${dots}</div>
-    </div>`;
-  }).join('');
+  let html = '';
+  rootModes.forEach(m => {
+    const pool = rootState.pools[m];
+    if(!pool || pool.items.length === 0) return;
+    html += `<div style="margin-bottom:6px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;"><span style="background:${badgeColors[m]||'#888'}20;color:${badgeColors[m]||'#888'};border:1px solid ${badgeColors[m]||'#888'}40;border-radius:4px;padding:2px 8px;font-family:var(--mono);font-size:0.65rem;font-weight:600;white-space:nowrap;">${badgeLabels[m]||m}</span>`;
+    html += pool.items.map(v => {
+      const cnt = pool.correctCount[v] || 0;
+      const dots = Array.from({length:5},(_,i)=>`<span style="color:${i<cnt?'var(--accent)':'var(--border2)'};font-size:0.6rem;">●</span>`).join('');
+      const display = m === 'sq-to-root' ? `√${v}` : m === 'root-to-sq' ? `${v}²` : m === 'cu-to-root' ? `∛${v}` : `${v}³`;
+      return `<span style="background:var(--surface3);border:1px solid var(--border);border-radius:6px;padding:4px 8px;font-family:var(--mono);font-size:0.72rem;text-align:center;display:inline-flex;flex-direction:column;align-items:center;gap:2px;" title="${v}">${display}${dots}</span>`;
+    }).join('');
+    html += '</div>';
+  });
+  d.innerHTML = html || '<span style="color:var(--text-dim);font-size:0.78rem;">No active pool</span>';
 }
-
 // ═══════════════════════════════════════════════════════
 // FRACTIONS MODE
 // ═══════════════════════════════════════════════════════
@@ -2286,6 +2782,61 @@ function selFracMode(el){
   document.querySelectorAll('#page-fractions .mode-card').forEach(c=>c.classList.remove('selected'));
   el.classList.add('selected');
   fracMode=el.dataset.frac;
+}
+
+function setFracPool(mode, el){
+  el.closest('.diff-row').querySelectorAll('.diff-btn').forEach(b => b.classList.remove('sel-easy'));
+  el.classList.add('sel-easy');
+  fracPoolMode = mode;
+  const wrap = document.getElementById('frac-picker-wrap');
+  wrap.style.display = mode === 'selected' ? 'block' : 'none';
+  if(mode === 'selected') renderFracPicker();
+}
+
+function renderFracPicker(){
+  const wrap = document.getElementById('frac-picker-wrap');
+  const keys = Object.keys(FRACTIONS_TO_PERCENT);
+  let html = '<div style="display:flex;flex-direction:column;gap:4px;">';
+  keys.forEach(k => {
+    const checked = fracSelected.includes(k) ? 'checked' : '';
+    html += '<label style="display:flex;align-items:center;gap:8px;padding:3px 4px;border-radius:4px;cursor:pointer;font-family:var(--mono);font-size:0.78rem;hover:background:var(--surface3);">' +
+      '<input type="checkbox" ' + checked + ' onchange="toggleFracPick(\'' + k + '\')" style="accent-color:var(--accent);cursor:pointer;">' +
+      k + ' = ' + FRACTIONS_TO_PERCENT[k] + '</label>';
+  });
+  html += '</div>';
+  wrap.innerHTML = html;
+}
+
+function toggleFracPick(key){
+  const idx = fracSelected.indexOf(key);
+  if(idx === -1) fracSelected.push(key);
+  else fracSelected.splice(idx, 1);
+  if(fracSelected.length === 0) fracSelected.push(key);
+  safeSet('nc_frac_selected', fracSelected);
+  var embed = document.getElementById('frac-embedded-selected');
+  if(embed) embed.textContent = JSON.stringify(fracSelected);
+}
+
+function downloadFracConfig(){
+  var embed = document.getElementById('frac-embedded-selected');
+  if(embed) embed.textContent = JSON.stringify(fracSelected);
+  var html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+  var blob = new Blob([html], { type:'text/html' });
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'neurocalc_pro.html';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(a.href);
+  flash('✓ File saved with your selections!');
+}
+
+function getFilteredFracKeys() {
+  const all = Object.keys(FRACTIONS_TO_PERCENT);
+  if(fracPoolMode === 'all') return all;
+  const filtered = all.filter(k => fracSelected.includes(k));
+  return filtered.length > 0 ? filtered : all;
 }
 
 function startFrac(){
@@ -2305,10 +2856,12 @@ function startFrac(){
 }
 
 function fracBack(){
+  if(fracState.pending && fracState.total > 1 && !confirm('Leave session? Progress will be lost.')) return;
   stopDrillTimer();
   document.getElementById('frac-config-wrap').style.display='block';
   document.getElementById('frac-practice-wrap').style.display='none';
-  const finalTotal = fracState.answer ? fracState.total - 1 : fracState.total;
+  if(fracPoolMode === 'selected' && document.getElementById('frac-picker-wrap')) renderFracPicker();
+  const finalTotal = fracState.pending ? fracState.total - 1 : fracState.total;
   if(finalTotal > 0) {
     saveHistory({score:Math.round(fracState.correct/finalTotal*100),correct:fracState.correct,total:finalTotal,time:0,mode:'Fractions',diff:fracMode});
     updateStats();
@@ -2324,17 +2877,23 @@ function newFracQ(){
 
   let isF2P=fracMode==='f2p'||(fracMode==='mixed'&&Math.random()<0.5);
   fracState.isF2P=isF2P;
+  fracState.pending = true;
+
+  const keys = getFilteredFracKeys();
+  if(keys.length === 0) { flash('⚠ No fractions available'); fracBack(); return; }
 
   if(isF2P){
-    const [f,p]=Object.entries(FRACTIONS_TO_PERCENT)[Math.floor(Math.random()*Object.keys(FRACTIONS_TO_PERCENT).length)];
+    const key = keys[Math.floor(Math.random() * keys.length)];
+    const p = FRACTIONS_TO_PERCENT[key];
     fracState.answer=p.replace('%','');
     fracState.hint=p;
-    document.getElementById('frac-question').textContent=`${f}  =  ? %`;
+    document.getElementById('frac-question').textContent=`${key}  =  ? %`;
     document.getElementById('frac-mode-badge').textContent='FRACTION → %';
   } else {
-    const [p,f]=Object.entries(PERCENT_TO_FRACTIONS)[Math.floor(Math.random()*Object.keys(PERCENT_TO_FRACTIONS).length)];
-    fracState.answer=f;
-    fracState.hint=f;
+    const key = keys[Math.floor(Math.random() * keys.length)];
+    const p = FRACTIONS_TO_PERCENT[key];
+    fracState.answer=key;
+    fracState.hint=key;
     document.getElementById('frac-question').textContent=`${p}  =  ?`;
     document.getElementById('frac-mode-badge').textContent='% → FRACTION';
   }
@@ -2349,16 +2908,30 @@ function checkFrac(){
     document.getElementById('frac-ans').className='answer-field correct';
     fracState.correct++;
     fracState.score+=10;
+    fracState.pending = false;
     updateGlobalScore(10);
     fracState.streak.push(1); if(fracState.streak.length>10) fracState.streak.shift();
     flash('✓');
     flashCard('frac-card');
     updateFracStats();
     setTimeout(newFracQ,300);
+  } else {
+    document.getElementById('frac-ans').className='answer-field wrong';
+    flashCardWrong('frac-card');
+    setTimeout(()=>{ document.getElementById('frac-ans').className='answer-field'; },500);
   }
 }
 
-function fracHintKey(e){ if(e.key===' '){ e.preventDefault(); document.getElementById('frac-hint').textContent='Hint: '+fracState.hint; document.getElementById('frac-hint').className='hint-text shown'; } }
+function onFracInput(){
+  const val=document.getElementById('frac-ans').value.trim();
+  if(!val||val.length<String(fracState.answer).length) return;
+  if(String(fracState.answer)===val) checkFrac();
+}
+
+function fracHintKey(e){
+  if(e.key==='Enter'){ e.preventDefault(); const v=document.getElementById('frac-ans').value.trim(); if(v) checkFrac(); }
+  if(e.key===' '){ e.preventDefault(); document.getElementById('frac-hint').textContent='Hint: '+fracState.hint; document.getElementById('frac-hint').className='hint-text shown'; }
+}
 
 function updateFracStats(){
   document.getElementById('frac-score').textContent=fracState.score;
@@ -2386,10 +2959,11 @@ function startMixed(){
 }
 
 function mixedBack(){
+  if(mixedState.pending && mixedState.total > 1 && !confirm('Leave session? Progress will be lost.')) return;
   stopDrillTimer();
   document.getElementById('mixed-config-wrap').style.display='block';
   document.getElementById('mixed-practice-wrap').style.display='none';
-  const finalTotal = mixedState.answer ? mixedState.total - 1 : mixedState.total;
+  const finalTotal = mixedState.pending ? mixedState.total - 1 : mixedState.total;
   if(finalTotal > 0) {
     saveHistory({score:Math.round(mixedState.correct/finalTotal*100),correct:mixedState.correct,total:finalTotal,time:0,mode:'Mixed',diff:''});
     updateStats();
@@ -2405,6 +2979,7 @@ function newMixedQ(){
 
   const m=MIXED_MODES[Math.floor(Math.random()*MIXED_MODES.length)];
   mixedState.subMode=m;
+  mixedState.pending = true;
   document.getElementById('mixed-mode-badge').textContent=m.toUpperCase();
 
   if(m==='Addition'){
@@ -2428,12 +3003,16 @@ function newMixedQ(){
     mixedState.answer=c.n; mixedState.hint=String(c.n);
     document.getElementById('mixed-question').textContent=`∛${c.val} = ?`;
   } else if(m==='Fractions→%'){
-    const [f,p]=Object.entries(FRACTIONS_TO_PERCENT)[Math.floor(Math.random()*Object.keys(FRACTIONS_TO_PERCENT).length)];
+    const keys = getFilteredFracKeys();
+    const key = keys[Math.floor(Math.random() * keys.length)];
+    const p = FRACTIONS_TO_PERCENT[key];
     mixedState.answer=p.replace('%',''); mixedState.hint=p;
-    document.getElementById('mixed-question').textContent=`${f} = ?%`;
+    document.getElementById('mixed-question').textContent=`${key} = ?%`;
   } else {
-    const [p,f]=Object.entries(PERCENT_TO_FRACTIONS)[Math.floor(Math.random()*Object.keys(PERCENT_TO_FRACTIONS).length)];
-    mixedState.answer=f; mixedState.hint=f;
+    const keys = getFilteredFracKeys();
+    const key = keys[Math.floor(Math.random() * keys.length)];
+    const p = FRACTIONS_TO_PERCENT[key];
+    mixedState.answer=key; mixedState.hint=key;
     document.getElementById('mixed-question').textContent=`${p} = ?`;
   }
 
@@ -2448,16 +3027,24 @@ function checkMixed(){
     document.getElementById('mixed-ans').className='answer-field correct';
     mixedState.correct++;
     mixedState.score+=10;
+    mixedState.pending = false;
     updateGlobalScore(10);
     mixedState.streak.push(1); if(mixedState.streak.length>10) mixedState.streak.shift();
     flash('✓');
     flashCard('mixed-card');
     updateMixedStats();
     setTimeout(newMixedQ,300);
+  } else {
+    document.getElementById('mixed-ans').className='answer-field wrong';
+    flashCardWrong('mixed-card');
+    setTimeout(()=>{ document.getElementById('mixed-ans').className='answer-field'; },500);
   }
 }
 
-function mixedHintKey(e){ if(e.key===' '){ e.preventDefault(); document.getElementById('mixed-hint').textContent='Hint: '+mixedState.hint; document.getElementById('mixed-hint').className='hint-text shown'; } }
+function mixedHintKey(e){
+  if(e.key==='Enter'){ e.preventDefault(); const v=document.getElementById('mixed-ans').value.trim(); if(v) checkMixed(); }
+  if(e.key===' '){ e.preventDefault(); document.getElementById('mixed-hint').textContent='Hint: '+mixedState.hint; document.getElementById('mixed-hint').className='hint-text shown'; }
+}
 
 function updateMixedStats(){
   document.getElementById('mixed-score').textContent=mixedState.score;
@@ -2469,8 +3056,13 @@ function updateMixedStats(){
 // ═══════════════════════════════════════════════════════
 // HISTORY RENDERING
 // ═══════════════════════════════════════════════════════
+function diffClass(d){
+  const safe={'easy':'easy','medium':'medium','hard':'hard','mastered':'mastered','square':'sq','cube':'cu','f2p':'f2p','p2f':'p2f','mixed':'mixed'};
+  return safe[d]||'math';
+}
 function histItem(h){
-  const diffBadge=h.diff?`<span class="badge badge-${h.diff||'math'}">${h.diff}</span>`:'';
+  const dc=diffClass(h.diff);
+  const diffBadge=h.diff?`<span class="badge badge-${dc}">${h.diff}</span>`:'';
   return `<div class="hist-item">
     <span class="hist-score">${h.score}%</span>
     <span class="hist-mode">${h.mode||'Practice'} · ${h.correct}/${h.total}</span>
@@ -2588,7 +3180,7 @@ const TABLES_TIPS = {
 };
 
 let tblState = {
-  mastered: new Set(JSON.parse(localStorage.getItem('nc_tbl_mastered') || '[]')),
+  mastered: new Set(safeGet('nc_tbl_mastered')||[]),
   phase: 'overview',
   currentTable: null,
   facts: {},
@@ -2597,8 +3189,13 @@ let tblState = {
   factsTotal: 10,
   score: 0,
   wrongStreak: 0,
-  lastFact: null
+  lastFact: null,
+  isCustom: false,
+  customFacts: [],
+  customFactIdx: null,
+  customFactLevels: {}
 };
+let tblCustomFacts = safeGet('nc_tbl_custom_facts') || [];
 
 function tblShowView(view) {
   ['tbl-overview','tbl-study','tbl-quiz','tbl-complete'].forEach(function(id) {
@@ -2627,6 +3224,7 @@ function tblRenderOverview() {
       '<div class="tbl-cell-status">' + (isMastered ? '✓ Done' : isNext ? '→ Next' : '○') + '</div></div>';
   }
   grid.innerHTML = html;
+  tblRenderCustomFacts();
 }
 
 function tblSmartStart() {
@@ -2670,6 +3268,29 @@ function tblStartQuiz() {
 }
 
 function tblNextFact() {
+  if(tblState.isCustom) {
+    var unmastered = [];
+    for(var i = 0; i < tblState.customFacts.length; i++) {
+      if((tblState.customFactLevels[i] || 0) < 3) unmastered.push(i);
+    }
+    if(unmastered.length === 0) { tblCompleteCustom(); return; }
+    var pick = unmastered[Math.floor(Math.random() * unmastered.length)];
+    tblState.customFactIdx = pick;
+    var fact = tblState.customFacts[pick];
+    tblState.hint = String(computeCustomAns(fact));
+    document.getElementById('tbl-quiz-question').textContent = fact.a + ' ' + opSymbol(fact.op || '*') + ' ' + fact.b + ' = ?';
+    var inp = document.getElementById('tbl-quiz-ans');
+    inp.value = ''; inp.className = 'answer-field'; inp.disabled = false;
+    document.getElementById('tbl-quiz-feedback').textContent = '';
+    document.getElementById('tbl-quiz-feedback').className = 'tbl-feedback';
+    document.getElementById('tbl-hint').textContent = 'Press Space for hint';
+    document.getElementById('tbl-hint').className = 'hint-text';
+    inp.focus();
+    tblUpdateQuizStats();
+    tblUpdateBoxes();
+    return;
+  }
+
   var inp = document.getElementById('tbl-quiz-ans');
   inp.value = ''; inp.className = 'answer-field'; inp.disabled = false;
   document.getElementById('tbl-quiz-feedback').textContent = '';
@@ -2715,6 +3336,46 @@ function tblCheckQuiz() {
   var inp = document.getElementById('tbl-quiz-ans');
   var val = inp.value.trim();
   if(!val || inp.disabled) return;
+
+  if(tblState.isCustom) {
+    var fact = tblState.customFacts[tblState.customFactIdx];
+    var correctAns = computeCustomAns(fact);
+    var sym = opSymbol(fact.op || '*');
+    var isCorrect = parseInt(val) === correctAns;
+    var level = tblState.customFactLevels[tblState.customFactIdx] || 0;
+    var fb = document.getElementById('tbl-quiz-feedback');
+    inp.disabled = true;
+    if(isCorrect) {
+      inp.className = 'answer-field correct';
+      level = Math.min(3, level + 1);
+      tblState.customFactLevels[tblState.customFactIdx] = level;
+      tblState.score += 10;
+      if(level >= 3) {
+        tblState.factsMastered++;
+        fb.textContent = '✓ "' + fact.a + sym + fact.b + '=' + correctAns + '" MASTERED!';
+        fb.className = 'tbl-feedback mastered-fb';
+        flash('🏆');
+      } else {
+        fb.textContent = '✓ Correct! (' + level + '/3 to master)';
+        fb.className = 'tbl-feedback correct';
+        flash('✓');
+      }
+      updateGlobalScore(10);
+      flashCard('tbl-quiz-card');
+      tblUpdateQuizStats();
+      tblUpdateBoxes();
+      setTimeout(tblNextFact, 700);
+    } else {
+      inp.className = 'answer-field wrong';
+      tblState.customFactLevels[tblState.customFactIdx] = 0;
+      fb.textContent = '✗ ' + fact.a + ' ' + sym + ' ' + fact.b + ' = ' + correctAns + ' (you typed ' + val + '). Reset.';
+      fb.className = 'tbl-feedback wrong';
+      tblUpdateQuizStats();
+      tblUpdateBoxes();
+      setTimeout(tblNextFact, 2000);
+    }
+    return;
+  }
 
   var n = tblState.currentTable;
   var m = tblState.currentFact;
@@ -2770,7 +3431,7 @@ function tblCheckQuiz() {
 function tblCompleteTable() {
   var n = tblState.currentTable;
   tblState.mastered.add(n);
-  localStorage.setItem('nc_tbl_mastered', JSON.stringify(Array.from(tblState.mastered)));
+  safeSet('nc_tbl_mastered', Array.from(tblState.mastered));
 
   var masteredCount = tblState.mastered.size;
   var remaining = 25 - masteredCount;
@@ -2799,6 +3460,34 @@ function tblUpdateQuizStats() {
 
 function tblUpdateBoxes() {
   var container = document.getElementById('tbl-leitner-boxes');
+
+  if(tblState.isCustom) {
+    var customBoxes = [[], [], [], []];
+    for(var ci = 0; ci < tblState.customFacts.length; ci++) {
+      var cl = tblState.customFactLevels[ci] || 0;
+      customBoxes[cl].push(ci);
+    }
+    var labels = ['📥 New', '📦 Learning', '📋 Familiar', '✅ Mastered'];
+    var chtml = '';
+    for(var cj = 0; cj < labels.length; cj++) {
+      var items = customBoxes[cj];
+      chtml += '<div class="leitner-box ' + (cj === 3 ? 'done' : '') + '">' +
+        '<div class="leitner-box-label">' + labels[cj] + '</div>' +
+        '<div class="leitner-box-facts">';
+      if(items.length) {
+        for(var ck = 0; ck < items.length; ck++) {
+          var cf = tblState.customFacts[items[ck]];
+          chtml += '<span class="leitner-fact ' + (items[ck] === tblState.customFactIdx ? 'active' : '') + '">' + cf.a + opSymbol(cf.op || '*') + cf.b + '</span>';
+        }
+      } else {
+        chtml += '<span style="color:var(--text-dim);font-size:0.65rem;">—</span>';
+      }
+      chtml += '</div></div>';
+    }
+    container.innerHTML = chtml;
+    return;
+  }
+
   var boxes = [[], [], [], []];
   for(var key in tblState.facts) {
     boxes[tblState.facts[key].level].push(parseInt(key));
@@ -2833,7 +3522,9 @@ function tblAutoCheck() {
   var inp = document.getElementById('tbl-quiz-ans');
   var val = inp.value.trim();
   if(!val || inp.disabled) return;
-  var correctAns = tblState.currentTable * tblState.currentFact;
+  var correctAns = tblState.isCustom
+    ? computeCustomAns(tblState.customFacts[tblState.customFactIdx])
+    : tblState.currentTable * tblState.currentFact;
   if(val === String(correctAns)) {
     tblCheckQuiz();
   }
@@ -2845,6 +3536,7 @@ function tblShowHint() {
 }
 
 function tblBackToOverview() {
+  tblState.isCustom = false;
   tblShowView('tbl-overview');
   tblRenderOverview();
 }
@@ -2852,13 +3544,116 @@ function tblBackToOverview() {
 function tblResetProgress() {
   if(!confirm('Reset all tables mastery progress? This cannot be undone.')) return;
   tblState.mastered = new Set();
-  localStorage.removeItem('nc_tbl_mastered');
+  safeSet('nc_tbl_mastered', []);
   tblRenderOverview();
 }
 
 // ═══════════════════════════════════════════════════════
-// INIT
+// CUSTOM FACTS
 // ═══════════════════════════════════════════════════════
+function selectCustomOp(el) {
+  document.querySelectorAll('#tbl-custom-op-select .diff-btn').forEach(function(b) { b.classList.remove('sel-easy'); });
+  el.classList.add('sel-easy');
+}
+function opSymbol(op) { return { '+':'+', '-':'−', '*':'×', '/':'÷' }[op] || '×'; }
+function computeCustomAns(fact) {
+  if(fact.op === '+') return fact.a + fact.b;
+  if(fact.op === '-') return fact.a - fact.b;
+  if(fact.op === '/') return Math.round(fact.a / fact.b);
+  return fact.a * fact.b;
+}
+function tblRenderCustomFacts() {
+  var list = document.getElementById('tbl-custom-facts-list');
+  if(!list) return;
+  if(tblCustomFacts.length === 0) {
+    list.innerHTML = '<div style="padding:12px;color:var(--text-dim);font-size:0.82rem;text-align:center;">No custom facts yet. Add one above!</div>';
+    document.getElementById('tbl-custom-practice-btn').disabled = true;
+    document.getElementById('tbl-custom-practice-btn').textContent = '▶ Practice Selected (0)';
+    return;
+  }
+  var selectedCount = 0;
+  var html = '<div style="display:flex;flex-direction:column;gap:6px;">';
+  for(var i = 0; i < tblCustomFacts.length; i++) {
+    var f = tblCustomFacts[i];
+    var sel = f._sel !== false;
+    if(sel) selectedCount++;
+    html += '<div style="display:flex;align-items:center;gap:10px;background:var(--surface3);border:1px solid var(--border);border-radius:8px;padding:8px 12px;">' +
+      '<input type="checkbox" ' + (sel ? 'checked' : '') + ' onchange="tblToggleCustomFact(' + i + ')" style="width:18px;height:18px;accent-color:var(--accent);cursor:pointer;">' +
+      '<span style="font-family:var(--mono);font-size:1rem;font-weight:600;flex:1;">' + f.a + ' ' + opSymbol(f.op || '*') + ' ' + f.b + ' = ' + computeCustomAns(f) + '</span>' +
+      '<button class="btn btn-ghost" onclick="tblDeleteCustomFact(' + i + ')" style="padding:4px 10px;font-size:0.75rem;color:var(--danger);">✕</button></div>';
+  }
+  html += '</div>';
+  list.innerHTML = html;
+  var btn = document.getElementById('tbl-custom-practice-btn');
+  btn.disabled = selectedCount === 0;
+  btn.textContent = '▶ Practice Selected (' + selectedCount + ')';
+}
+
+function tblAddCustomFact() {
+  var aEl = document.getElementById('tbl-custom-a');
+  var bEl = document.getElementById('tbl-custom-b');
+  var a = parseInt(aEl.value.trim());
+  var b = parseInt(bEl.value.trim());
+  if(!a || !b || a < 1 || b < 1) { flash('⚠ Enter two numbers'); return; }
+  var opEl = document.querySelector('#tbl-custom-op-select .diff-btn.sel-easy');
+  var op = opEl ? opEl.dataset.op : '*';
+  if(op === '/' && (b === 0 || a % b !== 0)) { flash('⚠ Division must be exact (no remainder)'); return; }
+  tblCustomFacts.push({ a: a, b: b, op: op });
+  safeSet('nc_tbl_custom_facts', tblCustomFacts);
+  aEl.value = ''; bEl.value = '';
+  aEl.focus();
+  tblRenderCustomFacts();
+  flash('✓');
+}
+
+function tblDeleteCustomFact(idx) {
+  tblCustomFacts.splice(idx, 1);
+  safeSet('nc_tbl_custom_facts', tblCustomFacts);
+  tblRenderCustomFacts();
+}
+
+function tblToggleCustomFact(idx) {
+  tblCustomFacts[idx]._sel = tblCustomFacts[idx]._sel === false ? true : false;
+  safeSet('nc_tbl_custom_facts', tblCustomFacts);
+  tblRenderCustomFacts();
+}
+
+function tblPracticeCustomFacts() {
+  var selected = tblCustomFacts.filter(function(f) { return f._sel !== false; });
+  if(selected.length === 0) { flash('⚠ Select at least one fact'); return; }
+  tblState.isCustom = true;
+  tblState.customFacts = selected;
+  tblState.customFactLevels = {};
+  for(var i = 0; i < selected.length; i++) tblState.customFactLevels[i] = 0;
+  tblState.customFactIdx = null;
+  tblState.factsMastered = 0;
+  tblState.factsTotal = selected.length;
+  tblState.score = 0;
+  tblState.wrongStreak = 0;
+  tblState.lastFact = null;
+  tblShowView('tbl-quiz');
+  document.getElementById('tbl-quiz-badge').textContent = 'CUSTOM FACTS';
+  tblUpdateQuizStats();
+  tblNextFact();
+}
+
+function tblCompleteCustom() {
+  tblState.isCustom = false;
+  tblShowView('tbl-complete');
+  document.getElementById('tbl-complete-num').textContent = 'CUSTOM';
+  document.getElementById('tbl-complete-count').textContent = tblState.factsMastered;
+  document.getElementById('tbl-complete-remaining').textContent = '—';
+  document.getElementById('tbl-complete-score').textContent = tblState.score;
+  document.getElementById('tbl-complete-msg').textContent = 'Custom facts practice complete! 🎉';
+  saveHistory({score:tblState.factsMastered>0?100:0, correct:tblState.factsMastered, total:tblState.customFacts.length, time:0, mode:'Custom Facts', diff:'custom'});
+  updateStats();
+  flash('🏆');
+}
+window.addEventListener('beforeunload', ()=>{
+  if(drillTimer.interval) clearInterval(drillTimer.interval);
+  if(memSession.timerInt) clearInterval(memSession.timerInt);
+  allTimers.forEach(t=>clearInterval(t));
+});
 renderArithSubConfig();
 updateStats();
 renderDashHistory();
