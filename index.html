@@ -886,6 +886,9 @@ input:checked + .slider:before { transform: translateX(22px); background-color: 
     <button class="nav-item" onclick="showPage('history')" id="nav-history" role="tab">
       <span class="nav-icon" aria-hidden="true">📋</span> History
     </button>
+    <button class="nav-item" onclick="showPage('data')" id="nav-data" role="tab">
+      <span class="nav-icon" aria-hidden="true">💾</span> Data
+    </button>
   </div>
 
   <div class="sidebar-section">
@@ -1708,6 +1711,33 @@ input:checked + .slider:before { transform: translateX(22px); background-color: 
       </div>
     </div>
 
+    <!-- ══ DATA MANAGEMENT ══ -->
+    <div class="panel" id="page-data">
+      <div class="config-panel">
+        <div class="config-panel-title">💾 Data Management</div>
+        <div class="config-panel-sub">Export your progress and settings to move between devices, or import data from another device.</div>
+
+        <div class="cfg-item" style="margin-bottom:24px;">
+          <label>Your Data</label>
+          <div style="font-family:var(--mono);font-size:0.78rem;color:var(--text-mid);margin-top:6px;">
+            All your practice history, custom facts, fraction selections, tables progress, and settings are stored in your browser's local storage. Use Export to save a backup or transfer to another device.
+          </div>
+        </div>
+
+        <div class="btn-row" style="flex-wrap:wrap;">
+          <button class="btn btn-primary" onclick="exportAllData()">⬇ Export All Data</button>
+          <button class="btn btn-secondary" onclick="document.getElementById('import-file-input').click()">⬆ Import Data</button>
+          <input type="file" id="import-file-input" accept=".json" style="display:none" onchange="importAllData(event)">
+          <button class="btn btn-ghost" onclick="if(confirm('This will erase ALL progress and settings. Are you sure?')){localStorage.clear();location.reload();}" style="color:var(--danger);">🗑 Reset Everything</button>
+        </div>
+      </div>
+
+      <div class="config-panel">
+        <div class="config-panel-title">📦 Data Summary</div>
+        <div id="data-summary" style="font-family:var(--mono);font-size:0.78rem;color:var(--text-mid);line-height:1.8;"></div>
+      </div>
+    </div>
+
   </div><!-- /content -->
 </div><!-- /main -->
 </div><!-- /app -->
@@ -1889,6 +1919,7 @@ const PAGE_META = {
   'tbl-squares': { title:'Perfect Squares Table',  sub:'1² to 50²' },
   'tbl-cubes':   { title:'Perfect Cubes Table',    sub:'1³ to 20³' },
   'tables':      { title:'Tables Mastery',         sub:'Learn ×1 to ×25 with spaced repetition' },
+  'data':        { title:'Data Management',        sub:'Export / Import your progress' },
 };
 
 function showPage(id) {
@@ -1910,6 +1941,7 @@ function showPage(id) {
   document.getElementById('topbar-sub').textContent   = meta.sub;
   if(id==='dashboard')      renderDashHistory();
   if(id==='history')        renderFullHistory();
+  if(id==='data')           renderDataSummary();
   if(id==='tbl-fractions')  buildFracTable();
   if(id==='tbl-squares')    buildSqTable();
   if(id==='tbl-cubes')      buildCuTable();
@@ -1943,6 +1975,92 @@ function closeSidebar() {
   document.getElementById('sidebar').classList.remove('open');
   document.getElementById('sidebarOverlay').classList.remove('show');
   document.querySelector('.hamburger').classList.remove('open');
+}
+
+// ═══════════════════════════════════════════════════════
+// DATA MANAGEMENT (Export / Import)
+// ═══════════════════════════════════════════════════════
+function gatherAppData(){
+  const data = {
+    _version: 1,
+    _exported: new Date().toISOString(),
+    stats:     JSON.parse(localStorage.getItem('neurocalc_stats') || 'null'),
+    history:   JSON.parse(localStorage.getItem('neurocalc_history') || '[]'),
+    arithModes: arithModes,
+    arithOperandCount: arithOperandCount,
+    arithDigits: arithDigits,
+    rootModes: rootModes,
+    rootSqRanges: rootSqRanges,
+    rootStatePools: rootState.pools,
+    fracPoolMode: fracPoolMode,
+    fracSelected: fracSelected,
+    tblState: tblState,
+    tblCustomFacts: JSON.parse(localStorage.getItem('tblCustomFacts') || '[]'),
+    memCfg: memCfg,
+  };
+  return data;
+}
+function exportAllData(){
+  const data = gatherAppData();
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'neurocalc_data.json';
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a); URL.revokeObjectURL(url);
+}
+function importAllData(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev){
+    try {
+      const data = JSON.parse(ev.target.result);
+      if(!data._version) throw new Error('Invalid data file');
+      // Restore localStorage items
+      if(data.stats) localStorage.setItem('neurocalc_stats', JSON.stringify(data.stats));
+      if(data.history) localStorage.setItem('neurocalc_history', JSON.stringify(data.history));
+      if(data.tblCustomFacts) localStorage.setItem('nc_tbl_custom_facts', JSON.stringify(data.tblCustomFacts));
+      // Restore runtime vars (will take effect on next page load since showPage refreshes them)
+      // Store a flag so the next load picks these up
+      localStorage.setItem('neurocalc_import', JSON.stringify({
+        arithModes: data.arithModes,
+        arithOperandCount: data.arithOperandCount,
+        arithDigits: data.arithDigits,
+        rootModes: data.rootModes,
+        rootSqRanges: data.rootSqRanges,
+        rootStatePools: data.rootStatePools,
+        fracPoolMode: data.fracPoolMode,
+        fracSelected: data.fracSelected,
+        tblState: data.tblState,
+        memCfg: data.memCfg,
+      }));
+      alert('Data imported successfully! The page will now reload to apply all settings.');
+      location.reload();
+    } catch(err){
+      alert('Import failed: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+}
+function renderDataSummary(){
+  const el = document.getElementById('data-summary');
+  const data = gatherAppData();
+  const hist = data.history || [];
+  const customFacts = data.tblCustomFacts || [];
+  const masteredTables = data.tblState ? data.tblState.tablesMastered : 0;
+  const totalMastered = data.tblState ? data.tblState.totalMastered : 0;
+  let html = '';
+  html += `<div>📋 Sessions recorded: <strong>${hist.length}</strong></div>`;
+  html += `<div>📊 Tables mastered: <strong>${masteredTables}</strong> (${totalMastered} facts)</div>`;
+  html += `<div>✏️ Custom facts saved: <strong>${customFacts.length}</strong></div>`;
+  html += `<div>% Fraction pool mode: <strong>${data.fracPoolMode}</strong> (${(data.fracSelected||[]).length} selected)</div>`;
+  html += `<div>🔢 Arithmetic modes: <strong>${(data.arithModes||[]).join(', ') || 'none'}</strong></div>`;
+  html += `<div>√ Roots modes: <strong>${(data.rootModes||[]).join(', ') || 'none'}</strong></div>`;
+  html += `<div>🧩 Memory sets: <strong>${data.memCfg ? data.memCfg.sets : '—'}</strong></div>`;
+  html += `<div style="margin-top:12px;color:var(--text-dim);font-size:0.7rem;">Exported: ${data._exported}</div>`;
+  el.innerHTML = html;
 }
 
 // ═══════════════════════════════════════════════════════
@@ -3707,6 +3825,23 @@ window.addEventListener('beforeunload', ()=>{
   if(memSession.timerInt) clearInterval(memSession.timerInt);
   allTimers.forEach(t=>clearInterval(t));
 });
+// Restore imported data if available
+try {
+  const imp = JSON.parse(localStorage.getItem('neurocalc_import'));
+  if(imp){
+    if(imp.arithModes !== undefined) arithModes = imp.arithModes;
+    if(imp.arithOperandCount !== undefined) arithOperandCount = imp.arithOperandCount;
+    if(imp.arithDigits !== undefined) arithDigits = imp.arithDigits;
+    if(imp.rootModes !== undefined) rootModes = imp.rootModes;
+    if(imp.rootSqRanges !== undefined) rootSqRanges = imp.rootSqRanges;
+    if(imp.rootStatePools !== undefined) rootState.pools = imp.rootStatePools;
+    if(imp.fracPoolMode !== undefined) fracPoolMode = imp.fracPoolMode;
+    if(imp.fracSelected !== undefined) fracSelected = imp.fracSelected;
+    if(imp.tblState !== undefined) tblState = imp.tblState;
+    if(imp.memCfg !== undefined) memCfg = imp.memCfg;
+    localStorage.removeItem('neurocalc_import');
+  }
+} catch(_){}
 renderArithSubConfig();
 updateStats();
 renderDashHistory();
