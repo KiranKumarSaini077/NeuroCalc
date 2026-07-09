@@ -334,7 +334,7 @@ body {
   font-family: var(--mono); font-size: 2.8rem; font-weight: 700;
   color: var(--text); margin-bottom: 32px; line-height: 1.2;
   min-height: 90px; display: flex; align-items: center; justify-content: center;
-  letter-spacing: 2px;
+  flex-wrap: wrap; letter-spacing: 2px;
 }
 .question-text .num { color: var(--accent4); text-shadow: 0 0 20px rgba(116,185,255,0.15); }
 .question-text .op  { color: var(--accent3); margin: 0 14px; }
@@ -372,6 +372,13 @@ body {
 .practice-stat-chip span { color: var(--accent); font-weight: 700; font-size: 0.85rem; }
 
 .practice-actions { display: flex; gap: 10px; justify-content: center; margin-top: 24px; flex-wrap: wrap; }
+
+/* Practice timers */
+.practice-timers { display: flex; gap: 16px; justify-content: center; margin-bottom: 20px; flex-wrap: wrap; }
+.timer-chip { display: flex; align-items: center; gap: 8px; background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 6px 14px; font-family: var(--mono); font-size: 0.78rem; }
+.timer-chip .timer-icon { font-size: 0.9rem; color: var(--text-dim); }
+.timer-chip .timer-label { color: var(--text-dim); font-size: 0.65rem; letter-spacing: 1px; }
+.timer-chip .timer-val { color: var(--accent); font-weight: 700; font-size: 0.85rem; min-width: 50px; text-align: right; }
 
 /* Streak display */
 .streak-bar {
@@ -1197,6 +1204,11 @@ input:checked + .slider:before { transform: translateX(22px); background-color: 
                 <div class="mode-card-name">Division</div>
                 <div class="mode-card-desc">Quotient finder</div>
               </div>
+              <div class="mode-card" data-mode="100-n" onclick="toggleArithMode(this)">
+                <div class="mode-card-icon">𝟭𝟬𝟬</div>
+                <div class="mode-card-name">100 − n</div>
+                <div class="mode-card-desc">Subtract from 100</div>
+              </div>
             </div>
           </div>
 
@@ -1241,10 +1253,14 @@ input:checked + .slider:before { transform: translateX(22px); background-color: 
             </div>
           </div>
           <div class="practice-mode-badge" id="arith-mode-badge">ARITHMETIC</div>
+          <div class="practice-timers">
+            <div class="timer-chip"><span class="timer-icon">⏱</span><span class="timer-label">SESSION</span><span class="timer-val" id="arith-session-time">00:00</span></div>
+            <div class="timer-chip"><span class="timer-icon">⚡</span><span class="timer-label">QUESTION</span><span class="timer-val" id="arith-q-time">00.0s</span></div>
+          </div>
           <div class="question-text" id="arith-question">—</div>
           <input class="answer-field" id="arith-ans" type="text" placeholder="?" autocomplete="off"
                  inputmode="numeric" pattern="[0-9]*"
-                 oninput="checkArith()" onkeydown="arithHintKey(event)"/>
+                 oninput="onArithInput()" onkeydown="arithHintKey(event)"/>
           <div class="hint-text" id="arith-hint">Press Space for hint</div>
           <div class="practice-meta">
             <div class="practice-stat-chip">Score <span id="arith-score">0</span></div>
@@ -1787,7 +1803,8 @@ let memSession = { sets:[], peeked:false, startTime:null, timerInt:null, timeLef
 let arithModes = ['Addition'];
 let arithOperandCount = 2;
 let arithDigits = { first:2, second:2, num:2, den:1 };
-let arithState = { answer:null, hint:'', score:0, correct:0, total:0, streak:[], pending:false };
+let arithState = { answer:null, hint:'', score:0, correct:0, total:0, streak:[], pending:false, sessionStart:0, qStart:0 };
+let arithTimerInterval = null;
 
 // Roots
 let rootModes = ['sq-to-root'];
@@ -2374,8 +2391,14 @@ function renderArithSubConfig(){
   const hasDiv = arithModes.includes('Division');
   const hasMul = arithModes.includes('Multiplication');
   const hasAddSub = arithModes.some(m=>['Addition','Subtraction','Carry Subtraction'].includes(m));
+  const only100 = arithModes.length===1 && arithModes[0]==='100-n';
   const isMixed = (hasMul || hasDiv) && hasAddSub;
   const maxDig = hasMul ? 3 : 4;
+
+  if(only100){
+    wrap.innerHTML = `<div style="background:rgba(79,255,176,0.06);border:1px solid rgba(79,255,176,0.15);border-radius:var(--radius-sm);padding:14px 18px;font-family:var(--mono);font-size:0.82rem;color:var(--text-mid);">Practice subtracting numbers <strong>1–100</strong> from <strong>100</strong>. No additional config needed.</div>`;
+    return;
+  }
 
   // Operand count row
   const opRow = `<div class="config-grid" style="margin-bottom:16px;"><div class="cfg-item"><label>Numbers per Question</label>
@@ -2449,16 +2472,26 @@ function evalBODMAS(nums, ops) {
   return result;
 }
 
+function updateArithTimers(){
+  const now = Date.now();
+  const sec = Math.floor((now - arithState.sessionStart) / 1000);
+  document.getElementById('arith-session-time').textContent =
+    String(Math.floor(sec / 60)).padStart(2, '0') + ':' + String(sec % 60).padStart(2, '0');
+  document.getElementById('arith-q-time').textContent = ((now - arithState.qStart) / 1000).toFixed(1) + 's';
+}
 function startArith(){
-  arithState={answer:null,hint:'',score:0,correct:0,total:0,streak:[]};
+  arithState={answer:null,hint:'',score:0,correct:0,total:0,streak:[],sessionStart:Date.now(),qStart:Date.now()};
   document.getElementById('arith-config-wrap').style.display='none';
   document.getElementById('arith-practice-wrap').style.display='block';
   // Build badge label
-  const symMap={'Addition':'+','Subtraction':'−','Carry Subtraction':'−','Multiplication':'×','Division':'÷'};
+  const symMap={'Addition':'+','Subtraction':'−','Carry Subtraction':'−','Multiplication':'×','Division':'÷','100-n':'−'};
   const badge = arithModes.length===1
-    ? arithModes[0].toUpperCase()
+    ? (arithModes[0]==='100-n' ? '100 − N' : arithModes[0].toUpperCase())
     : arithModes.map(m=>symMap[m]).join(' ') + ' MIXED';
   document.getElementById('arith-mode-badge').textContent=badge;
+  // Start practice timers
+  if(arithTimerInterval) clearInterval(arithTimerInterval);
+  arithTimerInterval = setInterval(updateArithTimers, 100);
   if(document.getElementById('arith-timed-toggle').checked){
     const duration=parseInt(document.getElementById('arith-time-select').value);
     startDrillTimer('arith', duration, ()=>finishTimedSession('Arith', arithState));
@@ -2469,6 +2502,7 @@ function startArith(){
 
 function arithBack(){
   if(arithState.pending && arithState.total > 1 && !confirm('Leave session? Progress will be lost.')) return;
+  if(arithTimerInterval) clearInterval(arithTimerInterval);
   stopDrillTimer();
   document.getElementById('arith-config-wrap').style.display='block';
   document.getElementById('arith-practice-wrap').style.display='none';
@@ -2483,18 +2517,32 @@ function arithBack(){
 }
 
 function newArithQ(){
+  arithState.qStart = Date.now();
   const inp=document.getElementById('arith-ans');
   inp.value=''; inp.className='answer-field';
   document.getElementById('arith-hint').textContent='Press Space for hint';
   document.getElementById('arith-hint').className='hint-text';
   inp.focus();
 
+  // Handle 100-n mode (mixable with other modes)
+  if(arithModes.includes('100-n') && (arithModes.length===1 || Math.random()<1/arithModes.length)){
+    const n = rnd(100,1);
+    arithState.answer = 100 - n;
+    arithState.hint = String(arithState.answer);
+    arithState.pending = true;
+    document.getElementById('arith-question').innerHTML = `<span class="num">100</span><span class="op">−</span><span class="num">${n}</span><span class="unk">= ?</span>`;
+    arithState.total++;
+    updateArithStats();
+    return;
+  }
+
+  const modePool = arithModes.filter(m=>m!=='100-n');
   const count = arithOperandCount;
   const symMap={'Addition':'+','Subtraction':'−','Carry Subtraction':'−','Multiplication':'×','Division':'÷'};
 
   // Pick operators randomly from selected modes
   const ops = Array.from({length:count-1}, ()=>{
-    const m = arithModes[Math.floor(Math.random()*arithModes.length)];
+    const m = modePool[Math.floor(Math.random()*modePool.length)];
     return symMap[m];
   });
 
@@ -2531,9 +2579,9 @@ function newArithQ(){
   let qHtml = '';
   for(let i=0; i<nums.length; i++){
     qHtml += `<span class="num">${nums[i]}</span>`;
-    if(i<ops.length) qHtml += ` <span class="op">${ops[i]}</span> `;
+    if(i<ops.length) qHtml += `<span class="op">${ops[i]}</span>`;
   }
-  qHtml += ' <span class="unk">= ?</span>';
+  qHtml += `<span class="unk">= ?</span>`;
   document.getElementById('arith-question').innerHTML = qHtml;
 
   arithState.total++;
@@ -2563,6 +2611,11 @@ function checkArith(){
   }
 }
 
+function onArithInput(){
+  const val=document.getElementById('arith-ans').value.trim();
+  if(!val||val.length<String(arithState.answer).length) return;
+  if(String(arithState.answer)===val) checkArith();
+}
 function arithHintKey(e){
   if(e.key==='Enter'){ e.preventDefault(); const v=document.getElementById('arith-ans').value.trim(); if(v) checkArith(); }
   if(e.key===' '){ e.preventDefault(); showArithHint(); }
